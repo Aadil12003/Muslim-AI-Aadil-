@@ -565,4 +565,3 @@ with tab4:
 
     st.markdown("---")
     st.markdown('<div class="info-box">Ask the AI Assistant for more Hadith on any topic.</div>', unsafe_allow_html=True)
-```
