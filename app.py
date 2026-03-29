@@ -22,10 +22,9 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-NVIDIA_API_KEY = "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"
+NVIDIA_API_KEY = "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""
 API_URL = "https://integrate.api.nvidia.com/v1/chat/completions"
-MODEL = "meta/llama-3.1-70b-instruct"
-
+MODEL = "meta/llama-4-maverick-17b-128e-instruct"
 SYSTEM_PROMPT = """You are an advanced Islamic AI Assistant. You provide accurate, source-based, and respectful answers strictly grounded in authentic Islamic knowledge.
 
 CORE RULES:
