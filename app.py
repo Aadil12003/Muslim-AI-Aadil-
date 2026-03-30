@@ -5,7 +5,7 @@ import numpy as np
 import faiss
 from sentence_transformers import SentenceTransformer
 
-st.set_page_config(page_title="Muslim AI FAISS", layout="wide")
+st.set_page_config(page_title="Muslim AI (All-in-One)", layout="wide")
 
 # ================= STYLE =================
 st.markdown("""
@@ -13,9 +13,9 @@ st.markdown("""
 .stApp { background-color: #0f172a; }
 .card {
     background: #1e293b;
-    padding: 18px;
+    padding: 16px;
     border-radius: 12px;
-    margin-bottom: 12px;
+    margin-bottom: 10px;
     border: 1px solid #334155;
     color: #f1f5f9;
 }
@@ -23,7 +23,7 @@ h1 { color: #38bdf8; }
 </style>
 """, unsafe_allow_html=True)
 
-st.title("🕌 Muslim AI (FAISS Semantic Engine)")
+st.title("🕌 Muslim AI (All-in-One FAISS System)")
 
 API_KEY = st.secrets.get("NVIDIA_API_KEY")
 
@@ -38,13 +38,13 @@ hadith_data = load_hadith()
 # ================= LOAD MODEL =================
 @st.cache_resource
 def load_model():
-    return SentenceTransformer('all-MiniLM-L6-v2')
+    return SentenceTransformer("all-MiniLM-L6-v2")
 
 model = load_model()
 
 # ================= BUILD FAISS =================
 @st.cache_resource
-def build_faiss():
+def build_index():
     texts = [h["text"] for h in hadith_data]
     embeddings = model.encode(texts)
 
@@ -52,11 +52,11 @@ def build_faiss():
     index = faiss.IndexFlatL2(dim)
     index.add(np.array(embeddings))
 
-    return index, texts
+    return index
 
-index, texts = build_faiss()
+index = build_index()
 
-# ================= SEARCH =================
+# ================= FAISS SEARCH =================
 def faiss_search(query):
     q_emb = model.encode([query])
     D, I = index.search(np.array(q_emb), 5)
@@ -67,7 +67,7 @@ def faiss_search(query):
 
     return results
 
-# ================= QURAN =================
+# ================= QURAN SEARCH =================
 def search_quran(query):
     try:
         res = requests.get(f"https://api.alquran.cloud/v1/search/{query}/all/en")
@@ -131,11 +131,11 @@ question = st.text_input("💬 Ask your question")
 
 if st.button("Ask") and question:
 
-    # VECTOR SEARCH
+    # SEARCH
     hadith_results = faiss_search(question)
     quran_results = search_quran(question)
 
-    # AI ANSWER
+    # AI
     st.markdown("## 🧠 AI Answer")
     answer = get_ai_answer(question, hadith_results, quran_results)
     st.markdown(f"<div class='card'>{answer}</div>", unsafe_allow_html=True)
@@ -155,3 +155,9 @@ if st.button("Ask") and question:
             f"<div class='card'>{v['text']}<br><b>{v['surah']['name']} {v['numberInSurah']}</b></div>",
             unsafe_allow_html=True
         )
+
+# ================= DUA =================
+st.markdown("## 🤲 Duas")
+
+st.markdown("<div class='card'>بِاسْمِكَ اللَّهُمَّ أَمُوتُ وَأَحْيَا</div>", unsafe_allow_html=True)
+st.markdown("<div class='card'>اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنَ الْهَمِّ وَالْحَزَنِ</div>", unsafe_allow_html=True)
