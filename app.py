@@ -1,5 +1,6 @@
 import streamlit as st
 import requests
+import json
 
 st.set_page_config(page_title="Muslim AI Authentic", layout="wide")
 
@@ -19,15 +20,22 @@ st.markdown("""
 
 h1 { color: #38bdf8; }
 h2, h3 { color: #e2e8f0; }
-
 </style>
 """, unsafe_allow_html=True)
 
 # ================= TITLE =================
-st.title("🕌 Muslim AI (Authentic Mode)")
-st.caption("AI Explanation + Quran + Hadith + Duas")
+st.title("🕌 Muslim AI (Authentic System)")
+st.caption("AI Explanation + Quran + Hadith Dataset + Duas")
 
 API_KEY = st.secrets.get("NVIDIA_API_KEY")
+
+# ================= LOAD HADITH =================
+@st.cache_data
+def load_hadith():
+    with open("hadith.json", "r", encoding="utf-8") as f:
+        return json.load(f)
+
+hadith_data = load_hadith()
 
 # ================= AI =================
 def get_ai_answer(question):
@@ -75,11 +83,14 @@ def get_quran(surah):
     except:
         return None, None, None
 
-# ================= HADITH =================
-HADITH = [
-    {"text": "Actions are judged by intentions.", "source": "Sahih Bukhari 1"},
-    {"text": "The best among you are those with best manners.", "source": "Sahih Bukhari"}
-]
+# ================= HADITH SEARCH =================
+def search_hadith(query, book):
+    results = []
+    for h in hadith_data:
+        if query.lower() in h["text"].lower():
+            if book == "All" or h["book"] == book:
+                results.append(h)
+    return results[:20]
 
 # ================= DUAS =================
 DUAS = [
@@ -98,7 +109,7 @@ DUAS = [
 # ================= LAYOUT =================
 col1, col2 = st.columns([2,1])
 
-# ================= LEFT SIDE (AI) =================
+# ================= AI =================
 with col1:
     st.markdown("## 🧠 AI Explanation")
 
@@ -108,7 +119,7 @@ with col1:
         ai = get_ai_answer(question)
         st.markdown(f"<div class='card'>{ai}</div>", unsafe_allow_html=True)
 
-# ================= RIGHT SIDE =================
+# ================= RIGHT PANEL =================
 with col2:
 
     # -------- QURAN --------
@@ -132,15 +143,33 @@ with col2:
                 )
 
     # -------- HADITH --------
-    st.markdown("## 📜 Hadith")
-    for h in HADITH:
-        st.markdown(
-            f"<div class='card'>{h['text']}<br><b>{h['source']}</b></div>",
-            unsafe_allow_html=True
-        )
+    st.markdown("## 📜 Hadith Search")
 
-    # -------- DUA --------
+    search_query = st.text_input("Search Hadith")
+
+    book_filter = st.selectbox(
+        "Book",
+        ["All", "Bukhari", "Muslim", "Tirmidhi"]
+    )
+
+    if st.button("Search Hadith"):
+        results = search_hadith(search_query, book_filter)
+
+        if results:
+            for h in results:
+                st.markdown(
+                    f"<div class='card'>"
+                    f"{h['text']}<br><br>"
+                    f"<b>{h['book']} {h['number']}</b> | {h['grade']}"
+                    f"</div>",
+                    unsafe_allow_html=True
+                )
+        else:
+            st.warning("No results found")
+
+    # -------- DUAS --------
     st.markdown("## 🤲 Duas")
+
     for d in DUAS:
         st.markdown(
             f"<div class='card'><b>{d['title']}</b><br>{d['arabic']}<br><i>{d['meaning']}</i></div>",
