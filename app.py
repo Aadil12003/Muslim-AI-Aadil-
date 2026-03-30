@@ -11,7 +11,7 @@ import streamlit as st
 # ==========================================
 # PAGE SETUP & PREMIUM VIBRANT STYLING
 # ==========================================
-st.set_page_config(page_title="Muslim AI by Aadil Rather", layout="wide", initial_sidebar_state="expanded")
+st.set_page_config(page_title="Muslim AI", layout="wide", initial_sidebar_state="expanded")
 
 st.markdown(
     """
@@ -414,7 +414,7 @@ def render_response(result):
 # ==========================================
 st.markdown(
     '<div class="hero"><div class="bismillah">بِسْمِ اللَّهِ الرَّحْمٰنِ الرَّحِيمِ</div>'
-    '<div class="title">Muslim AI by Aadil Rather</div>'
+    '<div class="title">Muslim AI</div>'
     '<div class="subtitle">Created by Aadil Rather</div></div>',
     unsafe_allow_html=True,
 )
