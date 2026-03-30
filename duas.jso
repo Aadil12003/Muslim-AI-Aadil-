@@ -1,0 +1,32 @@
+[
+  {
+    "id": "dua_before_sleep",
+    "title": "Dua Before Sleeping",
+    "category": "Before Sleep",
+    "arabic": "بِاسْمِكَ اللَّهُمَّ أَمُوتُ وَأَحْيَا",
+    "transliteration": "Bismika Allahumma amootu wa ahya",
+    "meaning": "In Your name O Allah, I die and I live.",
+    "reference": "Sahih al-Bukhari 6324",
+    "source_url": "https://sunnah.com/bukhari:6324"
+  },
+  {
+    "id": "ayatul_kursi",
+    "title": "Ayatul Kursi",
+    "category": "Before Sleep",
+    "arabic": "اللَّهُ لَا إِلَهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ لَا تَأْخُذُهُ سِنَةٌ وَلَا نَوْمٌ",
+    "transliteration": "Allahu la ilaha illa huwal hayyul qayyum la ta'khudhuh sinatun wa la nawm",
+    "meaning": "Allah, there is no deity except Him, the Ever-Living, the Sustainer of existence. Neither drowsiness overtakes Him nor sleep.",
+    "reference": "Quran 2:255",
+    "source_url": "https://quran.com/2/255"
+  },
+  {
+    "id": "morning_remembrance",
+    "title": "Morning Remembrance",
+    "category": "Morning Adhkar",
+    "arabic": "أَصْبَحْنَا وَأَصْبَحَ الْمُلْكُ لِلَّهِ، وَالْحَمْدُ لِلَّهِ، لَا إِلَهَ إِلَّا اللهُ وَحْدَهُ لَا شَرِيكَ لَهُ",
+    "transliteration": "Asbahna wa asbahal mulku lillah, walhamdu lillah, la ilaha illallah wahdahu la sharika lah",
+    "meaning": "We have entered the morning and the whole kingdom belongs to Allah. All praise is for Allah. None has the right to be worshipped except Allah, alone, without partner.",
+    "reference": "Abu Dawood",
+    "source_url": "https://sunnah.com/abudawud"
+  }
+]
