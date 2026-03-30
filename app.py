@@ -157,31 +157,31 @@ SURAH_NAMES = [
 
 DUA_CATEGORIES = {
     "Morning Adhkar": [
-        {"title": "Morning Remembrance", "arabic": "أَصْبَحْنَا وَأَصْبَحَ الْمُلْكُ لِلَّهِ، وَالْحَمْدُ لِلَّهِ، لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ", "transliteration": "Asbahna wa asbaha al-mulku lillah, wal-hamdu lillah, la ilaha illa Allah wahdahu la sharika lah", "meaning": "We have entered the morning and the kingdom belongs to Allah. All praise is for Allah; none has the right to be worshipped except Him alone, without partner.", "reference": "Abu Dawood 4/317", "source_url": ""},
-        {"title": "Sayyidul Istighfar", "arabic": "اللَّهُمَّ أَنْتَ رَبِّي لَا إِلَهَ إِلَّا أَنْتَ، خَلَقْتَنِي وَأَنَا عَبْدُكَ", "transliteration": "Allahumma anta rabbi la ilaha illa anta, khalaqtani wa ana abduk", "meaning": "O Allah, You are my Lord; none has the right to be worshipped except You. You created me and I am Your servant.", "reference": "Bukhari 6306", "source_url": "https://sunnah.com/bukhari:6306"}
+        {"title": "Morning Remembrance", "arabic": "أَصْبَحْنَا وَأَصْبَحَ الْمُلْكُ لِلَّهِ، وَالْحَمْدُ لِلَّهِ، لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ", "transliteration": "Asbahna wa asbaha al-mulku lillah, wal-hamdu lillah, la ilaha illa Allah wahdahu la sharika lah", "meaning": "We have entered the morning and the kingdom belongs to Allah. All praise is for Allah; none has the right to be worshipped except Him alone, without partner.", "reference": "Abu Dawood 4/317", "source_url": ""},
+        {"title": "Sayyidul Istighfar", "arabic": "اللَّهُمَّ أَنْتَ رَبِّي لَا إِلَهَ إِلَّا أَنْتَ، خَلَقْتَنِي وَأَنَا عَبْدُكَ", "transliteration": "Allahumma anta rabbi la ilaha illa anta, khalaqtani wa ana abduk", "meaning": "O Allah, You are my Lord; none has the right to be worshipped except You. You created me and I am Your servant.", "reference": "Bukhari 6306", "source_url": "https://sunnah.com/bukhari:6306"}
     ],
     "Evening Adhkar": [
-        {"title": "Evening Remembrance", "arabic": "أَمْسَيْنَا وَأَمْسَى الْمُلْكُ لِلَّهِ، وَالْحَمْدُ لِلَّهِ، لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ", "transliteration": "Amsayna wa amsa al-mulku lillah, wal-hamdu lillah, la ilaha illa Allah wahdahu la sharika lah", "meaning": "We have entered the evening and the kingdom belongs to Allah. All praise is for Allah; none has the right to be worshipped but Him alone, without partner.", "reference": "Abu Dawood 4/317", "source_url": ""}
+        {"title": "Evening Remembrance", "arabic": "أَمْسَيْنَا وَأَمْسَى الْمُلْكُ لِلَّهِ، وَالْحَمْدُ لِلَّهِ، لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ", "transliteration": "Amsayna wa amsa al-mulku lillah, wal-hamdu lillah, la ilaha illa Allah wahdahu la sharika lah", "meaning": "We have entered the evening and the kingdom belongs to Allah. All praise is for Allah; none has the right to be worshipped but Him alone, without partner.", "reference": "Abu Dawood 4/317", "source_url": ""}
     ],
     "Before Sleep": [
-        {"title": "Before Sleeping", "arabic": "بِاسْمِكَ اللَّهُمَّ أَمُوتُ وَأَحْيَا", "transliteration": "Bismika Allahumma amootu wa ahya", "meaning": "In Your name, O Allah, I die and I live.", "reference": "Bukhari 6324", "source_url": "https://sunnah.com/bukhari:6324"},
-        {"title": "Ayatul Kursi", "arabic": "اللَّهُ لَا إِلَٰهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ", "transliteration": "Allahu la ilaha illa huwa al-hayyul-qayyum", "meaning": "Allah! None has the right to be worshipped but He, the Ever Living, the Sustainer of all.", "reference": "Quran 2:255", "source_url": "https://quran.com/2/255"}
+        {"title": "Before Sleeping", "arabic": "بِاسْمِكَ اللَّهُمَّ أَمُوتُ وَأَحْيَا", "transliteration": "Bismika Allahumma amootu wa ahya", "meaning": "In Your name, O Allah, I die and I live.", "reference": "Bukhari 6324", "source_url": "https://sunnah.com/bukhari:6324"},
+        {"title": "Ayatul Kursi", "arabic": "اللَّهُ لَا إِلَٰهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ", "transliteration": "Allahu la ilaha illa huwa al-hayyul-qayyum", "meaning": "Allah! None has the right to be worshipped but He, the Ever Living, the Sustainer of all.", "reference": "Quran 2:255", "source_url": "https://quran.com/2/255"}
     ],
     "Entering Home": [
-        {"title": "Entering Home", "arabic": "اللَّهُمَّ إِنِّي أَسْأَلُكَ خَيْرَ الْمَوْلَجِ وَخَيْرَ الْمَخْرَجِ", "transliteration": "Allahumma inni as'aluka khayral mawlaji wa khayral makhraji", "meaning": "O Allah, I ask You for the good of entering and the good of leaving.", "reference": "Abu Dawood 4/325", "source_url": ""}
+        {"title": "Entering Home", "arabic": "اللَّهُمَّ إِنِّي أَسْأَلُكَ خَيْرَ الْمَوْلَجِ وَخَيْرَ الْمَخْرَجِ", "transliteration": "Allahumma inni as'aluka khayral mawlaji wa khayral makhraji", "meaning": "O Allah, I ask You for the good of entering and the good of leaving.", "reference": "Abu Dawood 4/325", "source_url": ""}
     ],
     "Eating and Drinking": [
-        {"title": "Before Eating", "arabic": "بِسْمِ اللَّهِ", "transliteration": "Bismillah", "meaning": "In the name of Allah.", "reference": "Tirmidhi 1858", "source_url": "https://sunnah.com/tirmidhi:1858"},
-        {"title": "After Eating", "arabic": "الْحَمْدُ لِلَّهِ الَّذِي أَطْعَمَنَا وَسَقَانَا وَجَعَلَنَا مُسْلِمِينَ", "transliteration": "Alhamdu lillahil ladhi at'amana wa saqana wa ja'alana muslimin", "meaning": "All praise is for Allah who fed us, gave us drink, and made us Muslims.", "reference": "Abu Dawood 3850", "source_url": ""}
+        {"title": "Before Eating", "arabic": "بِسْمِ اللَّهِ", "transliteration": "Bismillah", "meaning": "In the name of Allah.", "reference": "Tirmidhi 1858", "source_url": "https://sunnah.com/tirmidhi:1858"},
+        {"title": "After Eating", "arabic": "الْحَمْدُ لِلَّهِ الَّذِي أَطْعَمَنَا وَسَقَانَا وَجَعَلَنَا مُسْلِمِينَ", "transliteration": "Alhamdu lillahil ladhi at'amana wa saqana wa ja'alana muslimin", "meaning": "All praise is for Allah who fed us, gave us drink, and made us Muslims.", "reference": "Abu Dawood 3850", "source_url": ""}
     ],
     "Anxiety and Distress": [
-        {"title": "Dua for Anxiety", "arabic": "اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنَ الْهَمِّ وَالْحَزَنِ", "transliteration": "Allahumma inni a'udhu bika minal hammi wal hazan", "meaning": "O Allah, I seek refuge in You from anxiety and grief.", "reference": "Bukhari 6363", "source_url": ""}
+        {"title": "Dua for Anxiety", "arabic": "اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنَ الْهَمِّ وَالْحَزَنِ", "transliteration": "Allahumma inni a'udhu bika minal hammi wal hazan", "meaning": "O Allah, I seek refuge in You from anxiety and grief.", "reference": "Bukhari 6363", "source_url": ""}
     ],
     "Travel": [
-        {"title": "Dua for Travel", "arabic": "سُبْحَانَ الَّذِي سَخَّرَ لَنَا هَذَا وَمَا كُنَّا لَهُ مُقْرِنِينَ", "transliteration": "Subhanal ladhi sakhkhara lana hadha wa ma kunna lahu muqrinin", "meaning": "Glory be to Him who has subjected this to us, and we could never have it by our efforts.", "reference": "Quran 43:13 / Abu Dawood 2599", "source_url": "https://quran.com/43/13"}
+        {"title": "Dua for Travel", "arabic": "سُبْحَانَ الَّذِي سَخَّرَ لَنَا هَذَا وَمَا كُنَّا لَهُ مُقْرِنِينَ", "transliteration": "Subhanal ladhi sakhkhara lana hadha wa ma kunna lahu muqrinin", "meaning": "Glory be to Him who has subjected this to us, and we could never have it by our efforts.", "reference": "Quran 43:13 / Abu Dawood 2599", "source_url": "https://quran.com/43/13"}
     ],
     "Forgiveness": [
-        {"title": "Seeking Forgiveness", "arabic": "رَبِّ اغْفِرْ لِي وَتُبْ عَلَيَّ إِنَّكَ أَنْتَ التَّوَّابُ الرَّحِيمُ", "transliteration": "Rabbighfir li wa tub alayya innaka anta at-Tawwabur-Rahim", "meaning": "My Lord, forgive me and accept my repentance. Truly, You are the Accepter of repentance, the Most Merciful.", "reference": "Abu Dawood / Ibn Majah", "source_url": ""}
+        {"title": "Seeking Forgiveness", "arabic": "رَبِّ اغْفِرْ لِي وَتُبْ عَلَيَّ إِنَّكَ أَنْتَ التَّوَّابُ الرَّحِيمُ", "transliteration": "Rabbighfir li wa tub alayya innaka anta at-Tawwabur-Rahim", "meaning": "My Lord, forgive me and accept my repentance. Truly, You are the Accepter of repentance, the Most Merciful.", "reference": "Abu Dawood / Ibn Majah", "source_url": ""}
     ]
 }
 
@@ -226,31 +226,29 @@ HADITH_40 = [
         "Every act of kindness is charity.",
         "Exchange gifts and you will love one another.",
         "Whoever treads a path seeking knowledge, Allah makes easy for him a path to Paradise.",
-        "The best among you are those who learn the Qur’an and teach it.",
+        "The best among you are those who learn the Qur'an and teach it.",
         "The most beloved deeds to Allah are those done consistently, even if small."
     ])
 ]
 
-# Stories from Quran & Hadith (concise, verified references)
 STORIES = [
     {"title": "Prophet Yusuf and Patience", "summary": "Yusuf (as) faced betrayal by his brothers, imprisonment, and hardship yet remained patient and trusting in Allah. His patience led to honor and reunion. See Surah Yusuf (12).", "source": "Quran 12"},
     {"title": "People of the Cave (Ashab al-Kahf)", "summary": "A group of youths fled oppression, sought refuge in a cave, and Allah preserved them for years as a sign of His power over life and death. See Surah Al-Kahf 18:9-26.", "source": "Quran 18:9-26"},
-    {"title": "Musa and Khidr", "summary": "Musa (as) traveled to learn from Khidr about divine wisdom behind events that seem harmful, teaching patience and trust in Allah’s decree. See Surah Al-Kahf 18:60-82.", "source": "Quran 18:60-82"},
-    {"title": "Maryam and the Birth of Isa", "summary": "Maryam (as) miraculously conceived Prophet Isa (as) and gave birth under a palm tree, reaffirming Allah’s limitless power. See Surah Maryam 19:16-36.", "source": "Quran 19:16-36"},
+    {"title": "Musa and Khidr", "summary": "Musa (as) traveled to learn from Khidr about divine wisdom behind events that seem harmful, teaching patience and trust in Allah's decree. See Surah Al-Kahf 18:60-82.", "source": "Quran 18:60-82"},
+    {"title": "Maryam and the Birth of Isa", "summary": "Maryam (as) miraculously conceived Prophet Isa (as) and gave birth under a palm tree, reaffirming Allah's limitless power. See Surah Maryam 19:16-36.", "source": "Quran 19:16-36"},
     {"title": "Abraham and the Fire", "summary": "Ibrahim (as) was thrown into a fire by his people for rejecting idolatry, but Allah made the fire cool and safe for him. See Surah Al-Anbiya 21:68-70.", "source": "Quran 21:68-70"}
 ]
 
-# Brief life highlights of prophets (verified, concise)
 PROPHETS = [
     {"name": "Muhammad (ﷺ)", "life": "Born in Makkah 570 CE. Received the Quran over 23 years. Established the Muslim community in Madinah. Passed away 632 CE. Character noted for truthfulness and mercy.", "sources": "Quran; Sahih Sira (Ibn Hisham, Ibn Kathir)"},
     {"name": "Ibrahim (as)", "life": "Called to pure monotheism, debated his people, tested with sacrifice of his son, rebuilt the Ka'bah with Ismail. Title: Khalilullah (friend of Allah).", "sources": "Quran 2:124-132; 6:74-83; 37:99-111"},
-    {"name": "Musa (as)", "life": "Raised in Pharaoh’s palace, led Bani Israel out of Egypt, received the Torah, parted the sea by Allah’s leave.", "sources": "Quran 20; 26; 28"},
-    {"name": "Isa (as)", "life": "Born miraculously to Maryam, spoke as an infant, performed miracles by Allah’s permission, raised as a prophet to Bani Israel; not crucified—Allah raised him.", "sources": "Quran 3; 4:157-158; 5:110; 19"},
+    {"name": "Musa (as)", "life": "Raised in Pharaoh's palace, led Bani Israel out of Egypt, received the Torah, parted the sea by Allah's leave.", "sources": "Quran 20; 26; 28"},
+    {"name": "Isa (as)", "life": "Born miraculously to Maryam, spoke as an infant, performed miracles by Allah's permission, raised as a prophet to Bani Israel; not crucified—Allah raised him.", "sources": "Quran 3; 4:157-158; 5:110; 19"},
     {"name": "Yusuf (as)", "life": "From well to slavery to prison to authority in Egypt; exemplified patience, chastity, and forgiveness.", "sources": "Quran 12"},
-    {"name": "Nuh (as)", "life": "Preached for 950 years, built the Ark by Allah’s command, saved the believers from the flood.", "sources": "Quran 11:25-49; 71"},
+    {"name": "Nuh (as)", "life": "Preached for 950 years, built the Ark by Allah's command, saved the believers from the flood.", "sources": "Quran 11:25-49; 71"},
     {"name": "Dawud (as)", "life": "Prophet-king, given the Zabur, known for justice and a beautiful recitation.", "sources": "Quran 38:17-26"},
-    {"name": "Sulaiman (as)", "life": "Prophet-king with control over jinn, wind, and birds by Allah’s permission; exemplified gratitude.", "sources": "Quran 27; 34:12-19; 38:30-40"},
-    {"name": "Yunus (as)", "life": "Left his people, swallowed by the great fish, repented with the dua “La ilaha illa Anta...”, delivered and returned to his people.", "sources": "Quran 21:87-88; 37:139-148"},
+    {"name": "Sulaiman (as)", "life": "Prophet-king with control over jinn, wind, and birds by Allah's permission; exemplified gratitude.", "sources": "Quran 27; 34:12-19; 38:30-40"},
+    {"name": "Yunus (as)", "life": "Left his people, swallowed by the great fish, repented with the dua 'La ilaha illa Anta...', delivered and returned to his people.", "sources": "Quran 21:87-88; 37:139-148"},
     {"name": "Ayub (as)", "life": "Severely tested in health and wealth, remained patient; Allah restored him and praised his patience.", "sources": "Quran 21:83-84; 38:41-44"}
 ]
 
@@ -466,7 +464,7 @@ def render_response(result):
 # UI
 # --------------------------------------------------------------------------- #
 st.markdown(
-    '<div class="hero"><div class="bismillah">بِسْمِ اللَّهِ الرَّحْمٰنِ الرَّحِيمِ</div>'
+    '<div class="hero"><div class="bismillah">بِسْمِ اللَّهِ الرَّحْمٰنِ الرَّحِيمِ</div>'
     '<div class="title">Muslim AI</div>'
     '<div class="subtitle">Premium experience · Authentic answers grounded in Quran, Sahih Hadith, and classical scholarship</div></div>',
     unsafe_allow_html=True,
@@ -570,12 +568,12 @@ with tab2:
                 )
                 for i, ayah in enumerate(arabic_edition.get("ayahs", [])):
                     english = english_ayahs[i].get("text", "") if i < len(english_ayahs) else ""
-        st.markdown(
-            f'<div class="glass reader-card"><span style="color:var(--gold); font-size:12px; font-weight:700;">Ayah {ayah.get("numberInSurah", i + 1)}</span>'
-            f'<div class="arabic">{safe_html(ayah.get("text", ""))}</div>'
-            f'<div class="translation">{safe_html(english)}</div></div>',
-            unsafe_allow_html=True,
-        )
+                    st.markdown(
+                        f'<div class="glass reader-card"><span style="color:var(--gold); font-size:12px; font-weight:700;">Ayah {ayah.get("numberInSurah", i + 1)}</span>'
+                        f'<div class="arabic">{safe_html(ayah.get("text", ""))}</div>'
+                        f'<div class="translation">{safe_html(english)}</div></div>',
+                        unsafe_allow_html=True,
+                    )
             else:
                 st.error("Could not load Surah. Please check your connection and try again.")
         else:
