@@ -39,7 +39,7 @@ html, body, .stApp {
 .hero .bismillah { font-family:'Scheherazade New',serif; font-size:38px; color:var(--gold); text-align:center; direction:rtl; }
 .hero .title { font-family:'Playfair Display',serif; font-size:44px; text-align:center; margin:8px 0 2px 0; color:var(--gold); letter-spacing:0.4px; }
 .hero .subtitle { text-align:center; color:var(--muted); font-size:15px; }
-.card, .answer, .quran-card, .hadith-card, .dua-card, .scholar-card, .info-box, .warning-card, .reader-card { background: var(--panel); border:1px solid var(--stroke); border-radius:16px; padding:16px 18px; margin-bottom:12px; line-height:1.75; backdrop-filter: blur(6px); }
+.card, .answer, .quran-card, .hadith-card, .dua-card, .scholar-card, .info-box, .warning-card, .reader-card { background: var(--panel); border:1px solid var(--stroke); border-radius:14px; padding:16px 18px; margin-bottom:12px; line-height:1.7; backdrop-filter: blur(5px); }
 .answer { border:1px solid rgba(227,192,122,0.35); box-shadow: 0 10px 28px rgba(0,0,0,0.35); }
 .quran-card { border-left:4px solid var(--success); background: linear-gradient(135deg, rgba(16,42,32,0.9), rgba(12,33,25,0.92)); }
 .hadith-card { border-left:4px solid var(--info); background: linear-gradient(135deg, rgba(19,28,46,0.9), rgba(13,22,38,0.92)); }
@@ -53,10 +53,14 @@ html, body, .stApp {
 .translation { color:#cde0d1; font-style:italic; }
 .badge { display:inline-block; padding:3px 10px; border-radius:999px; font-size:12px; font-weight:700; color:#fff; }
 .badge.sahih { background:#2ea76d; } .badge.hasan { background:#d7952e; } .badge.weak { background:#c25757; }
-div[data-testid="stTab"] button { background:var(--glass); color:var(--text); border:1px solid var(--stroke); border-radius:12px; }
-div[data-testid="stTab"] button[aria-selected="true"] { border-color:var(--gold); color:var(--gold); box-shadow:0 6px 18px rgba(227,192,122,0.25); }
-input, textarea { background:#0d1520 !important; color:var(--text) !important; border-radius:10px !important; border:1px solid var(--stroke) !important; }
-button, .stButton>button { background:linear-gradient(135deg,#0ea47a,#62f2c3) !important; color:#0a0c0f !important; border-radius:12px !important; border:none !important; box-shadow:0 12px 30px rgba(98,242,195,0.35); font-weight:700; }
+div[data-testid="stTab"] button { background:rgba(255,255,255,0.03); color:var(--muted); border:1px solid var(--stroke); border-radius:10px; padding:8px 16px; }
+div[data-testid="stTab"] button[aria-selected="true"] { background:var(--panel); color:var(--text); border-color:var(--gold); box-shadow:none; }
+input, textarea { background:#111826 !important; color:var(--text) !important; border-radius:10px !important; border:1px solid var(--stroke) !important; }
+.stChatInput textarea { min-height:44px !important; }
+button, .stButton>button { background:linear-gradient(135deg,#1f2a44,#2c3a57) !important; color:#f7f9ff !important; border-radius:10px !important; border:1px solid #2f3d5a !important; box-shadow:none !important; font-weight:600; }
+[data-testid="stSidebar"] .stButton>button { width:100%; background:#1f2a44 !important; color:#f7f9ff !important; border:1px solid #2c3a57 !important; box-shadow:none !important; }
+[data-testid="stSidebar"] .stButton>button:hover { background:#2a3a57 !important; }
+[data-testid="stSidebar"] .stButton>button:focus { outline:1px solid var(--gold); }
 </style>
 """,
     unsafe_allow_html=True,
@@ -456,7 +460,6 @@ with st.sidebar:
         st.session_state.quick_question = ""
         st.rerun()
 
-tab1, tab2, tab3, tab4 = st.tabs(["AI Assistant", "Quran Reader", "Dua Collection", "40 Hadith"])
 tab5_label = "Stories"
 tab6_label = "Prophets"
 tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(["AI Assistant", "Quran Reader", "Dua Collection", "40 Hadith", tab5_label, tab6_label])
