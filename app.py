@@ -56,7 +56,6 @@ def call_api(prompt, history):
     }
 
     headers = {
-        "Authorization": f"Bearer {API_KEY},
         "Content-Type": "application/json"
     }
 
