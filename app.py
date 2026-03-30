@@ -16,21 +16,21 @@ st.markdown(
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&family=Scheherazade+New:wght@700&display=swap');
 :root {
-  --bg:#05060f;
-  --panel:rgba(14,18,31,0.88);
-  --glass:rgba(255,255,255,0.06);
-  --stroke:rgba(255,255,255,0.09);
+  --bg:#0a0c0f;
+  --panel:rgba(18,22,29,0.92);
+  --glass:rgba(255,255,255,0.05);
+  --stroke:rgba(255,255,255,0.08);
   --gold:#e3c07a;
-  --accent:#7dd3fc;
-  --text:#eef4ff;
-  --muted:#9fb2d0;
-  --success:#48d4a7;
-  --info:#7aa2ff;
+  --accent:#9ff0d0;
+  --text:#f4f6fb;
+  --muted:#a9b6cc;
+  --success:#62f2c3;
+  --info:#8ec5ff;
 }
 html, body, .stApp {
-  background: radial-gradient(90% 70% at 10% 10%, rgba(125,211,252,0.10), transparent),
-              radial-gradient(80% 60% at 80% 0%, rgba(227,192,122,0.10), transparent),
-              linear-gradient(145deg,#05060f 0%,#0b1221 45%,#0f1a2f 100%);
+  background: radial-gradient(90% 70% at 10% 10%, rgba(159,240,208,0.12), transparent 45%),
+              radial-gradient(70% 60% at 80% 0%, rgba(227,192,122,0.12), transparent 40%),
+              linear-gradient(135deg,#0a0c0f 0%,#0f1823 50%,#0c141d 100%);
   color: var(--text);
   font-family: 'Plus Jakarta Sans', sans-serif;
 }
@@ -41,10 +41,10 @@ html, body, .stApp {
 .hero .subtitle { text-align:center; color:var(--muted); font-size:15px; }
 .card, .answer, .quran-card, .hadith-card, .dua-card, .scholar-card, .info-box, .warning-card, .reader-card { background: var(--panel); border:1px solid var(--stroke); border-radius:16px; padding:16px 18px; margin-bottom:12px; line-height:1.75; backdrop-filter: blur(6px); }
 .answer { border:1px solid rgba(227,192,122,0.35); box-shadow: 0 10px 28px rgba(0,0,0,0.35); }
-.quran-card { border-left:4px solid var(--success); background: linear-gradient(135deg, rgba(17,40,31,0.92), rgba(14,34,29,0.94)); }
-.hadith-card { border-left:4px solid var(--info); background: linear-gradient(135deg, rgba(17,26,46,0.92), rgba(13,22,38,0.94)); }
-.dua-card { border-left:4px solid #c084fc; background: linear-gradient(135deg, rgba(32,16,44,0.92), rgba(40,22,64,0.95)); }
-.scholar-card { border-left:4px solid var(--gold); background: linear-gradient(135deg, rgba(44,30,16,0.94), rgba(54,36,18,0.96)); }
+.quran-card { border-left:4px solid var(--success); background: linear-gradient(135deg, rgba(16,42,32,0.9), rgba(12,33,25,0.92)); }
+.hadith-card { border-left:4px solid var(--info); background: linear-gradient(135deg, rgba(19,28,46,0.9), rgba(13,22,38,0.92)); }
+.dua-card { border-left:4px solid var(--accent); background: linear-gradient(135deg, rgba(20,30,36,0.9), rgba(16,26,32,0.92)); }
+.scholar-card { border-left:4px solid var(--gold); background: linear-gradient(135deg, rgba(40,28,16,0.92), rgba(52,34,18,0.94)); }
 .reader-card { border-left:4px solid var(--success); }
 .info-box { border:1px dashed var(--stroke); color:var(--muted); }
 .warning-card { border-left:4px solid #f97373; background: linear-gradient(135deg, rgba(62,18,18,0.93), rgba(82,24,24,0.95)); color:#ffeaea; }
@@ -55,8 +55,8 @@ html, body, .stApp {
 .badge.sahih { background:#2ea76d; } .badge.hasan { background:#d7952e; } .badge.weak { background:#c25757; }
 div[data-testid="stTab"] button { background:var(--glass); color:var(--text); border:1px solid var(--stroke); border-radius:12px; }
 div[data-testid="stTab"] button[aria-selected="true"] { border-color:var(--gold); color:var(--gold); box-shadow:0 6px 18px rgba(227,192,122,0.25); }
-input, textarea { background:#0f1829 !important; color:var(--text) !important; border-radius:10px !important; border:1px solid var(--stroke) !important; }
-button, .stButton>button { background:linear-gradient(135deg,#2563eb,#38bdf8) !important; color:#fff !important; border-radius:12px !important; border:none !important; box-shadow:0 12px 30px rgba(56,189,248,0.35); }
+input, textarea { background:#0d1520 !important; color:var(--text) !important; border-radius:10px !important; border:1px solid var(--stroke) !important; }
+button, .stButton>button { background:linear-gradient(135deg,#0ea47a,#62f2c3) !important; color:#0a0c0f !important; border-radius:12px !important; border:none !important; box-shadow:0 12px 30px rgba(98,242,195,0.35); font-weight:700; }
 </style>
 """,
     unsafe_allow_html=True,
@@ -180,6 +180,29 @@ HADITH_40 = [
         "The best among you are those who learn the Qur’an and teach it.",
         "The most beloved deeds to Allah are those done consistently, even if small."
     ])
+]
+
+# Stories from Quran & Hadith (concise, verified references)
+STORIES = [
+    {"title": "Prophet Yusuf and Patience", "summary": "Yusuf (as) faced betrayal by his brothers, imprisonment, and hardship yet remained patient and trusting in Allah. His patience led to honor and reunion. See Surah Yusuf (12).", "source": "Quran 12"},
+    {"title": "People of the Cave (Ashab al-Kahf)", "summary": "A group of youths fled oppression, sought refuge in a cave, and Allah preserved them for years as a sign of His power over life and death. See Surah Al-Kahf 18:9-26.", "source": "Quran 18:9-26"},
+    {"title": "Musa and Khidr", "summary": "Musa (as) traveled to learn from Khidr about divine wisdom behind events that seem harmful, teaching patience and trust in Allah’s decree. See Surah Al-Kahf 18:60-82.", "source": "Quran 18:60-82"},
+    {"title": "Maryam and the Birth of Isa", "summary": "Maryam (as) miraculously conceived Prophet Isa (as) and gave birth under a palm tree, reaffirming Allah’s limitless power. See Surah Maryam 19:16-36.", "source": "Quran 19:16-36"},
+    {"title": "Abraham and the Fire", "summary": "Ibrahim (as) was thrown into a fire by his people for rejecting idolatry, but Allah made the fire cool and safe for him. See Surah Al-Anbiya 21:68-70.", "source": "Quran 21:68-70"}
+]
+
+# Brief life highlights of prophets (verified, concise)
+PROPHETS = [
+    {"name": "Muhammad (ﷺ)", "life": "Born in Makkah 570 CE. Received the Quran over 23 years. Established the Muslim community in Madinah. Passed away 632 CE. Character noted for truthfulness and mercy.", "sources": "Quran; Sahih Sira (Ibn Hisham, Ibn Kathir)"},
+    {"name": "Ibrahim (as)", "life": "Called to pure monotheism, debated his people, tested with sacrifice of his son, rebuilt the Ka'bah with Ismail. Title: Khalilullah (friend of Allah).", "sources": "Quran 2:124-132; 6:74-83; 37:99-111"},
+    {"name": "Musa (as)", "life": "Raised in Pharaoh’s palace, led Bani Israel out of Egypt, received the Torah, parted the sea by Allah’s leave.", "sources": "Quran 20; 26; 28"},
+    {"name": "Isa (as)", "life": "Born miraculously to Maryam, spoke as an infant, performed miracles by Allah’s permission, raised as a prophet to Bani Israel; not crucified—Allah raised him.", "sources": "Quran 3; 4:157-158; 5:110; 19"},
+    {"name": "Yusuf (as)", "life": "From well to slavery to prison to authority in Egypt; exemplified patience, chastity, and forgiveness.", "sources": "Quran 12"},
+    {"name": "Nuh (as)", "life": "Preached for 950 years, built the Ark by Allah’s command, saved the believers from the flood.", "sources": "Quran 11:25-49; 71"},
+    {"name": "Dawud (as)", "life": "Prophet-king, given the Zabur, known for justice and a beautiful recitation.", "sources": "Quran 38:17-26"},
+    {"name": "Sulaiman (as)", "life": "Prophet-king with control over jinn, wind, and birds by Allah’s permission; exemplified gratitude.", "sources": "Quran 27; 34:12-19; 38:30-40"},
+    {"name": "Yunus (as)", "life": "Left his people, swallowed by the great fish, repented with the dua “La ilaha illa Anta...”, delivered and returned to his people.", "sources": "Quran 21:87-88; 37:139-148"},
+    {"name": "Ayub (as)", "life": "Severely tested in health and wealth, remained patient; Allah restored him and praised his patience.", "sources": "Quran 21:83-84; 38:41-44"}
 ]
 
 # State
@@ -434,6 +457,9 @@ with st.sidebar:
         st.rerun()
 
 tab1, tab2, tab3, tab4 = st.tabs(["AI Assistant", "Quran Reader", "Dua Collection", "40 Hadith"])
+tab5_label = "Stories"
+tab6_label = "Prophets"
+tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(["AI Assistant", "Quran Reader", "Dua Collection", "40 Hadith", tab5_label, tab6_label])
 
 with tab1:
     for msg in st.session_state.messages:
@@ -529,5 +555,26 @@ with tab4:
         st.markdown(
             f'<div class="hadith-card"><span style="color:var(--gold); font-size:13px; font-weight:700;">Hadith {h["number"]}</span>'
             f'<br><strong>{safe_html(h["text"])}</strong></div>',
+            unsafe_allow_html=True,
+        )
+
+with tab5:
+    st.markdown('<div class="section-title">Famous Stories (Quran & Hadith)</div>', unsafe_allow_html=True)
+    st.markdown('<div class="info-box">Verified, concise retellings with references—no speculation.</div>', unsafe_allow_html=True)
+    for story in STORIES:
+        st.markdown(
+            f'<div class="card"><strong style="color:var(--gold);">{safe_html(story["title"])}</strong><br>'
+            f'{safe_html(story["summary"])}<br><br>'
+            f'<small style="color:var(--muted);">Source: {safe_html(story["source"])}</small></div>',
+            unsafe_allow_html=True,
+        )
+
+with tab6:
+    st.markdown('<div class="section-title">Lives of the Prophets</div>', unsafe_allow_html=True)
+    st.markdown('<div class="info-box">Brief, verified highlights only—no guesses or weak reports.</div>', unsafe_allow_html=True)
+    for p in PROPHETS:
+        st.markdown(
+            f'<div class="card"><strong style="color:var(--gold); font-size:16px;">{safe_html(p["name"])}</strong><br>'
+            f'{safe_html(p["life"])}<br><br><small style="color:var(--muted);">Sources: {safe_html(p["sources"])}</small></div>',
             unsafe_allow_html=True,
         )
