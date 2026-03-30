@@ -273,7 +273,6 @@ API_URL = "https://integrate.api.nvidia.com/v1/chat/completions"
 MODEL = "meta/llama-4-maverick-17b-128e-instruct"
 REQUEST_TIMEOUT = 45
 
-
 QURAN_SURAHS = [
     (1, "Al-Fatiha", 7), (2, "Al-Baqarah", 286), (3, "Al-Imran", 200),
     (4, "An-Nisa", 176), (5, "Al-Maidah", 120), (6, "Al-Anam", 165),
@@ -314,7 +313,6 @@ QURAN_SURAHS = [
     (109, "Al-Kafirun", 6), (110, "An-Nasr", 3), (111, "Al-Masad", 5),
     (112, "Al-Ikhlas", 4), (113, "Al-Falaq", 5), (114, "An-Nas", 6)
 ]
-
 SURAH_NAME_BY_NUMBER = {num: name for num, name, _ in QURAN_SURAHS}
 
 VERIFIED_DUA_LIBRARY = {
@@ -350,14 +348,6 @@ VERIFIED_DUA_LIBRARY = {
         "reference": "Sahih al-Bukhari 6324",
         "category": "Before Sleep"
     },
-    "ayatul_kursi_sleep": {
-        "title": "Ayat al-Kursi Before Sleep",
-        "arabic": "اللَّهُ لَا إِلَٰهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ",
-        "transliteration": "Allahu la ilaha illa huwal hayyul qayyum",
-        "meaning": "Allah, there is no deity except Him, the Ever-Living, the Sustainer of existence.",
-        "reference": "Qur'an 2:255, Sahih al-Bukhari 2311",
-        "category": "Before Sleep"
-    },
     "entering_home": {
         "title": "Dua for Entering Home",
         "arabic": "اللَّهُمَّ إِنِّي أَسْأَلُكَ خَيْرَ الْمَوْلَجِ وَخَيْرَ الْمَخْرَجِ",
@@ -391,7 +381,7 @@ VERIFIED_DUA_LIBRARY = {
         "category": "Anxiety and Distress"
     },
     "travel_dua": {
-        "title": "Dua for Travel",
+        "title": "Travel Supplication",
         "arabic": "سُبْحَانَ الَّذِي سَخَّرَ لَنَا هَذَا وَمَا كُنَّا لَهُ مُقْرِنِينَ",
         "transliteration": "Subhanal ladhi sakhkhara lana hadha wa ma kunna lahu muqrinin",
         "meaning": "Glory be to Him who has subjected this to us, and we could never have it by our own efforts.",
@@ -411,7 +401,7 @@ VERIFIED_DUA_LIBRARY = {
 DUA_CATEGORIES = {
     "Morning Adhkar": ["morning_remembrance", "sayyidul_istighfar_morning"],
     "Evening Adhkar": ["evening_remembrance"],
-    "Before Sleep": ["dua_before_sleep", "ayatul_kursi_sleep"],
+    "Before Sleep": ["dua_before_sleep"],
     "Entering Home": ["entering_home"],
     "Eating and Drinking": ["before_eating", "after_eating"],
     "Anxiety and Distress": ["anxiety_distress"],
@@ -485,6 +475,17 @@ VERIFIED_HADITH_DB = {
         "text": "If you were to rely upon Allah with the reliance due to Him, He would provide for you as He provides for the birds: they leave in the morning with empty stomachs and return full.",
         "narrator": "Umar ibn al-Khattab (RA)",
         "topic": "Tawakkul"
+    },
+    "Bukhari|6324": {
+        "collection": "Bukhari",
+        "collection_full": "Sahih al-Bukhari",
+        "reference": "6324",
+        "reference_label": "Bukhari 6324",
+        "authenticity": "Sahih",
+        "arabic": "بِاسْمِكَ اللَّهُمَّ أَمُوتُ وَأَحْيَا",
+        "text": "When the Prophet went to bed, he would say: In Your name, O Allah, I die and I live.",
+        "narrator": "Hudhayfah ibn al-Yaman (RA)",
+        "topic": "Before Sleep"
     }
 }
 
@@ -492,7 +493,8 @@ HADITH_LIBRARY_GROUPS = {
     "Foundations": ["Bukhari|1", "Bukhari|8"],
     "Prayer": ["Muslim|684"],
     "Fasting": ["Bukhari|1933", "Muslim|1155"],
-    "Tawakkul": ["Tirmidhi|2344"]
+    "Tawakkul": ["Tirmidhi|2344"],
+    "Before Sleep": ["Bukhari|6324"]
 }
 
 DUA_ID_LIST = ", ".join(sorted(VERIFIED_DUA_LIBRARY.keys()))
@@ -639,6 +641,59 @@ def extract_reference_number(value):
     return match.group(0) if match else ""
 
 
+def detect_input_language(text):
+    if re.search(r"[\u0900-\u097F]", text):
+        return "Hindi"
+    if re.search(r"[ٹڈڑںےھ]", text):
+        return "Urdu"
+    if re.search(r"[\u0600-\u06FF]", text):
+        return "Arabic"
+    return "English"
+
+
+def contains_any(text, phrases):
+    return any(phrase in text for phrase in phrases)
+
+
+def detect_curated_route(user_input):
+    q = re.sub(r"\s+", " ", user_input.lower().strip())
+
+    if contains_any(q, [
+        "fall asleep", "dua to fall asleep", "sleep dua", "dua before sleep",
+        "before sleep", "before sleeping", "dua for sleep", "sleeping dua",
+        "sleep", "sone se pehle", "neend", "sona", "sonay"
+    ]):
+        return "before_sleep"
+
+    if contains_any(q, [
+        "morning adhkar", "morning azkar", "morning dua", "morning remembrance",
+        "subah", "after fajr"
+    ]):
+        return "morning"
+
+    if contains_any(q, [
+        "evening adhkar", "evening azkar", "evening dua", "shaam", "after maghrib"
+    ]):
+        return "evening"
+
+    if contains_any(q, [
+        "anxiety", "stress", "distress", "worry", "worried", "tension", "gham", "pareshani"
+    ]):
+        return "anxiety"
+
+    if contains_any(q, [
+        "travel", "journey", "safar", "trip"
+    ]):
+        return "travel"
+
+    if contains_any(q, [
+        "enter home", "entering home", "ghar mein dakhil", "home dua"
+    ]):
+        return "entering_home"
+
+    return None
+
+
 def empty_model_result():
     return {
         "direct_answer": "",
@@ -781,7 +836,6 @@ def verify_quran_references(quran_refs):
             ayah_end = ayah_start
         if ayah_end < ayah_start:
             ayah_start, ayah_end = ayah_end, ayah_start
-
         if ayah_end - ayah_start > 4:
             ayah_end = ayah_start + 4
 
@@ -873,8 +927,125 @@ def verify_hadith_references(hadith_refs):
     return verified
 
 
+def curated_hadith_entry(key, why_relevant=""):
+    item = dict(VERIFIED_HADITH_DB[key])
+    item["verified"] = True
+    item["why_relevant"] = why_relevant
+    return item
+
+
+def build_curated_response(route, user_input):
+    language = detect_input_language(user_input)
+
+    if route == "before_sleep":
+        return {
+            "response_mode": "curated",
+            "direct_answer": "For falling asleep, start with the short bedtime dua shown below. Ayat al-Kursi is also recommended before sleeping.",
+            "quran_evidence": verify_quran_references([
+                {
+                    "surah": 2,
+                    "ayah_start": 255,
+                    "ayah_end": 255,
+                    "explanation": "Ayat al-Kursi is an established bedtime recitation."
+                }
+            ]),
+            "hadith_evidence": [
+                curated_hadith_entry("Bukhari|6324", "This is the short bedtime dua taught by the Prophet.")
+            ],
+            "scholarly_opinions": [],
+            "dua_items": [VERIFIED_DUA_LIBRARY["dua_before_sleep"]],
+            "ikhtilaf": "No",
+            "conclusion": "For a simple bedtime practice, read the short bedtime dua and, if you can, also recite Ayat al-Kursi.",
+            "consult_scholar": "No",
+            "language_detected": language
+        }
+
+    if route == "morning":
+        return {
+            "response_mode": "curated",
+            "direct_answer": "Here are verified morning adhkar from the built-in library.",
+            "quran_evidence": [],
+            "hadith_evidence": [],
+            "scholarly_opinions": [],
+            "dua_items": [
+                VERIFIED_DUA_LIBRARY["morning_remembrance"],
+                VERIFIED_DUA_LIBRARY["sayyidul_istighfar_morning"]
+            ],
+            "ikhtilaf": "No",
+            "conclusion": "These are good morning adhkar to begin with.",
+            "consult_scholar": "No",
+            "language_detected": language
+        }
+
+    if route == "evening":
+        return {
+            "response_mode": "curated",
+            "direct_answer": "Here is a verified evening remembrance from the built-in library.",
+            "quran_evidence": [],
+            "hadith_evidence": [],
+            "scholarly_opinions": [],
+            "dua_items": [VERIFIED_DUA_LIBRARY["evening_remembrance"]],
+            "ikhtilaf": "No",
+            "conclusion": "Recite this in the evening as part of your adhkar.",
+            "consult_scholar": "No",
+            "language_detected": language
+        }
+
+    if route == "anxiety":
+        return {
+            "response_mode": "curated",
+            "direct_answer": "A verified dua for anxiety and distress is shown below.",
+            "quran_evidence": [],
+            "hadith_evidence": [],
+            "scholarly_opinions": [],
+            "dua_items": [VERIFIED_DUA_LIBRARY["anxiety_distress"]],
+            "ikhtilaf": "No",
+            "conclusion": "Read this dua regularly with sincerity and trust in Allah.",
+            "consult_scholar": "No",
+            "language_detected": language
+        }
+
+    if route == "travel":
+        return {
+            "response_mode": "curated",
+            "direct_answer": "A verified travel supplication is shown below.",
+            "quran_evidence": verify_quran_references([
+                {
+                    "surah": 43,
+                    "ayah_start": 13,
+                    "ayah_end": 13,
+                    "explanation": "This verse forms part of the travel supplication."
+                }
+            ]),
+            "hadith_evidence": [],
+            "scholarly_opinions": [],
+            "dua_items": [VERIFIED_DUA_LIBRARY["travel_dua"]],
+            "ikhtilaf": "No",
+            "conclusion": "Recite this when beginning your journey.",
+            "consult_scholar": "No",
+            "language_detected": language
+        }
+
+    if route == "entering_home":
+        return {
+            "response_mode": "curated",
+            "direct_answer": "A verified dua for entering the home is shown below.",
+            "quran_evidence": [],
+            "hadith_evidence": [],
+            "scholarly_opinions": [],
+            "dua_items": [VERIFIED_DUA_LIBRARY["entering_home"]],
+            "ikhtilaf": "No",
+            "conclusion": "Use this dua when entering your home.",
+            "consult_scholar": "No",
+            "language_detected": language
+        }
+
+    return None
+
+
 def build_verified_result(model_result):
-    result = {
+    return {
+        "response_mode": "model_verified",
         "direct_answer": model_result.get("direct_answer", "").strip() or "No strong authentic evidence found",
         "quran_evidence": verify_quran_references(model_result.get("quran_references", [])),
         "hadith_evidence": verify_hadith_references(model_result.get("hadith_references", [])),
@@ -885,7 +1056,6 @@ def build_verified_result(model_result):
         "consult_scholar": model_result.get("consult_scholar", "No"),
         "language_detected": model_result.get("language_detected", "English")
     }
-    return result
 
 
 def call_api(user_message, history):
@@ -950,6 +1120,17 @@ def render_metric_row(result):
 def render_response(result):
     render_metric_row(result)
 
+    if result.get("response_mode") == "curated":
+        st.markdown(
+            '<div class="info-box"><span class="verify-pill verify-ok">Curated verified answer</span> This answer came directly from the built-in verified dua and Qur\'an workflow, not from model-written source text.</div>',
+            unsafe_allow_html=True
+        )
+    else:
+        st.markdown(
+            '<div class="info-box"><span class="verify-pill verify-info">Verified reference mode</span> The model suggested references, then the app verified Qur\'an references and filtered Hadith before display.</div>',
+            unsafe_allow_html=True
+        )
+
     st.markdown(
         f'<div class="answer-card"><strong style="color:#e4c873;">Direct Answer</strong><br><br>{safe_html(result.get("direct_answer", ""))}</div>',
         unsafe_allow_html=True
@@ -971,33 +1152,38 @@ def render_response(result):
             )
 
     hadith = result.get("hadith_evidence", [])
-    if hadith:
-        st.markdown('<div class="section-title">Hadith Evidence</div>', unsafe_allow_html=True)
+    verified_hadith = [item for item in hadith if item.get("verified")]
+    blocked_hadith = [item for item in hadith if not item.get("verified")]
 
-        for item in hadith:
+    if verified_hadith:
+        st.markdown('<div class="section-title">Verified Hadith Evidence</div>', unsafe_allow_html=True)
+        for item in verified_hadith:
             auth = item.get("authenticity", "")
             badge_class = "badge-sahih" if auth == "Sahih" else "badge-hasan" if auth == "Hasan" else "badge-weak"
+            arabic_block = f'<div class="arabic-text">{safe_html(item.get("arabic", ""))}</div>' if item.get("arabic") else ""
+            narrator_line = f'<br><small style="color:#aac3d9;">Narrator: {safe_html(item.get("narrator", ""))}</small>' if item.get("narrator") else ""
+            why_line = f'<br><small style="color:#bcd7ea;">Why relevant: {safe_html(item.get("why_relevant", ""))}</small>' if item.get("why_relevant") else ""
 
-            if item.get("verified"):
-                arabic_block = f'<div class="arabic-text">{safe_html(item.get("arabic", ""))}</div>' if item.get("arabic") else ""
-                narrator_line = f'<br><small style="color:#aac3d9;">Narrator: {safe_html(item.get("narrator", ""))}</small>' if item.get("narrator") else ""
-                why_line = f'<br><small style="color:#bcd7ea;">Why relevant: {safe_html(item.get("why_relevant", ""))}</small>' if item.get("why_relevant") else ""
+            st.markdown(
+                f'<div class="hadith-card">'
+                f'<span class="verify-pill verify-ok">Verified from local hadith registry</span><br><br>'
+                f'{arabic_block}'
+                f'<strong>{safe_html(item.get("text", ""))}</strong><br><br>'
+                f'<strong>Source:</strong> {safe_html(item.get("collection_full", ""))} - {safe_html(item.get("reference_label", ""))} '
+                f'<span class="{badge_class}">{safe_html(auth)}</span>'
+                f'{narrator_line}'
+                f'{why_line}'
+                f'</div>',
+                unsafe_allow_html=True
+            )
 
-                st.markdown(
-                    f'<div class="hadith-card">'
-                    f'<span class="verify-pill verify-ok">Verified from local hadith registry</span><br><br>'
-                    f'{arabic_block}'
-                    f'<strong>{safe_html(item.get("text", ""))}</strong><br><br>'
-                    f'<strong>Source:</strong> {safe_html(item.get("collection_full", ""))} - {safe_html(item.get("reference_label", ""))} '
-                    f'<span class="{badge_class}">{safe_html(auth)}</span>'
-                    f'{narrator_line}'
-                    f'{why_line}'
-                    f'</div>',
-                    unsafe_allow_html=True
-                )
-            else:
-                why_line = f'<br><small style="color:#ffe1a3;">Why relevant: {safe_html(item.get("why_relevant", ""))}</small>' if item.get("why_relevant") else ""
+    if blocked_hadith:
+        with st.expander(f"Suggested Hadith References Not Yet Verified ({len(blocked_hadith)})"):
+            for item in blocked_hadith:
+                auth = item.get("authenticity", "")
+                badge_class = "badge-sahih" if auth == "Sahih" else "badge-hasan" if auth == "Hasan" else "badge-weak"
                 auth_label = f'<span class="{badge_class}">{safe_html(auth)}</span>' if auth else ""
+                why_line = f'<br><small style="color:#ffe1a3;">Why relevant: {safe_html(item.get("why_relevant", ""))}</small>' if item.get("why_relevant") else ""
 
                 st.markdown(
                     f'<div class="pending-card">'
@@ -1060,7 +1246,6 @@ def render_response(result):
 
 
 NVIDIA_API_KEY = get_api_key()
-
 if not NVIDIA_API_KEY:
     st.error("Missing NVIDIA_API_KEY. Add it in Streamlit Cloud secrets.")
     st.code('NVIDIA_API_KEY = "your-new-api-key"', language="toml")
@@ -1077,22 +1262,25 @@ if "loaded_surah_number" not in st.session_state:
 
 st.markdown('<div class="bismillah">بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ</div>', unsafe_allow_html=True)
 st.markdown('<div class="main-header">Muslim AI</div>', unsafe_allow_html=True)
-st.markdown('<div class="sub-header">Evidence-first Islamic answers with verified Qur\'an display, verified dua display, and blocked unverified hadith text</div>', unsafe_allow_html=True)
+st.markdown('<div class="sub-header">Evidence-first Islamic answers with verified Qur\'an display, curated dua answers, and blocked unverified hadith text</div>', unsafe_allow_html=True)
 
 st.markdown("""
 <div class="trust-banner">
     <div class="banner-title">Integrity Mode</div>
     <div class="pill-row">
+        <span class="verify-pill verify-ok">Common dua queries use curated verified answers</span>
         <span class="verify-pill verify-ok">Qur'an text is fetched by reference before display</span>
         <span class="verify-pill verify-ok">Duas are shown only from the local verified library</span>
-        <span class="verify-pill verify-warn">Hadith text is hidden unless locally verified</span>
-        <span class="verify-pill verify-info">Follow-up questions keep context memory</span>
+        <span class="verify-pill verify-warn">Unverified hadith wording is hidden</span>
     </div>
 </div>
 """, unsafe_allow_html=True)
 
 with st.sidebar:
-    st.markdown('<div class="panel"><div class="panel-title">Verification Rules</div><div class="pill-row"><span class="verify-pill verify-ok">Verified Qur\'an</span><span class="verify-pill verify-ok">Verified Dua</span><span class="verify-pill verify-warn">Blocked unverified Hadith text</span></div><div class="small-note" style="margin-top:10px;">This prevents fabricated Arabic, mixed ayahs, and unverified hadith wording from being displayed as fact.</div></div>', unsafe_allow_html=True)
+    st.markdown(
+        '<div class="panel"><div class="panel-title">Verification Rules</div><div class="pill-row"><span class="verify-pill verify-ok">Curated Dua Mode</span><span class="verify-pill verify-ok">Verified Qur\'an</span><span class="verify-pill verify-warn">Blocked unverified Hadith text</span></div><div class="small-note" style="margin-top:10px;">This is designed to stop mixed ayahs, invented Arabic, and wrongly quoted hadith wording from being shown as fact.</div></div>',
+        unsafe_allow_html=True
+    )
 
     topics = [
         "What is the ruling on missing Fajr prayer?",
@@ -1150,17 +1338,22 @@ with tab1:
         with st.chat_message("assistant"):
             with st.spinner("Checking references and preparing a verified answer..."):
                 try:
-                    raw = call_api(user_input, st.session_state.chat_history)
-                    model_result = parse_response(raw)
-                    verified_result = build_verified_result(model_result)
-                    render_response(verified_result)
+                    route = detect_curated_route(user_input)
+                    if route:
+                        final_result = build_curated_response(route, user_input)
+                    else:
+                        raw = call_api(user_input, st.session_state.chat_history)
+                        model_result = parse_response(raw)
+                        final_result = build_verified_result(model_result)
 
-                    assistant_store = json.dumps(verified_result, ensure_ascii=False)
+                    render_response(final_result)
+
+                    assistant_store = json.dumps(final_result, ensure_ascii=False)
                     st.session_state.messages.append({"role": "assistant", "content": assistant_store})
 
-                    summary = verified_result.get("direct_answer", "").strip()
-                    if verified_result.get("conclusion"):
-                        summary = f"{summary} Conclusion: {verified_result.get('conclusion')}".strip()
+                    summary = final_result.get("direct_answer", "").strip()
+                    if final_result.get("conclusion"):
+                        summary = f"{summary} Conclusion: {final_result.get('conclusion')}".strip()
 
                     st.session_state.chat_history.append({
                         "user": user_input,
@@ -1276,6 +1469,6 @@ with tab4:
         st.markdown("<br>", unsafe_allow_html=True)
 
     st.markdown(
-        '<div class="warning-card">If the model suggests a hadith reference that is not in this verified registry, the app will show the reference only and block the hadith text.</div>',
+        '<div class="warning-card">If the model suggests a hadith reference that is not in this verified registry, the app will show the reference only inside a collapsed section and hide the hadith text.</div>',
         unsafe_allow_html=True
     )
