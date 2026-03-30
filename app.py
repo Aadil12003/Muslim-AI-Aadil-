@@ -8,7 +8,7 @@ import requests
 import streamlit as st
 
 # Page setup
-st.set_page_config(page_title="Muslim AI", layout="wide", initial_sidebar_state="expanded")
+st.set_page_config(page_title="Aadil's Muslim AI", layout="wide", initial_sidebar_state="expanded")
 
 # Minimalist, Clean Styling
 st.markdown(
