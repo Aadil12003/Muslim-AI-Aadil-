@@ -1,11 +1,10 @@
 import streamlit as st
 import requests
 import json
-import numpy as np
-import faiss
-from sentence_transformers import SentenceTransformer
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
 
-st.set_page_config(page_title="Muslim AI (All-in-One)", layout="wide")
+st.set_page_config(page_title="Muslim AI Cloud", layout="wide")
 
 # ================= STYLE =================
 st.markdown("""
@@ -23,7 +22,7 @@ h1 { color: #38bdf8; }
 </style>
 """, unsafe_allow_html=True)
 
-st.title("🕌 Muslim AI (All-in-One FAISS System)")
+st.title("🕌 Muslim AI (Cloud Optimized)")
 
 API_KEY = st.secrets.get("NVIDIA_API_KEY")
 
@@ -35,39 +34,27 @@ def load_hadith():
 
 hadith_data = load_hadith()
 
-# ================= LOAD MODEL =================
+# ================= BUILD TF-IDF =================
 @st.cache_resource
-def load_model():
-    return SentenceTransformer("all-MiniLM-L6-v2")
-
-model = load_model()
-
-# ================= BUILD FAISS =================
-@st.cache_resource
-def build_index():
+def build_vectorizer():
     texts = [h["text"] for h in hadith_data]
-    embeddings = model.encode(texts)
+    vectorizer = TfidfVectorizer(stop_words="english")
+    matrix = vectorizer.fit_transform(texts)
+    return vectorizer, matrix
 
-    dim = embeddings.shape[1]
-    index = faiss.IndexFlatL2(dim)
-    index.add(np.array(embeddings))
+vectorizer, matrix = build_vectorizer()
 
-    return index
+# ================= SEARCH =================
+def semantic_search(query):
+    query_vec = vectorizer.transform([query])
+    similarity = cosine_similarity(query_vec, matrix).flatten()
 
-index = build_index()
+    top_indices = similarity.argsort()[-5:][::-1]
 
-# ================= FAISS SEARCH =================
-def faiss_search(query):
-    q_emb = model.encode([query])
-    D, I = index.search(np.array(q_emb), 5)
-
-    results = []
-    for i in I[0]:
-        results.append(hadith_data[i])
-
+    results = [hadith_data[i] for i in top_indices]
     return results
 
-# ================= QURAN SEARCH =================
+# ================= QURAN =================
 def search_quran(query):
     try:
         res = requests.get(f"https://api.alquran.cloud/v1/search/{query}/all/en")
@@ -123,8 +110,8 @@ Hadith:
             timeout=30
         )
         return res.json()["choices"][0]["message"]["content"]
-    except:
-        return "❌ AI Error"
+    except Exception as e:
+        return f"❌ ERROR: {str(e)}"
 
 # ================= UI =================
 question = st.text_input("💬 Ask your question")
@@ -132,7 +119,7 @@ question = st.text_input("💬 Ask your question")
 if st.button("Ask") and question:
 
     # SEARCH
-    hadith_results = faiss_search(question)
+    hadith_results = semantic_search(question)
     quran_results = search_quran(question)
 
     # AI
