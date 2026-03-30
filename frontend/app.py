@@ -15,8 +15,8 @@ if st.button("Ask"):
     data = res.json()
 
     try:
-        parsed = json.loads(data["response"])
-    except:
+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
+except:
         parsed = {"direct_answer": data["response"]}
 
     # ===== DISPLAY =====
