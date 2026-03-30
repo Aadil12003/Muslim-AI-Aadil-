@@ -3,21 +3,71 @@ import requests
 
 st.set_page_config(page_title="Muslim AI Pro", layout="wide")
 
-# ================= STYLE =================
+# ================= PREMIUM CSS =================
 st.markdown("""
 <style>
-body {
-    background-color: #0e1117;
+/* Background */
+.stApp {
+    background-color: #0f172a;
 }
-.section {
-    padding: 15px;
+
+/* Container spacing */
+.block-container {
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+}
+
+/* Card */
+.card {
+    background: #1e293b;
+    padding: 20px;
+    border-radius: 14px;
+    margin-bottom: 15px;
+    border: 1px solid #334155;
+    color: #f1f5f9;
+    line-height: 1.6;
+    font-size: 16px;
+}
+
+/* Title */
+h1 {
+    color: #38bdf8;
+}
+
+/* Headings */
+h2, h3 {
+    color: #e2e8f0;
+}
+
+/* Input */
+.stTextInput > div > div > input {
+    background-color: #1e293b;
+    color: white;
     border-radius: 10px;
-    background: #161b22;
-    margin-bottom: 10px;
+    border: 1px solid #334155;
+}
+
+/* Buttons */
+.stButton button {
+    background-color: #2563eb;
+    color: white;
+    border-radius: 10px;
+    padding: 10px 20px;
+    border: none;
+}
+
+.stButton button:hover {
+    background-color: #1d4ed8;
+}
+
+/* Divider */
+hr {
+    border: 1px solid #334155;
 }
 </style>
 """, unsafe_allow_html=True)
 
+# ================= HEADER =================
 st.title("🕌 Muslim AI Pro")
 st.caption("Quran • Hadith • Dua • Scholarly Knowledge")
 
@@ -26,7 +76,7 @@ deep_mode = st.toggle("🧠 Deep Scholarly Mode", value=True)
 
 API_KEY = st.secrets.get("NVIDIA_API_KEY")
 
-# ================= AI =================
+# ================= AI FUNCTION =================
 def get_ai_response(question):
     if not API_KEY:
         return "❌ API key missing"
@@ -36,8 +86,8 @@ You are an expert Islamic scholar AI.
 
 Rules:
 - Do NOT guess
-- Use authentic Islamic knowledge
-- Provide structured answer
+- Provide accurate Islamic knowledge
+- Use Quran and Hadith if relevant
 
 Format:
 1. Direct Answer
@@ -83,15 +133,17 @@ def load_surah(num):
     except:
         return None
 
-# ================= UI =================
-question = st.text_input("Ask your question...")
+# ================= CHAT UI =================
+question = st.text_input("💬 Ask your question...")
 
 if st.button("Ask") and question:
     with st.spinner("Thinking deeply..."):
         answer = get_ai_response(question)
 
-    st.markdown("## 📌 Answer")
-    st.markdown(f"<div class='section'>{answer}</div>", unsafe_allow_html=True)
+    st.markdown("### 📌 Answer")
+    st.markdown(f"<div class='card'>{answer}</div>", unsafe_allow_html=True)
+
+st.markdown("---")
 
 # ================= QURAN =================
 st.markdown("## 📖 Quran")
@@ -105,26 +157,27 @@ with col1:
         data = load_surah(surah)
         if data:
             for ayah in data["data"]["ayahs"]:
-                st.write(f"{ayah['numberInSurah']}. {ayah['text']}")
+                st.markdown(f"<div class='card'>{ayah['numberInSurah']}. {ayah['text']}</div>", unsafe_allow_html=True)
 
 with col2:
-    keyword = st.text_input("Search Quran keyword")
+    keyword = st.text_input("🔍 Search Quran topic")
 
-    if st.button("Search"):
-        st.write("⚠️ Basic search (AI-based):")
+    if st.button("Search Quran"):
         result = get_ai_response(f"Give Quran verses about {keyword}")
-        st.write(result)
+        st.markdown(f"<div class='card'>{result}</div>", unsafe_allow_html=True)
+
+st.markdown("---")
 
 # ================= DUAS =================
 st.markdown("## 🤲 Duas")
 
-st.write("**Before Sleep:**")
-st.write("بِاسْمِكَ اللَّهُمَّ أَمُوتُ وَأَحْيَا")
+st.markdown("<div class='card'><b>Before Sleep:</b><br>بِاسْمِكَ اللَّهُمَّ أَمُوتُ وَأَحْيَا</div>", unsafe_allow_html=True)
 
-st.write("**For Anxiety:**")
-st.write("اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنَ الْهَمِّ وَالْحَزَنِ")
+st.markdown("<div class='card'><b>For Anxiety:</b><br>اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنَ الْهَمِّ وَالْحَزَنِ</div>", unsafe_allow_html=True)
+
+st.markdown("---")
 
 # ================= HADITH =================
 st.markdown("## 📜 Hadith")
 
-st.write("Actions are judged by intentions (Sahih Bukhari 1)")
+st.markdown("<div class='card'>Actions are judged by intentions (Sahih Bukhari 1)</div>", unsafe_allow_html=True)
