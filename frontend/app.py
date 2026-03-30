@@ -1,55 +1,26 @@
-import streamlit as st
 import requests
-import json
 
-st.set_page_config(page_title="Muslim AI", layout="wide")
+API_KEY = "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"
 
-st.title("🕌 Muslim AI")
-st.caption("AI + Quran + Hadith + Knowledge")
+def get_ai_response(question):
+    url = "https://integrate.api.nvidia.com/v1/chat/completions"
 
-# ===== INPUT =====
-question = st.text_input("Ask your question")
+    payload = {
+        "model": "meta/llama-4-maverick-17b-128e-instruct",
+        "messages": [
+            {"role": "system", "content": "You are an Islamic assistant."},
+            {"role": "user", "content": question}
+        ],
+        "max_tokens": 500
+    }
 
-if st.button("Ask"):
-    res = requests.post("http://127.0.0.1:8000/ask", json={"question": question})
-    data = res.json()
+    headers = {
+        "Authorization": f"Bearer {API_KEY}",
+        "Content-Type": "application/json"
+    }
 
     try:
-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
-except:
-        parsed = {"direct_answer": data["response"]}
-
-    # ===== DISPLAY =====
-    st.markdown("## 📌 Answer")
-    st.write(parsed.get("direct_answer", ""))
-
-    st.markdown("## 📖 Explanation")
-    st.write(parsed.get("detailed_explanation", ""))
-
-    if parsed.get("quran_evidence"):
-        st.markdown("## 📖 Quran")
-        for q in parsed["quran_evidence"]:
-            st.write(q)
-
-    if parsed.get("hadith_evidence"):
-        st.markdown("## 📜 Hadith")
-        for h in parsed["hadith_evidence"]:
-            st.write(h)
-
-    if parsed.get("scholarly_opinions"):
-        st.markdown("## 🧠 Scholars")
-        for s in parsed["scholarly_opinions"]:
-            st.write(s)
-
-    st.markdown("## 📌 Conclusion")
-    st.write(parsed.get("conclusion", ""))
-
-# ===== HISTORY =====
-st.markdown("## 🕘 Recent Questions")
-
-history = requests.get("http://127.0.0.1:8000/history").json()
-
-for h in history:
-    st.write(f"Q: {h[1]}")
-    st.write(f"A: {h[2][:100]}...")
-    st.markdown("---")
+        res = requests.post(url, headers=headers, json=payload)
+        return res.json()["choices"][0]["message"]["content"]
+    except Exception as e:
+        return f"ERROR: {str(e)}"
