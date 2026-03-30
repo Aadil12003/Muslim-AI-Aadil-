@@ -44,6 +44,10 @@ input:focus, textarea:focus { border-color: #D4AF37 !important; box-shadow: 0 0 
 .stButton > button { background-color: #1a1a1a; color: #D4AF37; border: 1px solid #D4AF37; border-radius: 8px; transition: all 0.3s ease; }
 .stButton > button:hover { background-color: #D4AF37; color: #000; }
 .creator-footer { text-align: center; padding: 30px 10px; margin-top: auto; font-family: 'Playfair Display', serif; color: #D4AF37; border-top: 1px solid #2a2a2a; font-size: 18px; letter-spacing: 1px; }
+
+/* TASBIH STYLES */
+.tasbih-btn > button { height: 80px; font-size: 24px; font-weight: bold; border: 2px solid #D4AF37; }
+.tasbih-count { font-size: 48px; color: #D4AF37; text-align: center; font-family: 'Inter', sans-serif; font-weight: 700; }
 </style>
 """,
     unsafe_allow_html=True,
@@ -103,13 +107,13 @@ HADITH_40 = [
     {"number": 5, "arabic": "يَسِّرُوا وَلاَ تُعَسِّرُوا", "text": "Make things easy and do not make them difficult.", "source": "Sahih al-Bukhari 69"}
 ]
 
-# The 99 Names of Allah (First 33 for brevity, format: Arabic|Transliteration|Meaning)
 NAMES_RAW = "الرَّحْمَن|Ar-Rahman|The Entirely Merciful,الرَّحِيم|Ar-Rahim|The Especially Merciful,الْمَلِك|Al-Malik|The Sovereign,الْقُدُّوس|Al-Quddus|The Most Holy,السَّلاَم|As-Salam|The Source of Peace,الْمُؤْمِن|Al-Mu'min|The Guarantor,الْمُهَيْمِن|Al-Muhaymin|The Guardian,الْعَزِيز|Al-Aziz|The Almighty,الْجَبَّار|Al-Jabbar|The Compeller,الْمُتَكَبِّر|Al-Mutakabbir|The Supreme,الْخَالِق|Al-Khaliq|The Creator,الْبَارِئ|Al-Bari'|The Evolver,الْمُصَوِّر|Al-Musawwir|The Fashioner,الْغَفَّار|Al-Ghaffar|The Repeatedly Forgiving,الْقَهَّار|Al-Qahhar|The Subduer,الْوَهَّاب|Al-Wahhab|The Bestower,الرَّزَّاق|Ar-Razzaq|The Provider,الْفَتَّاح|Al-Fattah|The Opener,الْعَلِيم|Al-Aleem|The Knowing,الْقَابِض|Al-Qabid|The Withholder,الْبَاسِط|Al-Basit|The Extender,الْخَافِض|Al-Khafid|The Abaser,الرَّافِع|Ar-Rafi'|The Exalter,الْمُعِزّ|Al-Mu'izz|The Honorer,الْمُذِلّ|Al-Mudhill|The Dishonorer,السَّمِيع|As-Sami'|The Hearing,الْبَصِير|Al-Basir|The Seeing,الْحَكَم|Al-Hakam|The Judge,الْعَدْل|Al-Adl|The Just,اللَّطِيف|Al-Latif|The Subtle One,الْخَبِير|Al-Khabir|The Acquainted,الْحَلِيم|Al-Haleem|The Forbearing,الْعَظِيم|Al-Azeem|The Magnificent"
 NAMES_99 = [name.split('|') for name in NAMES_RAW.split(',')]
 
 DYNAMIC_PROPHETS = ["Prophet Adam (as)", "Prophet Nuh (as)", "Prophet Ibrahim (as)", "Prophet Yusuf (as)", "Prophet Musa (as)", "Prophet Isa (as)", "Prophet Muhammad (ﷺ)"]
 DYNAMIC_STORIES = ["People of the Cave (Ashab al-Kahf)", "Musa and Al-Khidr", "The Men of the Elephant", "Qarun (Korah)"]
 TIBB_TOPICS = ["Black Seed (Habbatul Barakah)", "Honey", "Cupping (Hijama)", "Dates (Ajwa)", "Olive Oil", "Siwak (Miswak)"]
+TRIVIA_TOPICS = ["Life of Prophet Muhammad (ﷺ)", "Quranic Facts", "The 5 Pillars of Islam", "Stories of the Prophets", "Women in Islam"]
 
 # ==========================================
 # STATE MANAGEMENT
@@ -118,12 +122,12 @@ if "messages" not in st.session_state: st.session_state.messages = []
 if "chat_history" not in st.session_state: st.session_state.chat_history = []
 if "loaded_surah_number" not in st.session_state: st.session_state.loaded_surah_number = None
 if "daily_inspo" not in st.session_state: st.session_state.daily_inspo = random.choice(HADITH_40)
+if "tasbih_count" not in st.session_state: st.session_state.tasbih_count = 0
 
 # ==========================================
 # HELPER FUNCTIONS
 # ==========================================
 def safe_html(value): return escape("" if value is None else str(value))
-def contains_any(text, terms): return any(term in text for term in terms)
 
 def normalize_result(result):
     if not isinstance(result, dict): result = {}
@@ -206,7 +210,6 @@ with st.sidebar:
     st.markdown('<div style="text-align:center;"><h2 style="color:#D4AF37; margin-bottom:5px;">Muslim AI</h2><div style="color:#888; font-size:14px; text-transform:uppercase;">Knowledge & Reflection</div></div>', unsafe_allow_html=True)
     st.markdown("---")
     
-    # Daily Inspiration Widget
     st.markdown('<div style="background:#121212; padding:15px; border-radius:8px; border:1px solid #D4AF37;"><h4 style="margin-top:0; color:#D4AF37; font-size:14px; text-transform:uppercase;">✨ Daily Inspiration</h4>'
                 f'<div class="arabic" style="font-size:24px; text-align:center;">{st.session_state.daily_inspo["arabic"]}</div>'
                 f'<div style="font-size:13px; font-style:italic; margin-bottom:10px; color:#ddd;">"{st.session_state.daily_inspo["text"]}"</div>'
@@ -221,9 +224,27 @@ with st.sidebar:
 # ==========================================
 # MAIN TABS
 # ==========================================
-tab1, tab2, tab3, tab4, tab5 = st.tabs(["🤖 AI Chat", "📖 Quran & Dua", "🕌 Prayer & Zakat", "📚 Hadith & Names", "📜 Deep Knowledge"])
+tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(["🤖 AI Chat", "📖 Quran Reader", "🕌 Prayer & Qibla", "📿 Tasbih & Dua", "📚 Hadith & Names", "📜 Deep Knowledge"])
 
-with tab1: # AI CHAT
+# ----------------- TAB 1: AI CHAT & FIRST AID -----------------
+with tab1: 
+    st.markdown("### Spiritual First Aid")
+    st.markdown("Select how you are feeling to receive instant Quranic comfort and guidance.")
+    mood_cols = st.columns(4)
+    moods = ["Anxious 😟", "Sad 😢", "Angry 😠", "Grateful 🙏", "Lost 🧭", "Seeking Forgiveness 🤲"]
+    
+    selected_mood = None
+    for i, mood in enumerate(moods):
+        if mood_cols[i % 4].button(mood, use_container_width=True):
+            selected_mood = mood
+            
+    if selected_mood:
+        prompt = f"I am feeling {selected_mood}. Please provide a comforting Islamic perspective, a relevant Ayah, and a short Dua to help me."
+        with st.spinner("Finding comfort..."):
+            raw = call_api(prompt, [])
+            render_response(parse_response(raw))
+            
+    st.markdown("---")
     st.download_button("📥 Download Chat Transcript", data=format_chat_for_export(), file_name=f"Muslim_AI_Chat_{datetime.now().strftime('%Y%m%d')}.txt", mime="text/plain")
     
     for msg in st.session_state.messages:
@@ -247,14 +268,22 @@ with tab1: # AI CHAT
                     st.session_state.chat_history.append({"user": user_input, "assistant": result.get("direct_answer", "")})
                 except Exception as e: st.error("Error processing request.")
 
-with tab2: # QURAN & DUA
-    st.markdown('<div class="section-title" style="margin-top:0;">The Holy Quran</div>', unsafe_allow_html=True)
+# ----------------- TAB 2: QURAN & AUDIO -----------------
+with tab2: 
+    st.markdown('<div class="section-title" style="margin-top:0;">The Holy Quran (Read & Listen)</div>', unsafe_allow_html=True)
     col1, col2 = st.columns([1, 2])
     with col1:
         selected_surah = st.selectbox("Select Surah", [f"{i + 1}. {name}" for i, name in enumerate(SURAH_NAMES)])
-        if st.button("Read Surah", type="primary", use_container_width=True): st.session_state.loaded_surah_number = int(selected_surah.split(".")[0])
+        if st.button("Load Surah", type="primary", use_container_width=True): 
+            st.session_state.loaded_surah_number = int(selected_surah.split(".")[0])
+            
     with col2:
         if st.session_state.loaded_surah_number:
+            # Audio Player (Mishary Alafasy)
+            audio_url = f"https://server8.mp3quran.net/afs/{st.session_state.loaded_surah_number:03d}.mp3"
+            st.markdown('<strong class="accent">🔊 Listen to Full Surah Recitation:</strong>', unsafe_allow_html=True)
+            st.audio(audio_url, format="audio/mp3")
+            
             surah_data = fetch_quran_surah(st.session_state.loaded_surah_number)
             if surah_data:
                 ar, en = surah_data[0], surah_data[1]
@@ -263,18 +292,22 @@ with tab2: # QURAN & DUA
                     eng_text = en.get("ayahs", [])[i].get("text", "") if i < len(en.get("ayahs", [])) else ""
                     st.markdown(f'<div class="premium-card"><div class="muted" style="color:#D4AF37 !important;">AYAH {ayah.get("numberInSurah")}</div><div class="arabic">{safe_html(ayah.get("text"))}</div><div style="font-size:16px; color:#ccc;">{safe_html(eng_text)}</div></div>', unsafe_allow_html=True)
 
-with tab3: # PRAYER & ZAKAT
-    st.markdown('<div class="section-title" style="margin-top:0;">Live Prayer Times</div>', unsafe_allow_html=True)
+# ----------------- TAB 3: PRAYER, QIBLA & ZAKAT -----------------
+with tab3: 
+    st.markdown('<div class="section-title" style="margin-top:0;">Live Prayer Times & Qibla Compass</div>', unsafe_allow_html=True)
     pc1, pc2 = st.columns(2)
     with pc1: city = st.text_input("City", value="Mecca")
     with pc2: country = st.text_input("Country", value="Saudi Arabia")
     
-    if st.button("Get Timings", type="primary"):
+    if st.button("Get Timings & Qibla", type="primary"):
         times_data = fetch_prayer_times(city, country)
         if times_data:
             timings = times_data["timings"]
             date_hijri = times_data["date"]["hijri"]
-            st.markdown(f'<div class="info-box" style="text-align:center; font-size:18px;"><strong class="accent">{date_hijri["day"]} {date_hijri["month"]["en"]} {date_hijri["year"]} AH</strong></div>', unsafe_allow_html=True)
+            qibla_deg = times_data.get("meta", {}).get("qibla", "Unknown")
+            
+            st.markdown(f'<div class="info-box" style="text-align:center; font-size:18px;"><strong class="accent">{date_hijri["day"]} {date_hijri["month"]["en"]} {date_hijri["year"]} AH</strong><br>🧭 <strong>Qibla Direction:</strong> {qibla_deg}° (Degrees from North)</div>', unsafe_allow_html=True)
+            
             cols = st.columns(6)
             prayers = ["Fajr", "Sunrise", "Dhuhr", "Asr", "Maghrib", "Isha"]
             for i, p in enumerate(prayers):
@@ -292,19 +325,76 @@ with tab3: # PRAYER & ZAKAT
     zakat = net_wealth * 0.025 if net_wealth > 0 else 0.0
     st.markdown(f'<div class="premium-card" style="text-align:center;"><h3>Estimated Zakat Due: <span style="color:#D4AF37;">${zakat:,.2f}</span></h3></div>', unsafe_allow_html=True)
 
-with tab4: # HADITH & NAMES
-    st.markdown('<div class="section-title" style="margin-top:0;">The 99 Names of Allah (Asma-ul-Husna)</div>', unsafe_allow_html=True)
+# ----------------- TAB 4: SMART TASBIH & DUA -----------------
+with tab4:
+    st.markdown('<div class="section-title" style="margin-top:0;">Smart Tasbih (Digital Dhikr)</div>', unsafe_allow_html=True)
+    st.markdown('<div class="info-box">Keep track of your daily Dhikr. Goal: 33 repetitions.</div>', unsafe_allow_html=True)
+    
+    t_col1, t_col2 = st.columns([1, 1])
+    with t_col1:
+        if st.button("➕ Tap to Count", use_container_width=True, help="Click to add 1"):
+            st.session_state.tasbih_count += 1
+            if st.session_state.tasbih_count == 33:
+                st.toast("Goal of 33 reached! Alhamdulillah.", icon="✨")
+        if st.button("🔄 Reset Counter", use_container_width=True):
+            st.session_state.tasbih_count = 0
+            
+    with t_col2:
+        st.markdown(f'<div class="tasbih-count">{st.session_state.tasbih_count} / 33</div>', unsafe_allow_html=True)
+        progress = min(st.session_state.tasbih_count / 33.0, 1.0)
+        st.progress(progress)
+
+    st.markdown('<div class="section-title">Fortress of the Muslim (Dua)</div>', unsafe_allow_html=True)
+    selected_category = st.selectbox("Select Collection", list(DUA_CATEGORIES.keys()))
+    for dua in DUA_CATEGORIES.get(selected_category, []):
+        st.markdown(
+            f'<div class="premium-card"><h3 style="margin-top:0; color:#D4AF37; font-family:\'Playfair Display\',serif;">{safe_html(dua["title"])}</h3>'
+            f'<div class="arabic" style="margin: 20px 0;">{safe_html(dua["arabic"])}</div>'
+            f'<strong class="accent" style="font-size:14px; text-transform:uppercase;">Transliteration</strong><br><span style="color:#bbbbbb; line-height:1.6; display:inline-block; margin-bottom:16px;">{safe_html(dua["transliteration"])}</span><br>'
+            f'<strong class="accent" style="font-size:14px; text-transform:uppercase;">Meaning</strong><br><span style="font-size:16px; line-height:1.6; color:#eeeeee;">{safe_html(dua["meaning"])}</span>'
+            f'<div style="margin-top:20px; border-top:1px solid #2a2a2a; padding-top:12px;"><span class="muted">Reference: {source_link(dua.get("reference", ""), dua.get("source_url", ""))}</span></div></div>',
+            unsafe_allow_html=True,
+        )
+
+# ----------------- TAB 5: HADITH & NAMES -----------------
+with tab5:
+    st.markdown('<div class="section-title" style="margin-top:0;">An-Nawawi\'s 40 Hadith</div>', unsafe_allow_html=True)
+    for h in HADITH_40:
+        st.markdown(
+            f'<div class="premium-card"><div class="muted" style="margin-bottom:16px; font-weight:600; color:#D4AF37 !important; letter-spacing:1px;">HADITH {h["number"]}</div>'
+            f'<div class="arabic">{safe_html(h["arabic"])}</div>'
+            f'<div style="font-size:18px; line-height:1.7; margin:20px 0; color:#eeeeee;">"{safe_html(h["text"])}"</div>'
+            f'<div style="border-top:1px solid #2a2a2a; padding-top:12px;"><span class="muted">Source: <span style="color:#D4AF37;">{safe_html(h["source"])}</span></span></div></div>',
+            unsafe_allow_html=True,
+        )
+
+    st.markdown('<div class="section-title">The 99 Names of Allah (Asma-ul-Husna)</div>', unsafe_allow_html=True)
+    st.markdown('<div class="info-box">The first 33 beautiful names of Allah.</div>', unsafe_allow_html=True)
     cols = st.columns(3)
     for i, name_data in enumerate(NAMES_99):
         cols[i % 3].markdown(f'<div class="name-card"><div class="arabic" style="font-size:28px; text-align:center; margin-bottom:5px;">{name_data[0]}</div><strong style="color:#D4AF37; font-size:18px;">{name_data[1]}</strong><br><span style="color:#aaa; font-size:14px;">{name_data[2]}</span></div>', unsafe_allow_html=True)
 
-with tab5: # DEEP KNOWLEDGE (AI Generated)
-    st.markdown('<div class="section-title" style="margin-top:0;">Dynamic Islamic Sciences</div>', unsafe_allow_html=True)
-    st.markdown('<div class="info-box">Select a topic. The AI will generate a comprehensive, authentic profile based on classical sources.</div>', unsafe_allow_html=True)
+# ----------------- TAB 6: DEEP KNOWLEDGE & TRIVIA -----------------
+with tab6:
+    st.markdown('<div class="section-title" style="margin-top:0;">Dynamic Islamic Sciences & AI Trivia</div>', unsafe_allow_html=True)
     
+    # TRIVIA SECTION
+    st.markdown('<div class="premium-card" style="border-color:#D4AF37;"><h3>🧠 AI Trivia Master</h3><p style="color:#aaa;">Test your knowledge! Select a topic and the AI will generate a custom 5-question multiple choice quiz.</p>', unsafe_allow_html=True)
+    t_col1, t_col2 = st.columns([2,1])
+    with t_col1: selected_trivia = st.selectbox("Select Trivia Topic", TRIVIA_TOPICS)
+    with t_col2: 
+        st.markdown("<br>", unsafe_allow_html=True)
+        if st.button("Generate Custom Quiz", use_container_width=True):
+            with st.spinner("Generating Quiz..."):
+                prompt = f"Create a 5-question multiple choice trivia quiz about '{selected_trivia}'. Format it clearly with Question 1, 2, etc. Put the Answer Key at the very bottom hidden under a spoiler warning."
+                raw = call_api(prompt, [])
+                st.markdown(f'<div style="margin-top:20px; font-size:16px;">{safe_html(parse_response(raw)["direct_answer"]).replace(chr(10), "<br>")}</div>', unsafe_allow_html=True)
+    st.markdown('</div>', unsafe_allow_html=True)
+    
+    # SEERAH & TIBB SECTION
     col_a, col_b = st.columns(2)
     with col_a:
-        st.markdown('### Prophetic History (Seerah/Stories)')
+        st.markdown('### Prophetic History (Stories)')
         selected_story = st.selectbox("Select a Prophet or Event", DYNAMIC_PROPHETS + DYNAMIC_STORIES)
         if st.button("Generate History Profile", use_container_width=True):
             with st.spinner(f"Extracting authentic history for {selected_story}..."):
@@ -313,10 +403,10 @@ with tab5: # DEEP KNOWLEDGE (AI Generated)
                 render_response(parse_response(raw))
                 
     with col_b:
-        st.markdown('### Prophetic Medicine (Tibb al-Nabawi)')
+        st.markdown('### Prophetic Medicine (Tibb)')
         selected_tibb = st.selectbox("Select a Remedy", TIBB_TOPICS)
         if st.button("Generate Medicine Profile", use_container_width=True):
             with st.spinner(f"Extracting authentic knowledge on {selected_tibb}..."):
-                prompt = f"Provide a comprehensive overview of '{selected_tibb}' in Islam. Cite authentic Hadith mentioning it, and explain its spiritual and physical benefits according to Prophetic Medicine (Tibb al-Nabawi)."
+                prompt = f"Provide a comprehensive overview of '{selected_tibb}' in Islam. Cite authentic Hadith mentioning it, and explain its spiritual and physical benefits according to Prophetic Medicine."
                 raw = call_api(prompt, [])
                 render_response(parse_response(raw))
