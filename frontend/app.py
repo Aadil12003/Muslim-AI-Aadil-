@@ -2,32 +2,16 @@ import streamlit as st
 import requests
 import json
 
-st.set_page_config(page_title="Muslim AI SaaS", layout="wide")
+st.set_page_config(page_title="Muslim AI", layout="wide")
 
-# ===== UI DESIGN =====
-st.markdown("""
-<style>
-.big-card {
-    background: #0f1f2e;
-    padding: 20px;
-    border-radius: 15px;
-    margin-bottom: 10px;
-}
-.answer {
-    border-left: 4px solid gold;
-    padding-left: 10px;
-}
-</style>
-""", unsafe_allow_html=True)
-
-st.title("🕌 Muslim AI SaaS")
-st.caption("AI + Quran + Hadith + Database")
+st.title("🕌 Muslim AI")
+st.caption("AI + Quran + Hadith + Knowledge")
 
 # ===== INPUT =====
 question = st.text_input("Ask your question")
 
 if st.button("Ask"):
-    res = requests.post("http://localhost:8000/ask", json={"question": question})
+    res = requests.post("http://127.0.0.1:8000/ask", json={"question": question})
     data = res.json()
 
     try:
@@ -35,28 +19,37 @@ if st.button("Ask"):
     except:
         parsed = {"direct_answer": data["response"]}
 
-    st.markdown("### 📌 Answer")
-    st.markdown(f'<div class="big-card answer">{parsed.get("direct_answer","")}</div>', unsafe_allow_html=True)
+    # ===== DISPLAY =====
+    st.markdown("## 📌 Answer")
+    st.write(parsed.get("direct_answer", ""))
+
+    st.markdown("## 📖 Explanation")
+    st.write(parsed.get("detailed_explanation", ""))
 
     if parsed.get("quran_evidence"):
-        st.markdown("### 📖 Quran")
+        st.markdown("## 📖 Quran")
         for q in parsed["quran_evidence"]:
-            st.markdown(f'<div class="big-card">{q.get("translation","")}</div>', unsafe_allow_html=True)
+            st.write(q)
 
     if parsed.get("hadith_evidence"):
-        st.markdown("### 📜 Hadith")
+        st.markdown("## 📜 Hadith")
         for h in parsed["hadith_evidence"]:
-            st.markdown(f'<div class="big-card">{h.get("text","")}</div>', unsafe_allow_html=True)
+            st.write(h)
+
+    if parsed.get("scholarly_opinions"):
+        st.markdown("## 🧠 Scholars")
+        for s in parsed["scholarly_opinions"]:
+            st.write(s)
+
+    st.markdown("## 📌 Conclusion")
+    st.write(parsed.get("conclusion", ""))
 
 # ===== HISTORY =====
 st.markdown("## 🕘 Recent Questions")
 
-history = requests.get("http://localhost:8000/history").json()
+history = requests.get("http://127.0.0.1:8000/history").json()
 
 for h in history:
-    st.markdown(f"""
-    <div class="big-card">
-    <b>Q:</b> {h[1]}<br>
-    <b>A:</b> {h[2][:200]}...
-    </div>
-    """, unsafe_allow_html=True)
+    st.write(f"Q: {h[1]}")
+    st.write(f"A: {h[2][:100]}...")
+    st.markdown("---")
