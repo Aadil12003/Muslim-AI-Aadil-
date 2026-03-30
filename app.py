@@ -2,7 +2,7 @@ import streamlit as st
 import requests
 import json
 
-st.set_page_config(page_title="Muslim AI Authentic", layout="wide")
+st.set_page_config(page_title="Muslim AI Intelligent", layout="wide")
 
 # ================= STYLE =================
 st.markdown("""
@@ -17,15 +17,14 @@ st.markdown("""
     border: 1px solid #334155;
     color: #f1f5f9;
 }
-
 h1 { color: #38bdf8; }
 h2, h3 { color: #e2e8f0; }
 </style>
 """, unsafe_allow_html=True)
 
 # ================= TITLE =================
-st.title("🕌 Muslim AI (Authentic System)")
-st.caption("AI Explanation + Quran + Hadith Dataset + Duas")
+st.title("🕌 Muslim AI (Intelligent System)")
+st.caption("AI + Quran + Hadith (No Hallucination Mode)")
 
 API_KEY = st.secrets.get("NVIDIA_API_KEY")
 
@@ -37,24 +36,65 @@ def load_hadith():
 
 hadith_data = load_hadith()
 
+# ================= SEARCH HADITH =================
+def search_hadith(query):
+    results = []
+    for h in hadith_data:
+        if query.lower() in h["text"].lower():
+            results.append(h)
+    return results[:5]
+
+# ================= SEARCH QURAN =================
+def search_quran(query):
+    try:
+        res = requests.get(f"https://api.alquran.cloud/v1/search/{query}/all/en")
+        return res.json()["data"]["matches"][:5]
+    except:
+        return []
+
 # ================= AI =================
-def get_ai_answer(question):
+def get_ai_answer(question, hadith_results, quran_results):
+
+    hadith_text = "\n".join([
+        f"{h['text']} ({h['book']} {h['number']})"
+        for h in hadith_results
+    ])
+
+    quran_text = "\n".join([
+        f"{v['text']} (Surah {v['surah']['name']} {v['numberInSurah']})"
+        for v in quran_results
+    ])
+
     prompt = f"""
 You are an Islamic assistant.
 
-Rules:
-- Do NOT generate fake Quran or Hadith
-- Only explain
+STRICT RULES:
+- Use ONLY the provided Quran and Hadith
+- Do NOT add anything from your own knowledge
+- If no data is provided, say "No direct source found"
 
-Question: {question}
+Question:
+{question}
+
+Quran:
+{quran_text}
+
+Hadith:
+{hadith_text}
+
+Give:
+1. Direct Answer
+2. Explanation
+3. References (only from above)
 """
+
     payload = {
         "model": "meta/llama-4-maverick-17b-128e-instruct",
         "messages": [
-            {"role": "system", "content": "Islamic assistant"},
+            {"role": "system", "content": "Islamic expert"},
             {"role": "user", "content": prompt}
         ],
-        "max_tokens": 500
+        "max_tokens": 800
     }
 
     headers = {
@@ -73,105 +113,44 @@ Question: {question}
     except:
         return "❌ AI Error"
 
-# ================= QURAN =================
-def get_quran(surah):
-    try:
-        ar = requests.get(f"https://api.alquran.cloud/v1/surah/{surah}/ar.alafasy").json()
-        en = requests.get(f"https://api.alquran.cloud/v1/surah/{surah}/en.asad").json()
-        ur = requests.get(f"https://api.alquran.cloud/v1/surah/{surah}/ur.jalandhry").json()
-        return ar, en, ur
-    except:
-        return None, None, None
+# ================= UI =================
+question = st.text_input("💬 Ask your question")
 
-# ================= HADITH SEARCH =================
-def search_hadith(query, book):
-    results = []
-    for h in hadith_data:
-        if query.lower() in h["text"].lower():
-            if book == "All" or h["book"] == book:
-                results.append(h)
-    return results[:20]
+if st.button("Ask") and question:
 
-# ================= DUAS =================
-DUAS = [
-    {
-        "title": "Before Sleep",
-        "arabic": "بِاسْمِكَ اللَّهُمَّ أَمُوتُ وَأَحْيَا",
-        "meaning": "O Allah, in Your name I die and live."
-    },
-    {
-        "title": "For Anxiety",
-        "arabic": "اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنَ الْهَمِّ وَالْحَزَنِ",
-        "meaning": "O Allah, I seek refuge from anxiety and sorrow."
-    }
-]
+    # STEP 1: SEARCH DATA
+    hadith_results = search_hadith(question)
+    quran_results = search_quran(question)
 
-# ================= LAYOUT =================
-col1, col2 = st.columns([2,1])
+    # STEP 2: AI ANSWER
+    st.markdown("## 🧠 AI Answer")
+    answer = get_ai_answer(question, hadith_results, quran_results)
+    st.markdown(f"<div class='card'>{answer}</div>", unsafe_allow_html=True)
 
-# ================= AI =================
-with col1:
-    st.markdown("## 🧠 AI Explanation")
+    # STEP 3: SHOW SOURCES
 
-    question = st.text_input("Ask your question")
+    st.markdown("## 📖 Quran Sources")
+    if quran_results:
+        for v in quran_results:
+            st.markdown(
+                f"<div class='card'>{v['text']}<br><b>{v['surah']['name']} {v['numberInSurah']}</b></div>",
+                unsafe_allow_html=True
+            )
+    else:
+        st.warning("No Quran match found")
 
-    if st.button("Ask") and question:
-        ai = get_ai_answer(question)
-        st.markdown(f"<div class='card'>{ai}</div>", unsafe_allow_html=True)
+    st.markdown("## 📜 Hadith Sources")
+    if hadith_results:
+        for h in hadith_results:
+            st.markdown(
+                f"<div class='card'>{h['text']}<br><b>{h['book']} {h['number']}</b></div>",
+                unsafe_allow_html=True
+            )
+    else:
+        st.warning("No Hadith match found")
 
-# ================= RIGHT PANEL =================
-with col2:
+# ================= DUA =================
+st.markdown("## 🤲 Duas")
 
-    # -------- QURAN --------
-    st.markdown("## 📖 Quran")
-
-    surah = st.number_input("Surah (1-114)", 1, 114, 1)
-
-    if st.button("Load Quran"):
-        ar, en, ur = get_quran(surah)
-
-        if ar:
-            for i in range(len(ar["data"]["ayahs"])):
-                st.markdown(
-                    f"<div class='card'>"
-                    f"<b>{i+1}</b><br>"
-                    f"{ar['data']['ayahs'][i]['text']}<br><br>"
-                    f"{en['data']['ayahs'][i]['text']}<br>"
-                    f"<i>{ur['data']['ayahs'][i]['text']}</i>"
-                    f"</div>",
-                    unsafe_allow_html=True
-                )
-
-    # -------- HADITH --------
-    st.markdown("## 📜 Hadith Search")
-
-    search_query = st.text_input("Search Hadith")
-
-    book_filter = st.selectbox(
-        "Book",
-        ["All", "Bukhari", "Muslim", "Tirmidhi"]
-    )
-
-    if st.button("Search Hadith"):
-        results = search_hadith(search_query, book_filter)
-
-        if results:
-            for h in results:
-                st.markdown(
-                    f"<div class='card'>"
-                    f"{h['text']}<br><br>"
-                    f"<b>{h['book']} {h['number']}</b> | {h['grade']}"
-                    f"</div>",
-                    unsafe_allow_html=True
-                )
-        else:
-            st.warning("No results found")
-
-    # -------- DUAS --------
-    st.markdown("## 🤲 Duas")
-
-    for d in DUAS:
-        st.markdown(
-            f"<div class='card'><b>{d['title']}</b><br>{d['arabic']}<br><i>{d['meaning']}</i></div>",
-            unsafe_allow_html=True
-        )
+st.markdown("<div class='card'>بِاسْمِكَ اللَّهُمَّ أَمُوتُ وَأَحْيَا</div>", unsafe_allow_html=True)
+st.markdown("<div class='card'>اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنَ الْهَمِّ وَالْحَزَنِ</div>", unsafe_allow_html=True)
