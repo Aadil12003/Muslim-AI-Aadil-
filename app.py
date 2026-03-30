@@ -7,42 +7,62 @@ from html import escape
 import requests
 import streamlit as st
 
+# Page setup
 st.set_page_config(page_title="Muslim AI", layout="wide", initial_sidebar_state="expanded")
 
+# Premium styling
 st.markdown(
     """
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Scheherazade+New:wght@400;700&display=swap');
-:root { --bg:#060e18; --card:rgba(15,24,38,0.9); --border:rgba(216,181,90,0.28); --gold:#d8b55a; --text:#eaf2fb; --muted:#b6c7d8; --success:#3ac18f; --info:#57a9ff; }
-html, body, .stApp { background: linear-gradient(145deg,#050b14 0%,#0a1a2a 45%,#0f2134 100%); color: var(--text); font-family: 'Inter', sans-serif; }
-.block-container { padding-top: 1.3rem; }
-.hero { background: linear-gradient(135deg, rgba(15,24,38,0.95), rgba(12,28,43,0.96)); border:1px solid var(--border); border-radius:16px; padding:20px 22px; box-shadow:0 14px 32px rgba(0,0,0,0.35); }
-.hero .bismillah { font-family:'Scheherazade New',serif; font-size:36px; color:var(--gold); text-align:center; direction:rtl; }
-.hero .title { font-family:'Scheherazade New',serif; font-size:42px; text-align:center; margin:6px 0 4px 0; color:var(--gold); }
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&family=Scheherazade+New:wght@700&display=swap');
+:root {
+  --bg:#05060f;
+  --panel:rgba(14,18,31,0.88);
+  --glass:rgba(255,255,255,0.06);
+  --stroke:rgba(255,255,255,0.09);
+  --gold:#e3c07a;
+  --accent:#7dd3fc;
+  --text:#eef4ff;
+  --muted:#9fb2d0;
+  --success:#48d4a7;
+  --info:#7aa2ff;
+}
+html, body, .stApp {
+  background: radial-gradient(90% 70% at 10% 10%, rgba(125,211,252,0.10), transparent),
+              radial-gradient(80% 60% at 80% 0%, rgba(227,192,122,0.10), transparent),
+              linear-gradient(145deg,#05060f 0%,#0b1221 45%,#0f1a2f 100%);
+  color: var(--text);
+  font-family: 'Plus Jakarta Sans', sans-serif;
+}
+.block-container { padding-top: 1.2rem; }
+.hero { background: linear-gradient(135deg, rgba(15,22,35,0.9), rgba(20,34,54,0.92)); border:1px solid var(--stroke); border-radius:20px; padding:22px; box-shadow: 0 22px 60px rgba(0,0,0,0.45); }
+.hero .bismillah { font-family:'Scheherazade New',serif; font-size:38px; color:var(--gold); text-align:center; direction:rtl; }
+.hero .title { font-family:'Playfair Display',serif; font-size:44px; text-align:center; margin:8px 0 2px 0; color:var(--gold); letter-spacing:0.4px; }
 .hero .subtitle { text-align:center; color:var(--muted); font-size:15px; }
-.card, .answer, .quran-card, .hadith-card, .dua-card, .scholar-card, .info-box, .warning-card, .reader-card { background:var(--card); border:1px solid rgba(255,255,255,0.05); border-radius:14px; padding:16px 18px; margin-bottom:12px; line-height:1.7; }
-.answer { border-left:4px solid var(--gold); }
-.quran-card { border-left:4px solid var(--success); background: linear-gradient(135deg, rgba(14,38,27,0.9), rgba(18,54,37,0.92)); }
-.hadith-card { border-left:4px solid var(--info); background: linear-gradient(135deg, rgba(15,31,47,0.9), rgba(18,42,63,0.92)); }
-.dua-card { border-left:4px solid #a87ad8; background: linear-gradient(135deg, rgba(27,15,43,0.9), rgba(39,21,60,0.92)); }
-.scholar-card { border-left:4px solid var(--gold); background: linear-gradient(135deg, rgba(38,24,11,0.9), rgba(53,34,16,0.92)); }
+.card, .answer, .quran-card, .hadith-card, .dua-card, .scholar-card, .info-box, .warning-card, .reader-card { background: var(--panel); border:1px solid var(--stroke); border-radius:16px; padding:16px 18px; margin-bottom:12px; line-height:1.75; backdrop-filter: blur(6px); }
+.answer { border:1px solid rgba(227,192,122,0.35); box-shadow: 0 10px 28px rgba(0,0,0,0.35); }
+.quran-card { border-left:4px solid var(--success); background: linear-gradient(135deg, rgba(17,40,31,0.92), rgba(14,34,29,0.94)); }
+.hadith-card { border-left:4px solid var(--info); background: linear-gradient(135deg, rgba(17,26,46,0.92), rgba(13,22,38,0.94)); }
+.dua-card { border-left:4px solid #c084fc; background: linear-gradient(135deg, rgba(32,16,44,0.92), rgba(40,22,64,0.95)); }
+.scholar-card { border-left:4px solid var(--gold); background: linear-gradient(135deg, rgba(44,30,16,0.94), rgba(54,36,18,0.96)); }
 .reader-card { border-left:4px solid var(--success); }
-.info-box { border:1px dashed var(--border); color:var(--muted); }
-.warning-card { border-left:4px solid #d9665b; background: linear-gradient(135deg, rgba(55,17,17,0.92), rgba(68,20,20,0.92)); color:#ffe0dd; }
-.section-title { font-size:19px; font-weight:700; color:var(--gold); margin:18px 0 10px 0; padding-bottom:6px; border-bottom:1px solid var(--border); }
-.arabic { font-family:'Scheherazade New',serif; font-size:30px; direction:rtl; text-align:right; color:#f0d589; line-height:2.2; margin:8px 0; }
+.info-box { border:1px dashed var(--stroke); color:var(--muted); }
+.warning-card { border-left:4px solid #f97373; background: linear-gradient(135deg, rgba(62,18,18,0.93), rgba(82,24,24,0.95)); color:#ffeaea; }
+.section-title { font-size:19px; font-weight:700; color:var(--gold); margin:18px 0 10px 0; padding-bottom:6px; border-bottom:1px solid var(--stroke); letter-spacing:0.2px; }
+.arabic { font-family:'Scheherazade New',serif; font-size:30px; direction:rtl; text-align:right; color:#f0d589; line-height:2.15; margin:10px 0; }
 .translation { color:#cde0d1; font-style:italic; }
 .badge { display:inline-block; padding:3px 10px; border-radius:999px; font-size:12px; font-weight:700; color:#fff; }
 .badge.sahih { background:#2ea76d; } .badge.hasan { background:#d7952e; } .badge.weak { background:#c25757; }
-div[data-testid="stTab"] button { background:rgba(255,255,255,0.06); color:var(--text); border:1px solid rgba(255,255,255,0.08); }
-div[data-testid="stTab"] button[aria-selected="true"] { border-color:var(--gold); color:var(--gold); }
-input, textarea { background:#0f1a29 !important; color:var(--text) !important; }
-button, .stButton>button { background:#2563eb !important; color:#fff !important; border-radius:12px !important; border:none !important; }
+div[data-testid="stTab"] button { background:var(--glass); color:var(--text); border:1px solid var(--stroke); border-radius:12px; }
+div[data-testid="stTab"] button[aria-selected="true"] { border-color:var(--gold); color:var(--gold); box-shadow:0 6px 18px rgba(227,192,122,0.25); }
+input, textarea { background:#0f1829 !important; color:var(--text) !important; border-radius:10px !important; border:1px solid var(--stroke) !important; }
+button, .stButton>button { background:linear-gradient(135deg,#2563eb,#38bdf8) !important; color:#fff !important; border-radius:12px !important; border:none !important; box-shadow:0 12px 30px rgba(56,189,248,0.35); }
 </style>
 """,
     unsafe_allow_html=True,
 )
 
+# Config
 try:
     NVIDIA_API_KEY = st.secrets["NVIDIA_API_KEY"]
 except Exception:
@@ -72,6 +92,7 @@ SYSTEM_PROMPT = """You are an Islamic AI Assistant. Respond only with authentic 
   "language_detected": "English or Urdu or Arabic"
 }"""
 
+# Data
 SURAH_NAMES = [
     "Al-Fatiha","Al-Baqarah","Al-Imran","An-Nisa","Al-Maidah","Al-Anam","Al-Araf","Al-Anfal","At-Tawbah","Yunus","Hud","Yusuf",
     "Ar-Rad","Ibrahim","Al-Hijr","An-Nahl","Al-Isra","Al-Kahf","Maryam","Ta-Ha","Al-Anbiya","Al-Hajj","Al-Muminun","An-Nur",
@@ -87,160 +108,81 @@ SURAH_NAMES = [
 
 DUA_CATEGORIES = {
     "Morning Adhkar": [
-        {
-            "title": "Morning Remembrance",
-            "arabic": "أَصْبَحْنَا وَأَصْبَحَ الْمُلْكُ لِلَّهِ، وَالْحَمْدُ لِلَّهِ، لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ",
-            "transliteration": "Asbahna wa asbaha al‑mulku lillah, wal‑hamdu lillah, la ilaha illa Allah wahdahu la sharika lah",
-            "meaning": "We have entered the morning and the kingdom belongs to Allah. All praise is for Allah; none has the right to be worshipped but Him alone, without partner.",
-            "reference": "Abu Dawood 4/317",
-            "source_url": ""
-        },
-        {
-            "title": "Sayyidul Istighfar",
-            "arabic": "اللَّهُمَّ أَنْتَ رَبِّي لَا إِلَهَ إِلَّا أَنْتَ، خَلَقْتَنِي وَأَنَا عَبْدُكَ",
-            "transliteration": "Allahumma anta rabbi la ilaha illa anta, khalaqtani wa ana abduk",
-            "meaning": "O Allah, You are my Lord; none has the right to be worshipped except You. You created me and I am Your servant.",
-            "reference": "Bukhari 6306",
-            "source_url": "https://sunnah.com/bukhari:6306"
-        }
+        {"title": "Morning Remembrance", "arabic": "أَصْبَحْنَا وَأَصْبَحَ الْمُلْكُ لِلَّهِ، وَالْحَمْدُ لِلَّهِ، لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ", "transliteration": "Asbahna wa asbaha al-mulku lillah, wal-hamdu lillah, la ilaha illa Allah wahdahu la sharika lah", "meaning": "We have entered the morning and the kingdom belongs to Allah. All praise is for Allah; none has the right to be worshipped except Him alone, without partner.", "reference": "Abu Dawood 4/317", "source_url": ""},
+        {"title": "Sayyidul Istighfar", "arabic": "اللَّهُمَّ أَنْتَ رَبِّي لَا إِلَهَ إِلَّا أَنْتَ، خَلَقْتَنِي وَأَنَا عَبْدُكَ", "transliteration": "Allahumma anta rabbi la ilaha illa anta, khalaqtani wa ana abduk", "meaning": "O Allah, You are my Lord; none has the right to be worshipped except You. You created me and I am Your servant.", "reference": "Bukhari 6306", "source_url": "https://sunnah.com/bukhari:6306"}
     ],
     "Evening Adhkar": [
-        {
-            "title": "Evening Remembrance",
-            "arabic": "أَمْسَيْنَا وَأَمْسَى الْمُلْكُ لِلَّهِ، وَالْحَمْدُ لِلَّهِ، لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ",
-            "transliteration": "Amsayna wa amsal mulku lillah, wal‑hamdu lillah, la ilaha illa Allah wahdahu la sharika lah",
-            "meaning": "We have entered the evening and the kingdom belongs to Allah. All praise is for Allah; none has the right to be worshipped but Him alone, without partner.",
-            "reference": "Abu Dawood 4/317",
-            "source_url": ""
-        }
+        {"title": "Evening Remembrance", "arabic": "أَمْسَيْنَا وَأَمْسَى الْمُلْكُ لِلَّهِ، وَالْحَمْدُ لِلَّهِ، لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ", "transliteration": "Amsayna wa amsa al-mulku lillah, wal-hamdu lillah, la ilaha illa Allah wahdahu la sharika lah", "meaning": "We have entered the evening and the kingdom belongs to Allah. All praise is for Allah; none has the right to be worshipped but Him alone, without partner.", "reference": "Abu Dawood 4/317", "source_url": ""}
     ],
     "Before Sleep": [
-        {
-            "title": "Before Sleeping",
-            "arabic": "بِاسْمِكَ اللَّهُمَّ أَمُوتُ وَأَحْيَا",
-            "transliteration": "Bismika Allahumma amootu wa ahya",
-            "meaning": "In Your name, O Allah, I die and I live.",
-            "reference": "Bukhari 6324",
-            "source_url": "https://sunnah.com/bukhari:6324"
-        },
-        {
-            "title": "Ayatul Kursi",
-            "arabic": "اللَّهُ لَا إِلَٰهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ",
-            "transliteration": "Allahu la ilaha illa huwa al‑hayyul‑qayyum",
-            "meaning": "Allah! None has the right to be worshipped but He, the Ever Living, the Sustainer of all.",
-            "reference": "Quran 2:255",
-            "source_url": "https://quran.com/2/255"
-        }
+        {"title": "Before Sleeping", "arabic": "بِاسْمِكَ اللَّهُمَّ أَمُوتُ وَأَحْيَا", "transliteration": "Bismika Allahumma amootu wa ahya", "meaning": "In Your name, O Allah, I die and I live.", "reference": "Bukhari 6324", "source_url": "https://sunnah.com/bukhari:6324"},
+        {"title": "Ayatul Kursi", "arabic": "اللَّهُ لَا إِلَٰهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ", "transliteration": "Allahu la ilaha illa huwa al-hayyul-qayyum", "meaning": "Allah! None has the right to be worshipped but He, the Ever Living, the Sustainer of all.", "reference": "Quran 2:255", "source_url": "https://quran.com/2/255"}
     ],
     "Entering Home": [
-        {
-            "title": "Entering Home",
-            "arabic": "اللَّهُمَّ إِنِّي أَسْأَلُكَ خَيْرَ الْمَوْلَجِ وَخَيْرَ الْمَخْرَجِ",
-            "transliteration": "Allahumma inni as’aluka khayral mawlaji wa khayral makhraji",
-            "meaning": "O Allah, I ask You for the good of entering and the good of leaving.",
-            "reference": "Abu Dawood 4/325",
-            "source_url": ""
-        }
+        {"title": "Entering Home", "arabic": "اللَّهُمَّ إِنِّي أَسْأَلُكَ خَيْرَ الْمَوْلَجِ وَخَيْرَ الْمَخْرَجِ", "transliteration": "Allahumma inni as'aluka khayral mawlaji wa khayral makhraji", "meaning": "O Allah, I ask You for the good of entering and the good of leaving.", "reference": "Abu Dawood 4/325", "source_url": ""}
     ],
     "Eating and Drinking": [
-        {
-            "title": "Before Eating",
-            "arabic": "بِسْمِ اللَّهِ",
-            "transliteration": "Bismillah",
-            "meaning": "In the name of Allah.",
-            "reference": "Tirmidhi 1858",
-            "source_url": "https://sunnah.com/tirmidhi:1858"
-        },
-        {
-            "title": "After Eating",
-            "arabic": "الْحَمْدُ لِلَّهِ الَّذِي أَطْعَمَنَا وَسَقَانَا وَجَعَلَنَا مُسْلِمِينَ",
-            "transliteration": "Alhamdu lillahil ladhi at’amana wa saqana wa ja’alana muslimin",
-            "meaning": "All praise is for Allah who fed us, gave us drink, and made us Muslims.",
-            "reference": "Abu Dawood 3850",
-            "source_url": ""
-        }
+        {"title": "Before Eating", "arabic": "بِسْمِ اللَّهِ", "transliteration": "Bismillah", "meaning": "In the name of Allah.", "reference": "Tirmidhi 1858", "source_url": "https://sunnah.com/tirmidhi:1858"},
+        {"title": "After Eating", "arabic": "الْحَمْدُ لِلَّهِ الَّذِي أَطْعَمَنَا وَسَقَانَا وَجَعَلَنَا مُسْلِمِينَ", "transliteration": "Alhamdu lillahil ladhi at'amana wa saqana wa ja'alana muslimin", "meaning": "All praise is for Allah who fed us, gave us drink, and made us Muslims.", "reference": "Abu Dawood 3850", "source_url": ""}
     ],
     "Anxiety and Distress": [
-        {
-            "title": "Dua for Anxiety",
-            "arabic": "اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنَ الْهَمِّ وَالْحَزَنِ",
-            "transliteration": "Allahumma inni a’udhu bika minal hammi wal hazan",
-            "meaning": "O Allah, I seek refuge in You from anxiety and grief.",
-            "reference": "Bukhari 6363",
-            "source_url": ""
-        }
+        {"title": "Dua for Anxiety", "arabic": "اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنَ الْهَمِّ وَالْحَزَنِ", "transliteration": "Allahumma inni a'udhu bika minal hammi wal hazan", "meaning": "O Allah, I seek refuge in You from anxiety and grief.", "reference": "Bukhari 6363", "source_url": ""}
     ],
     "Travel": [
-        {
-            "title": "Dua for Travel",
-            "arabic": "سُبْحَانَ الَّذِي سَخَّرَ لَنَا هَذَا وَمَا كُنَّا لَهُ مُقْرِنِينَ",
-            "transliteration": "Subhanal ladhi sakhkhara lana hadha wa ma kunna lahu muqrinin",
-            "meaning": "Glory be to Him who has subjected this to us, and we could never have it by our efforts.",
-            "reference": "Quran 43:13 / Abu Dawood 2599",
-            "source_url": "https://quran.com/43/13"
-        }
+        {"title": "Dua for Travel", "arabic": "سُبْحَانَ الَّذِي سَخَّرَ لَنَا هَذَا وَمَا كُنَّا لَهُ مُقْرِنِينَ", "transliteration": "Subhanal ladhi sakhkhara lana hadha wa ma kunna lahu muqrinin", "meaning": "Glory be to Him who has subjected this to us, and we could never have it by our efforts.", "reference": "Quran 43:13 / Abu Dawood 2599", "source_url": "https://quran.com/43/13"}
     ],
     "Forgiveness": [
-        {
-            "title": "Seeking Forgiveness",
-            "arabic": "رَبِّ اغْفِرْ لِي وَتُبْ عَلَيَّ إِنَّكَ أَنْتَ التَّوَّابُ الرَّحِيمُ",
-            "transliteration": "Rabbighfir li wa tub alayya innaka anta at‑Tawwabur‑Rahim",
-            "meaning": "My Lord, forgive me and accept my repentance. Truly, You are the Accepter of repentance, the Most Merciful.",
-            "reference": "Abu Dawood / Ibn Majah",
-            "source_url": ""
-        }
+        {"title": "Seeking Forgiveness", "arabic": "رَبِّ اغْفِرْ لِي وَتُبْ عَلَيَّ إِنَّكَ أَنْتَ التَّوَّابُ الرَّحِيمُ", "transliteration": "Rabbighfir li wa tub alayya innaka anta at-Tawwabur-Rahim", "meaning": "My Lord, forgive me and accept my repentance. Truly, You are the Accepter of repentance, the Most Merciful.", "reference": "Abu Dawood / Ibn Majah", "source_url": ""}
     ]
 }
 
-HADITH_COLLECTIONS = {
-    "Sahih Bukhari": [
-        {
-            "number": "Bukhari 1",
-            "arabic": "إِنَّمَا الأَعْمَالُ بِالنِّيَّاتِ",
-            "text": "Actions are judged by intentions, and every person will get the reward according to what he has intended.",
-            "narrator": "Umar ibn al-Khattab (RA)",
-            "authenticity": "Sahih",
-            "source_url": "https://sunnah.com/bukhari:1"
-        },
-        {
-            "number": "Bukhari 8",
-            "arabic": "بُنِيَ الإِسْلَامُ عَلَى خَمْسٍ",
-            "text": "Islam is built on five pillars: testimony, prayer, zakah, hajj, and fasting in Ramadan.",
-            "narrator": "Ibn Umar (RA)",
-            "authenticity": "Sahih",
-            "source_url": "https://sunnah.com/bukhari:8"
-        }
-    ],
-    "Sahih Muslim": [
-        {
-            "number": "Muslim 2318",
-            "arabic": "الرَّاحِمُونَ يَرْحَمُهُمُ الرَّحْمَنُ",
-            "text": "The merciful are shown mercy by the Most Merciful. Be merciful to those on earth and the One above the heavens will have mercy upon you.",
-            "narrator": "Abdullah ibn Amr (RA)",
-            "authenticity": "Sahih",
-            "source_url": "https://sunnah.com/muslim:2318"
-        }
-    ],
-    "40 Hadith Nawawi": [
-        {
-            "number": "Nawawi 1",
-            "arabic": "إِنَّمَا الأَعْمَالُ بِالنِّيَّاتِ",
-            "text": "Verily actions are by intentions, and for every person is what he intended.",
-            "narrator": "Umar ibn al-Khattab (RA)",
-            "authenticity": "Sahih",
-            "source_url": ""
-        },
-        {
-            "number": "Nawawi 6",
-            "arabic": "الْحَلَالُ بَيِّنٌ وَالْحَرَامُ بَيِّنٌ",
-            "text": "The lawful is clear and the unlawful is clear, and between them are doubtful matters many people do not know.",
-            "narrator": "An-Nu'man ibn Bashir (RA)",
-            "authenticity": "Sahih",
-            "source_url": ""
-        }
-    ]
-}
+HADITH_40 = [
+    {"number": i + 1, "text": txt}
+    for i, txt in enumerate([
+        "Actions are judged by intentions.",
+        "Islam is built on five pillars.",
+        "Every innovation is misguidance.",
+        "The lawful is clear and the unlawful is clear.",
+        "Religion is sincere advice.",
+        "Avoid what is doubtful.",
+        "The world is a prison for the believer and a paradise for the disbeliever.",
+        "None of you truly believes until he loves for his brother what he loves for himself.",
+        "From the excellence of a person's Islam is leaving what does not concern him.",
+        "Do not become angry.",
+        "Say I believe in Allah and then be upright.",
+        "The believer is the mirror of his brother.",
+        "A good word is charity.",
+        "Purity is half of faith.",
+        "Whoever believes in Allah and the Last Day should speak good or remain silent.",
+        "Seek halal and your supplication will be answered.",
+        "Whoever is not merciful to people, Allah will not be merciful to him.",
+        "Modesty brings nothing but good.",
+        "From the perfection of faith is loving and hating for the sake of Allah.",
+        "The strong person controls himself when angry.",
+        "The best of you are those best to their families.",
+        "Backbiting is mentioning about your brother what he dislikes.",
+        "A Muslim is one from whose tongue and hand other Muslims are safe.",
+        "The upper hand is better than the lower hand.",
+        "Allah does not look at your forms but at your hearts and deeds.",
+        "Whoever does not thank people has not thanked Allah.",
+        "Make things easy and do not make them difficult.",
+        "He is not of us who does not show mercy to the young and respect the old.",
+        "Whoever cheats us is not one of us.",
+        "The best charity is that given when you are healthy and covetous.",
+        "The one who points to good is like the doer of it.",
+        "None truly believes until his desires follow what I have brought.",
+        "Leave what causes you doubt for what does not cause you doubt.",
+        "There should be neither harming nor reciprocating harm.",
+        "Allah is pure and accepts only what is pure.",
+        "Every act of kindness is charity.",
+        "Exchange gifts and you will love one another.",
+        "Whoever treads a path seeking knowledge, Allah makes easy for him a path to Paradise.",
+        "The best among you are those who learn the Qur’an and teach it.",
+        "The most beloved deeds to Allah are those done consistently, even if small."
+    ])
+]
 
+# State
 if "messages" not in st.session_state:
     st.session_state.messages = []
 if "chat_history" not in st.session_state:
@@ -250,7 +192,7 @@ if "quick_question" not in st.session_state:
 if "loaded_surah_number" not in st.session_state:
     st.session_state.loaded_surah_number = None
 
-
+# Helpers
 def safe_html(value):
     return escape("" if value is None else str(value))
 
@@ -448,11 +390,13 @@ def render_response(result):
     if result["consult_scholar"] == "Yes":
         st.markdown('<div class="warning-card">This matter can be sensitive. Please consult a qualified scholar for a personal ruling.</div>', unsafe_allow_html=True)
 
-
+# --------------------------------------------------------------------------- #
+# UI
+# --------------------------------------------------------------------------- #
 st.markdown(
     '<div class="hero"><div class="bismillah">بِسْمِ اللَّهِ الرَّحْمٰنِ الرَّحِيمِ</div>'
     '<div class="title">Muslim AI</div>'
-    '<div class="subtitle">Authentic answers grounded in Quran, Sahih Hadith, and classical scholarship</div></div>',
+    '<div class="subtitle">Premium experience · Authentic answers grounded in Quran, Sahih Hadith, and classical scholarship</div></div>',
     unsafe_allow_html=True,
 )
 
@@ -469,6 +413,13 @@ with st.sidebar:
         "What is tawakkul in Islam?",
         "Is insurance halal?",
         "Dua for entering home",
+        "Story of Prophet Yusuf and patience",
+        "Story of the People of the Cave (Ashab al-Kahf)",
+        "Story of Musa and Khidr",
+        "Life of Prophet Muhammad (s) summary",
+        "Life of Prophet Ibrahim",
+        "Life of Prophet Musa",
+        "Life of Prophet Isa",
     ]
     for topic in topics:
         if st.button(topic, use_container_width=True, key=f"sidebar_{topic}"):
@@ -482,7 +433,7 @@ with st.sidebar:
         st.session_state.quick_question = ""
         st.rerun()
 
-tab1, tab2, tab3, tab4 = st.tabs(["AI Assistant", "Quran Reader", "Dua Collection", "Hadith Library"])
+tab1, tab2, tab3, tab4 = st.tabs(["AI Assistant", "Quran Reader", "Dua Collection", "40 Hadith"])
 
 with tab1:
     for msg in st.session_state.messages:
@@ -526,11 +477,11 @@ with tab2:
     st.markdown('<div class="info-box">Select any Surah to read with Arabic and English translation (Asad).</div>', unsafe_allow_html=True)
     col1, col2 = st.columns([1, 2])
     with col1:
-        selected_surah = st.selectbox("Select Surah", [f"{i + 1}. {name}" for i, name in enumerate(SURAH_NAMES)] if SURAH_NAMES else [])
+        surah_options = [f"{i + 1}. {name}" for i, name in enumerate(SURAH_NAMES)]
+        selected_surah = st.selectbox("Select Surah", surah_options)
         surah_number = int(selected_surah.split(".")[0]) if selected_surah else None
-        if selected_surah:
-            st.markdown(f'<div class="info-box"><strong style="color:var(--gold);">{safe_html(selected_surah)}</strong></div>', unsafe_allow_html=True)
-        if st.button("Load Surah", type="primary", use_container_width=True, disabled=not selected_surah):
+        st.markdown(f'<div class="info-box"><strong style="color:var(--gold);">{safe_html(selected_surah)}</strong></div>', unsafe_allow_html=True)
+        if st.button("Load Surah", type="primary", use_container_width=True):
             st.session_state.loaded_surah_number = surah_number
     with col2:
         if st.session_state.loaded_surah_number:
@@ -559,7 +510,7 @@ with tab2:
 with tab3:
     st.markdown('<div class="section-title">Dua Collection</div>', unsafe_allow_html=True)
     st.markdown('<div class="info-box">Curated duas stored directly in this app (no external files required).</div>', unsafe_allow_html=True)
-    selected_category = st.selectbox("Select Category", list(DUA_CATEGORIES.keys()) if DUA_CATEGORIES else [])
+    selected_category = st.selectbox("Select Category", list(DUA_CATEGORIES.keys()))
     for dua in DUA_CATEGORIES.get(selected_category, []):
         st.markdown(
             f'<div class="dua-card"><strong style="color:var(--gold); font-size:16px;">{safe_html(dua["title"])}</strong>'
@@ -572,19 +523,11 @@ with tab3:
         st.markdown("<br>", unsafe_allow_html=True)
 
 with tab4:
-    st.markdown('<div class="section-title">Hadith Library</div>', unsafe_allow_html=True)
-    st.markdown('<div class="info-box">Authentic Hadith with Arabic text and grades.</div>', unsafe_allow_html=True)
-    selected_collection = st.selectbox("Select Collection", list(HADITH_COLLECTIONS.keys()) if HADITH_COLLECTIONS else [])
-    for hadith in HADITH_COLLECTIONS.get(selected_collection, []):
-        auth = hadith.get("authenticity", "Sahih")
-        badge_class = "sahih" if auth == "Sahih" else "hasan" if auth == "Hasan" else "weak"
+    st.markdown('<div class="section-title">40 Short Hadith</div>', unsafe_allow_html=True)
+    st.markdown('<div class="info-box">Concise authentic sayings to reflect on daily.</div>', unsafe_allow_html=True)
+    for h in HADITH_40:
         st.markdown(
-            f'<div class="hadith-card"><span style="color:var(--gold); font-size:13px; font-weight:700;">{safe_html(hadith.get("number", ""))}</span> '
-            f'<span class="badge {badge_class}">{safe_html(auth)}</span>'
-            f'<div class="arabic">{safe_html(hadith.get("arabic", ""))}</div>'
-            f'<strong>{safe_html(hadith.get("text", ""))}</strong>'
-            f'<br><br><small style="color:var(--muted);">Narrator: {safe_html(hadith.get("narrator", ""))}</small></div>',
+            f'<div class="hadith-card"><span style="color:var(--gold); font-size:13px; font-weight:700;">Hadith {h["number"]}</span>'
+            f'<br><strong>{safe_html(h["text"])}</strong></div>',
             unsafe_allow_html=True,
         )
-        st.markdown("<br>", unsafe_allow_html=True)
-    st.markdown('<div class="info-box">Ask the AI Assistant for more Hadith on any topic.</div>', unsafe_allow_html=True)
