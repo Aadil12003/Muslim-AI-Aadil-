@@ -24,22 +24,22 @@ html, body, [class*="css"] {
     color: #F8FAFC !important; 
 }
 .stApp { 
-    background: linear-gradient(135deg, #020617 0%, #064E3B 100%) !important; /* Deep Slate to Royal Emerald */
+    background: linear-gradient(135deg, #020617 0%, #064E3B 100%) !important; 
     background-attachment: fixed;
 }
 h1, h2, h3, .serif-text { 
     font-family: 'Playfair Display', serif; 
-    color: #FBBF24 !important; /* Vibrant Gold */
+    color: #FBBF24 !important; 
     font-weight: 600; 
     letter-spacing: 0.5px; 
 }
 
 /* ===== GLASSMORPHISM CARDS ===== */
 .premium-card { 
-    background-color: rgba(15, 23, 42, 0.45); /* Transparent Dark Blue */
+    background-color: rgba(15, 23, 42, 0.45); 
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(251, 191, 36, 0.25); /* Soft Gold Border */
+    border: 1px solid rgba(251, 191, 36, 0.25); 
     border-radius: 16px; 
     padding: 28px; 
     margin-bottom: 24px; 
@@ -92,12 +92,7 @@ h1, h2, h3, .serif-text {
     -webkit-text-fill-color: transparent;
     text-shadow: 0 2px 10px rgba(251, 191, 36, 0.2);
 }
-.subtitle { 
-    font-size: 18px; 
-    color: #CBD5E1; 
-    font-weight: 300; 
-    letter-spacing: 1px; 
-}
+.subtitle { font-size: 18px; color: #CBD5E1; font-weight: 300; letter-spacing: 1px; }
 
 /* ===== TEXT & UI ELEMENTS ===== */
 .arabic { 
@@ -110,57 +105,19 @@ h1, h2, h3, .serif-text {
     color: #FDE047; 
     text-shadow: 0 2px 4px rgba(0,0,0,0.5);
 }
-.section-title { 
-    font-family: 'Playfair Display', serif; 
-    font-size: 26px; 
-    color: #FBBF24; 
-    margin: 40px 0 20px 0; 
-    padding-bottom: 10px; 
-    border-bottom: 1px solid rgba(251, 191, 36, 0.2); 
-}
-.info-box { 
-    background-color: rgba(251, 191, 36, 0.08); 
-    border-left: 4px solid #FBBF24; 
-    border-radius: 6px; 
-    padding: 16px 20px; 
-    font-size: 15px; 
-    margin-bottom: 24px; 
-    color: #F8FAFC; 
-    backdrop-filter: blur(4px);
-}
+.section-title { font-family: 'Playfair Display', serif; font-size: 26px; color: #FBBF24; margin: 40px 0 20px 0; padding-bottom: 10px; border-bottom: 1px solid rgba(251, 191, 36, 0.2); }
+.info-box { background-color: rgba(251, 191, 36, 0.08); border-left: 4px solid #FBBF24; border-radius: 6px; padding: 16px 20px; font-size: 15px; margin-bottom: 24px; color: #F8FAFC; backdrop-filter: blur(4px); }
 .accent { color: #FBBF24 !important; font-weight: 600; }
 .muted { color: #94A3B8 !important; font-size: 0.9em; font-weight: 400; }
 .source-link { color: #60A5FA; text-decoration: none; border-bottom: 1px dotted #60A5FA; transition: opacity 0.2s; }
 .source-link:hover { opacity: 0.7; color: #93C5FD; }
-.pill-badge { font-size: 11px; border: 1px solid #FBBF24; color: #FBBF24; padding: 4px 10px; border-radius: 20px; text-transform: uppercase; letter-spacing: 1px; margin-left: 10px; }
 
 /* ===== SIDEBAR & INPUT ===== */
-[data-testid="stSidebar"] { 
-    background-color: rgba(2, 6, 23, 0.8) !important; 
-    backdrop-filter: blur(15px);
-    border-right: 1px solid rgba(251, 191, 36, 0.15); 
-}
-input, textarea { 
-    background-color: rgba(15, 23, 42, 0.6) !important; 
-    border: 1px solid rgba(251, 191, 36, 0.3) !important; 
-    color: #fff !important; 
-    border-radius: 8px !important; 
-}
+[data-testid="stSidebar"] { background-color: rgba(2, 6, 23, 0.8) !important; backdrop-filter: blur(15px); border-right: 1px solid rgba(251, 191, 36, 0.15); }
+input, textarea { background-color: rgba(15, 23, 42, 0.6) !important; border: 1px solid rgba(251, 191, 36, 0.3) !important; color: #fff !important; border-radius: 8px !important; }
 input:focus, textarea:focus { border-color: #FBBF24 !important; box-shadow: 0 0 8px rgba(251, 191, 36, 0.4) !important; }
-.stButton > button { 
-    background: linear-gradient(135deg, rgba(251, 191, 36, 0.1), rgba(251, 191, 36, 0.05)); 
-    color: #FBBF24; 
-    border: 1px solid #FBBF24; 
-    border-radius: 8px; 
-    transition: all 0.3s ease; 
-    font-weight: 500;
-}
-.stButton > button:hover { 
-    background: #FBBF24; 
-    color: #020617; 
-    transform: scale(1.02);
-    box-shadow: 0 4px 15px rgba(251, 191, 36, 0.3);
-}
+.stButton > button { background: linear-gradient(135deg, rgba(251, 191, 36, 0.1), rgba(251, 191, 36, 0.05)); color: #FBBF24; border: 1px solid #FBBF24; border-radius: 8px; transition: all 0.3s ease; font-weight: 500; }
+.stButton > button:hover { background: #FBBF24; color: #020617; transform: scale(1.02); box-shadow: 0 4px 15px rgba(251, 191, 36, 0.3); }
 .creator-footer { text-align: center; padding: 30px 10px; margin-top: auto; font-family: 'Playfair Display', serif; color: #FBBF24; border-top: 1px solid rgba(251, 191, 36, 0.2); font-size: 18px; letter-spacing: 1px; }
 
 /* ===== TASBIH STYLES ===== */
@@ -185,7 +142,8 @@ if not NVIDIA_API_KEY:
 API_URL = "https://integrate.api.nvidia.com/v1/chat/completions"
 MODEL = "meta/llama-4-maverick-17b-128e-instruct"
 
-SYSTEM_PROMPT = """You are an Islamic AI Assistant. Respond only with authentic Quran, Sahih Hadith, and recognized classical scholarship (like Ibn Kathir).
+# Base prompt (will be modified dynamically by personas)
+BASE_SYSTEM_PROMPT = """You are an Islamic AI Assistant. Respond only with authentic Quran, Sahih Hadith, and recognized classical scholarship (like Ibn Kathir).
 - Do NOT fabricate references.
 - Return ONLY valid JSON.
 {
@@ -224,7 +182,8 @@ HADITH_40 = [
     {"number": 5, "arabic": "يَسِّرُوا وَلاَ تُعَسِّرُوا", "text": "Make things easy and do not make them difficult.", "source": "Sahih al-Bukhari 69"}
 ]
 
-NAMES_RAW = "الرَّحْمَن|Ar-Rahman|The Entirely Merciful,الرَّحِيم|Ar-Rahim|The Especially Merciful,الْمَلِك|Al-Malik|The Sovereign,الْقُدُّوس|Al-Quddus|The Most Holy,السَّلاَم|As-Salam|The Source of Peace,الْمُؤْمِن|Al-Mu'min|The Guarantor,الْمُهَيْمِن|Al-Muhaymin|The Guardian,الْعَزِيز|Al-Aziz|The Almighty,الْجَبَّار|Al-Jabbar|The Compeller,الْمُتَكَبِّر|Al-Mutakabbir|The Supreme,الْخَالِق|Al-Khaliq|The Creator,الْبَارِئ|Al-Bari'|The Evolver,الْمُصَوِّر|Al-Musawwir|The Fashioner,الْغَفَّار|Al-Ghaffar|The Repeatedly Forgiving,الْقَهَّار|Al-Qahhar|The Subduer,الْوَهَّاب|Al-Wahhab|The Bestower,الرَّزَّاق|Ar-Razzaq|The Provider,الْفَتَّاح|Al-Fattah|The Opener,الْعَلِيم|Al-Aleem|The Knowing,الْقَابِض|Al-Qabid|The Withholder,الْبَاسِط|Al-Basit|The Extender,الْخَافِض|Al-Khafid|The Abaser,الرَّافِع|Ar-Rafi'|The Exalter,الْمُعِزّ|Al-Mu'izz|The Honorer,الْمُذِلّ|Al-Mudhill|The Dishonorer,السَّمِيع|As-Sami'|The Hearing,الْبَصِير|Al-Basir|The Seeing,الْحَكَم|Al-Hakam|The Judge,الْعَدْل|Al-Adl|The Just,اللَّطِيف|Al-Latif|The Subtle One,الْخَبِير|Al-Khabir|The Acquainted,الْحَلِيم|Al-Haleem|The Forbearing,الْعَظِيم|Al-Azeem|The Magnificent"
+# Full 99 Names of Allah
+NAMES_RAW = "الرَّحْمَن|Ar-Rahman|The Entirely Merciful,الرَّحِيم|Ar-Rahim|The Especially Merciful,الْمَلِك|Al-Malik|The Sovereign,الْقُدُّوس|Al-Quddus|The Most Holy,السَّلاَم|As-Salam|The Source of Peace,الْمُؤْمِن|Al-Mu'min|The Guarantor,الْمُهَيْمِن|Al-Muhaymin|The Guardian,الْعَزِيز|Al-Aziz|The Almighty,الْجَبَّار|Al-Jabbar|The Compeller,الْمُتَكَبِّر|Al-Mutakabbir|The Supreme,الْخَالِق|Al-Khaliq|The Creator,الْبَارِئ|Al-Bari'|The Evolver,الْمُصَوِّر|Al-Musawwir|The Fashioner,الْغَفَّار|Al-Ghaffar|The Repeatedly Forgiving,الْقَهَّار|Al-Qahhar|The Subduer,الْوَهَّاب|Al-Wahhab|The Bestower,الرَّزَّاق|Ar-Razzaq|The Provider,الْفَتَّاح|Al-Fattah|The Opener,الْعَلِيم|Al-Aleem|The Knowing,الْقَابِض|Al-Qabid|The Withholder,الْبَاسِط|Al-Basit|The Extender,الْخَافِض|Al-Khafid|The Abaser,الرَّافِع|Ar-Rafi'|The Exalter,الْمُعِزّ|Al-Mu'izz|The Honorer,الْمُذِلّ|Al-Mudhill|The Dishonorer,السَّمِيع|As-Sami'|The Hearing,الْبَصِير|Al-Basir|The Seeing,الْحَكَم|Al-Hakam|The Judge,الْعَدْل|Al-Adl|The Just,اللَّطِيف|Al-Latif|The Subtle One,الْخَبِير|Al-Khabir|The Acquainted,الْحَلِيم|Al-Haleem|The Forbearing,الْعَظِيم|Al-Azeem|The Magnificent,الْغَفُور|Al-Ghafur|The Much-Forgiving,الشَّكُور|Ash-Shakur|The Grateful,الْعَلِيّ|Al-Aliyy|The Most High,الْكَبِير|Al-Kabir|The Great,الْحَفِيظ|Al-Hafiz|The Preserver,الْمُقِيت|Al-Muqit|The Sustainer,الْحَسِيب|Al-Haseeb|The Reckoner,الْجَلِيل|Al-Jaleel|The Majestic,الْكَرِيم|Al-Kareem|The Generous,الرَّقِيب|Ar-Raqib|The Watchful,الْمُجِيب|Al-Mujeeb|The Responsive,الْوَاسِع|Al-Wasi'|The All-Encompassing,الْحَكِيم|Al-Hakeem|The Wise,الْوَدُود|Al-Wadud|The Loving,الْمَجِيد|Al-Majeed|The All-Glorious,الْبَاعِث|Al-Ba'ith|The Resurrector,الشَّهِيد|Ash-Shaheed|The Witness,الْحَقّ|Al-Haqq|The Truth,الْوَكِيل|Al-Wakeel|The Trustee,الْقَوِيّ|Al-Qawiyy|The Strong,الْمَتِين|Al-Mateen|The Firm,الْوَلِيّ|Al-Waliyy|The Protecting Friend,الْحَمِيد|Al-Hameed|The Praiseworthy,الْمُحْصِي|Al-Muhsi|The Accounter,الْمُبْدِئ|Al-Mubdi|The Originator,الْمُعِيد|Al-Mu'id|The Restorer,الْمُحْيِي|Al-Muhyi|The Giver of Life,الْمُمِيت|Al-Mumit|The Bringer of Death,الْحَيّ|Al-Hayy|The Ever-Living,الْقَيُّوم|Al-Qayyum|The Sustainer of Existence,الْوَاجِد|Al-Wajid|The Finder,الْمَاجِد|Al-Majid|The Noble,الْوَاحِد|Al-Wahid|The Unique,الأَحَد|Al-Ahad|The One,الصَّمَد|As-Samad|The Eternal Refuge,الْقَادِر|Al-Qadir|The Capable,الْمُقْتَدِر|Al-Muqtadir|The Powerful,الْمُقَدِّم|Al-Muqaddim|The Expediter,الْمُؤَخِّر|Al-Mu'akhkhir|The Delayer,الأَوَّل|Al-Awwal|The First,الآخِر|Al-Akhir|The Last,الظَّاهِر|Az-Zahir|The Manifest,الْبَاطِن|Al-Batin|The Hidden,الْوَالِي|Al-Wali|The Governor,الْمُتَعَالِي|Al-Muta'ali|The Most Exalted,الْبَرّ|Al-Barr|The Source of Goodness,التَّوَّاب|At-Tawwab|The Accepting of Repentance,الْمُنْتَقِم|Al-Muntaqim|The Avenger,الْعَفُوّ|Al-Afuww|The Pardoner,الرَّءُوف|Ar-Ra'uf|The Compassionate,مَالِكُ الْمُلْك|Malik-ul-Mulk|The Owner of Sovereignty,ذُو الْجَلاَلِ وَالإِكْرَام|Dhu-al-Jalal wa-al-Ikram|Lord of Majesty and Honor,الْمُقْسِط|Al-Muqsit|The Equitable,الْجَامِع|Al-Jami'|The Gatherer,الْغَنِيّ|Al-Ghaniyy|The Free of Need,الْمُغْنِي|Al-Mughni|The Enricher,الْمَانِع|Al-Mani'|The Preventer,الضَّارّ|Ad-Darr|The Harmer,النَّافِع|An-Nafi'|The Benefiter,النُّور|An-Nur|The Light,الْهَادِي|Al-Hadi|The Guide,الْبَدِيع|Al-Badi|The Incomparable,الْبَاقِي|Al-Baqi|The Everlasting,الْوَارِث|Al-Warith|The Inheritor,الرَّشِيد|Ar-Rasheed|The Guide to the Right Path,الصَّبُور|As-Sabur|The Patient"
 NAMES_99 = [name.split('|') for name in NAMES_RAW.split(',')]
 
 DYNAMIC_PROPHETS = ["Prophet Adam (as)", "Prophet Nuh (as)", "Prophet Ibrahim (as)", "Prophet Yusuf (as)", "Prophet Musa (as)", "Prophet Isa (as)", "Prophet Muhammad (ﷺ)"]
@@ -240,9 +199,11 @@ if "chat_history" not in st.session_state: st.session_state.chat_history = []
 if "loaded_surah_number" not in st.session_state: st.session_state.loaded_surah_number = None
 if "daily_inspo" not in st.session_state: st.session_state.daily_inspo = random.choice(HADITH_40)
 if "tasbih_count" not in st.session_state: st.session_state.tasbih_count = 0
+if "ai_persona" not in st.session_state: st.session_state.ai_persona = "Balanced Assistant"
+if "use_memory" not in st.session_state: st.session_state.use_memory = True
 
 # ==========================================
-# HELPER FUNCTIONS (RESTORED & FIXED)
+# HELPER FUNCTIONS 
 # ==========================================
 def safe_html(value): 
     return escape("" if value is None else str(value))
@@ -297,8 +258,17 @@ def hide_unverified_model_dua(result):
         result["conclusion"] = "Please consult a verified Hisnul Muslim for highly specific unlisted duas."
     return result
 
-def call_api(user_message, history):
-    messages = [{"role": "system", "content": SYSTEM_PROMPT}]
+def call_api(user_message, history, persona="Balanced Assistant"):
+    # Adjust prompt based on Persona
+    dynamic_prompt = BASE_SYSTEM_PROMPT
+    if persona == "Deep Scholar":
+        dynamic_prompt += "\n- ACT AS A SCHOLAR: Provide deep academic references, mention specific Madhab opinions if applicable, and be thorough."
+    elif persona == "Spiritual Counselor":
+        dynamic_prompt += "\n- ACT AS A COUNSELOR: Focus on empathy, Sabr (patience), Tawakkul (reliance on Allah), and spiritual healing. Keep tone gentle."
+    elif persona == "Quick Answer":
+        dynamic_prompt += "\n- ACT AS A QUICK GUIDE: Provide only 1-2 sentences. Skip deep explanations unless necessary."
+
+    messages = [{"role": "system", "content": dynamic_prompt}]
     for item in history[-3:]:
         messages.append({"role": "user", "content": item["user"]})
         messages.append({"role": "assistant", "content": item["assistant"]})
@@ -383,8 +353,20 @@ with st.sidebar:
 # ==========================================
 tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(["🤖 AI Chat", "📖 Quran Reader", "🕌 Prayer & Qibla", "📿 Tasbih & Dua", "📚 Hadith & Names", "📜 Deep Knowledge"])
 
-# ----------------- TAB 1: AI CHAT & FIRST AID -----------------
+# ----------------- TAB 1: AI CHAT -----------------
 with tab1: 
+    # AI Chat Features & Settings
+    with st.expander("⚙️ AI Chat Settings & Tools", expanded=False):
+        col_s1, col_s2 = st.columns(2)
+        with col_s1:
+            st.session_state.ai_persona = st.selectbox("🧠 AI Persona (How should it answer?)", ["Balanced Assistant", "Deep Scholar", "Spiritual Counselor", "Quick Answer"], index=["Balanced Assistant", "Deep Scholar", "Spiritual Counselor", "Quick Answer"].index(st.session_state.ai_persona))
+        with col_s2:
+            st.markdown("<br>", unsafe_allow_html=True)
+            st.session_state.use_memory = st.toggle("🔄 Remember Conversation Context", value=st.session_state.use_memory, help="Turn off if you want to ask a new question without the AI remembering previous messages.")
+        
+        st.markdown("---")
+        st.download_button("📥 Download Chat Transcript", data=format_chat_for_export(), file_name=f"Muslim_AI_Chat_{datetime.now().strftime('%Y%m%d')}.txt", mime="text/plain")
+
     st.markdown("### Spiritual First Aid")
     st.markdown("<span class='muted'>Select how you are feeling to receive instant Quranic comfort and guidance.</span>", unsafe_allow_html=True)
     mood_cols = st.columns(4)
@@ -392,20 +374,34 @@ with tab1:
     
     selected_mood = None
     for i, mood in enumerate(moods):
-        if mood_cols[i % 4].button(mood, use_container_width=True):
-            selected_mood = mood
+        if mood_cols[i % 4].button(mood, use_container_width=True): selected_mood = mood
             
-    if selected_mood:
-        prompt = f"I am feeling {selected_mood}. Please provide a comforting Islamic perspective, a relevant Ayah, and a short Dua to help me."
-        with st.spinner("Finding comfort..."):
+    # Suggested Prompts
+    st.markdown("<span class='muted'>Or try a suggested prompt:</span>", unsafe_allow_html=True)
+    suggested_cols = st.columns(3)
+    suggestions = ["Explain Tawakkul", "Importance of Salah", "Tips for Sabr"]
+    selected_suggestion = None
+    for i, sug in enumerate(suggestions):
+        if suggested_cols[i].button(sug, use_container_width=True): selected_suggestion = sug
+
+    # Trigger action if button pressed
+    trigger_prompt = selected_mood if selected_mood else selected_suggestion
+    if trigger_prompt:
+        prompt_text = f"I am feeling {trigger_prompt}. Provide comfort." if selected_mood else trigger_prompt
+        with st.spinner("Processing..."):
             try:
-                raw = call_api(prompt, [])
-                render_response(parse_response(raw))
-            except Exception: st.error("Error retrieving guidance.")
+                hist = st.session_state.chat_history if st.session_state.use_memory else []
+                raw = call_api(prompt_text, hist, persona=st.session_state.ai_persona)
+                result = parse_response(raw)
+                st.session_state.messages.append({"role": "user", "content": prompt_text})
+                st.session_state.messages.append({"role": "assistant", "content": json.dumps(result, ensure_ascii=False)})
+                if st.session_state.use_memory:
+                    st.session_state.chat_history.append({"user": prompt_text, "assistant": result.get("direct_answer", "")})
+            except Exception: st.error("Error retrieving response.")
             
     st.markdown("---")
-    st.download_button("📥 Download Chat Transcript", data=format_chat_for_export(), file_name=f"Muslim_AI_Chat_{datetime.now().strftime('%Y%m%d')}.txt", mime="text/plain")
     
+    # Display Chat History
     for msg in st.session_state.messages:
         with st.chat_message(msg["role"]):
             if msg["role"] == "assistant":
@@ -413,6 +409,7 @@ with tab1:
                 except Exception: st.markdown(msg["content"])
             else: st.markdown(f'<div style="font-size:16px;">{msg["content"]}</div>', unsafe_allow_html=True)
 
+    # Chat Input
     user_input = st.chat_input("Ask your Islamic question...")
     if user_input:
         st.session_state.messages.append({"role": "user", "content": user_input})
@@ -424,13 +421,15 @@ with tab1:
                     if route:
                         result = build_curated_response(route)
                     else:
-                        raw = call_api(user_input, st.session_state.chat_history)
+                        hist = st.session_state.chat_history if st.session_state.use_memory else []
+                        raw = call_api(user_input, hist, persona=st.session_state.ai_persona)
                         result = parse_response(raw)
                         if is_dua_query(user_input):
                             result = hide_unverified_model_dua(result)
                     render_response(result)
                     st.session_state.messages.append({"role": "assistant", "content": json.dumps(result, ensure_ascii=False)})
-                    st.session_state.chat_history.append({"user": user_input, "assistant": result.get("direct_answer", "")})
+                    if st.session_state.use_memory:
+                        st.session_state.chat_history.append({"user": user_input, "assistant": result.get("direct_answer", "")})
                 except Exception as e: st.error("Error processing request.")
 
 # ----------------- TAB 2: QURAN & AUDIO -----------------
@@ -444,7 +443,6 @@ with tab2:
             
     with col2:
         if st.session_state.loaded_surah_number:
-            # Audio Player (Mishary Alafasy)
             audio_url = f"https://server8.mp3quran.net/afs/{st.session_state.loaded_surah_number:03d}.mp3"
             st.markdown('<div class="premium-card" style="text-align:center;"><strong class="accent" style="font-size:18px;">🔊 Listen to Full Surah Recitation:</strong><br><br>', unsafe_allow_html=True)
             st.audio(audio_url, format="audio/mp3")
@@ -524,6 +522,7 @@ with tab4:
 
 # ----------------- TAB 5: HADITH & NAMES -----------------
 with tab5:
+    # --- 40 HADITH SECTION ---
     st.markdown('<div class="section-title" style="margin-top:0;">An-Nawawi\'s 40 Hadith</div>', unsafe_allow_html=True)
     for h in HADITH_40:
         st.markdown(
@@ -534,8 +533,9 @@ with tab5:
             unsafe_allow_html=True,
         )
 
+    # --- 99 NAMES SECTION ---
     st.markdown('<div class="section-title">The 99 Names of Allah (Asma-ul-Husna)</div>', unsafe_allow_html=True)
-    st.markdown('<div class="info-box">The first 33 beautiful names of Allah.</div>', unsafe_allow_html=True)
+    st.markdown('<div class="info-box">The full 99 beautiful names of Allah.</div>', unsafe_allow_html=True)
     cols = st.columns(3)
     for i, name_data in enumerate(NAMES_99):
         cols[i % 3].markdown(f'<div class="name-card"><div class="arabic" style="font-size:32px; text-align:center; margin-bottom:10px; color:#FEF08A;">{name_data[0]}</div><strong style="color:#FBBF24; font-size:18px;">{name_data[1]}</strong><br><br><span style="color:#CBD5E1; font-size:15px;">{name_data[2]}</span></div>', unsafe_allow_html=True)
