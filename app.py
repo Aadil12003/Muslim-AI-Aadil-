@@ -1,5 +1,6 @@
 import json
 import re
+import time
 import requests
 import streamlit as st
 
@@ -8,12 +9,10 @@ st.set_page_config(page_title="Muslim AI", layout="wide", initial_sidebar_state=
 st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Scheherazade+New:wght@400;700&display=swap');
-
 html, body, .stApp {
     background: linear-gradient(145deg, #071019 0%, #0c1d2b 45%, #14293d 100%);
     color: #edf4fb;
 }
-
 .hero-shell {
     background: linear-gradient(135deg, rgba(15,31,47,0.96), rgba(10,23,35,0.96));
     border: 1px solid rgba(216,181,90,0.24);
@@ -22,7 +21,6 @@ html, body, .stApp {
     margin: 8px 0 18px 0;
     box-shadow: 0 12px 38px rgba(0,0,0,0.28);
 }
-
 .hero-bismillah {
     font-family: 'Scheherazade New', serif;
     font-size: 40px;
@@ -31,7 +29,6 @@ html, body, .stApp {
     direction: rtl;
     line-height: 1.7;
 }
-
 .hero-title {
     font-family: 'Amiri', serif;
     text-align: center;
@@ -40,14 +37,12 @@ html, body, .stApp {
     margin-top: 6px;
     margin-bottom: 4px;
 }
-
 .hero-subtitle {
     text-align: center;
     color: #b6c7d8;
     font-size: 15px;
     margin-bottom: 14px;
 }
-
 .section-title {
     font-size: 20px;
     font-weight: 700;
@@ -56,7 +51,6 @@ html, body, .stApp {
     padding-bottom: 5px;
     border-bottom: 1px solid rgba(216,181,90,0.24);
 }
-
 .answer-card {
     background: linear-gradient(135deg, rgba(18,38,57,0.96), rgba(24,49,73,0.96));
     border-left: 4px solid #d8b55a;
@@ -66,7 +60,6 @@ html, body, .stApp {
     line-height: 1.85;
     margin: 12px 0;
 }
-
 .quran-card {
     background: linear-gradient(135deg, rgba(13,38,27,0.96), rgba(18,54,37,0.96));
     border-left: 4px solid #39b97a;
@@ -76,7 +69,6 @@ html, body, .stApp {
     margin: 10px 0;
     border: 1px solid rgba(57,185,122,0.22);
 }
-
 .hadith-card {
     background: linear-gradient(135deg, rgba(14,31,47,0.96), rgba(18,42,63,0.96));
     border-left: 4px solid #57a9ff;
@@ -86,7 +78,6 @@ html, body, .stApp {
     margin: 10px 0;
     border: 1px solid rgba(87,169,255,0.18);
 }
-
 .scholar-card {
     background: linear-gradient(135deg, rgba(38,24,11,0.96), rgba(53,34,16,0.96));
     border-left: 4px solid #d8b55a;
@@ -95,7 +86,6 @@ html, body, .stApp {
     color: #edf4fb;
     margin: 10px 0;
 }
-
 .dua-card {
     background: linear-gradient(135deg, rgba(27,15,43,0.96), rgba(39,21,60,0.96));
     border: 1px solid rgba(168,122,219,0.26);
@@ -105,7 +95,6 @@ html, body, .stApp {
     margin: 10px 0;
     text-align: center;
 }
-
 .reader-card {
     background: linear-gradient(135deg, rgba(14,30,21,0.96), rgba(17,41,29,0.96));
     border: 1px solid rgba(57,185,122,0.20);
@@ -114,7 +103,6 @@ html, body, .stApp {
     color: #edf4fb;
     margin: 8px 0;
 }
-
 .warning-card {
     background: linear-gradient(135deg, rgba(55,17,17,0.96), rgba(68,20,20,0.96));
     border-left: 4px solid #d9665b;
@@ -123,7 +111,6 @@ html, body, .stApp {
     color: #ffe0dd;
     margin: 12px 0;
 }
-
 .info-box {
     background: linear-gradient(135deg, rgba(14,27,40,0.94), rgba(11,21,32,0.94));
     border: 1px solid rgba(216,181,90,0.16);
@@ -132,7 +119,6 @@ html, body, .stApp {
     color: #edf4fb;
     margin: 10px 0;
 }
-
 .arabic-text {
     font-family: 'Scheherazade New', 'Amiri', serif;
     font-size: 30px;
@@ -143,14 +129,12 @@ html, body, .stApp {
     line-height: 2.35;
     margin: 10px 0;
 }
-
 .translation-text {
     color: #cde0d1;
     font-style: italic;
     line-height: 1.8;
     margin-top: 8px;
 }
-
 .badge-sahih {
     display: inline-block;
     padding: 3px 10px;
@@ -160,7 +144,6 @@ html, body, .stApp {
     background: #2ea76d;
     color: white;
 }
-
 .badge-hasan {
     display: inline-block;
     padding: 3px 10px;
@@ -170,7 +153,6 @@ html, body, .stApp {
     background: #d7952e;
     color: white;
 }
-
 .badge-weak {
     display: inline-block;
     padding: 3px 10px;
@@ -183,7 +165,11 @@ html, body, .stApp {
 </style>
 """, unsafe_allow_html=True)
 
-NVIDIA_API_KEY = st.secrets["NVIDIA_API_KEY"]
+try:
+    NVIDIA_API_KEY = st.secrets["NVIDIA_API_KEY"]
+except Exception:
+    NVIDIA_API_KEY = "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"
+
 API_URL = "https://integrate.api.nvidia.com/v1/chat/completions"
 MODEL = "meta/llama-4-maverick-17b-128e-instruct"
 
@@ -439,7 +425,7 @@ if "quick_question" not in st.session_state:
 
 def call_api(user_message, history):
     messages = [{"role": "system", "content": SYSTEM_PROMPT}]
-    for h in history[-6:]:
+    for h in history[-3:]:
         messages.append({"role": "user", "content": h["user"]})
         messages.append({"role": "assistant", "content": h["assistant"]})
     messages.append({"role": "user", "content": user_message})
@@ -455,23 +441,36 @@ def call_api(user_message, history):
         "temperature": 0.1,
         "stream": False
     }
-    response = requests.post(API_URL, headers=headers, json=payload, timeout=45)
-    data = response.json()
-    if "choices" not in data:
-        raise Exception(f"API error: {json.dumps(data)}")
-    content = data["choices"][0]["message"]["content"]
-    if not content:
-        raise Exception("Empty response from API")
-    return content
+    for attempt in range(3):
+        try:
+            response = requests.post(API_URL, headers=headers, json=payload, timeout=45)
+            if response.status_code != 200:
+                raise Exception(f"HTTP {response.status_code}: {response.text}")
+            data = response.json()
+            if "choices" not in data:
+                raise Exception(f"API error: {json.dumps(data)}")
+            content = data["choices"][0]["message"]["content"]
+            if not content:
+                raise Exception("Empty response from API")
+            return content
+        except Exception as e:
+            if attempt < 2:
+                time.sleep(2 ** attempt)
+            else:
+                raise e
 
 def parse_response(raw):
-    cleaned = re.sub(r'```json|```', '', raw).strip()
-    start = cleaned.find('{')
-    end = cleaned.rfind('}') + 1
-    if start != -1 and end > start:
-        cleaned = cleaned[start:end]
-    return json.loads(cleaned)
+    try:
+        cleaned = re.sub(r'```json|```', '', raw).strip()
+        start = cleaned.find('{')
+        end = cleaned.rfind('}') + 1
+        if start != -1 and end > start:
+            cleaned = cleaned[start:end]
+        return json.loads(cleaned)
+    except Exception:
+        return {"direct_answer": raw, "quran_evidence": [], "hadith_evidence": [], "scholarly_opinions": [], "dua": {}, "ikhtilaf": "No", "conclusion": "", "consult_scholar": "No"}
 
+@st.cache_data(ttl=3600)
 def fetch_quran_surah(surah_number):
     try:
         response = requests.get(
@@ -492,11 +491,7 @@ def render_response(result):
     if quran:
         st.markdown('<div class="section-title">Quran Evidence</div>', unsafe_allow_html=True)
         for verse in quran:
-            arabic = verse.get("arabic", "")
-            translation = verse.get("translation", "")
-            reference = verse.get("reference", "")
-            explanation = verse.get("explanation", "")
-            st.markdown(f'<div class="quran-card"><div class="arabic-text">{arabic}</div><div class="translation-text">{translation}</div><br><span style="color:#39b97a; font-weight:700;">{reference}</span><br><br><em style="color:#b6c7d8;">{explanation}</em></div>', unsafe_allow_html=True)
+            st.markdown(f'<div class="quran-card"><div class="arabic-text">{verse.get("arabic", "")}</div><div class="translation-text">{verse.get("translation", "")}</div><br><span style="color:#39b97a; font-weight:700;">{verse.get("reference", "")}</span><br><br><em style="color:#b6c7d8;">{verse.get("explanation", "")}</em></div>', unsafe_allow_html=True)
 
     hadith = result.get("hadith_evidence", [])
     if hadith:
@@ -578,26 +573,26 @@ with tab1:
         user_input = st.chat_input("Ask your Islamic question in English, Urdu, or Arabic...")
 
     if user_input:
-        st.session_state.messages.append({"role": "user", "content": user_input})
-        with st.chat_message("user"):
-            st.markdown(user_input)
-        with st.chat_message("assistant"):
-            with st.spinner("Searching Quran and Hadith..."):
-                try:
-                    raw = call_api(user_input, st.session_state.chat_history)
-                    result = parse_response(raw)
-                    render_response(result)
-                    st.session_state.messages.append({"role": "assistant", "content": json.dumps(result)})
-                    st.session_state.chat_history.append({"user": user_input, "assistant": raw})
-                except Exception as e:
-                    error_msg = f"Error: {str(e)}. Please try again."
-                    st.error(error_msg)
-                    st.session_state.messages.append({"role": "assistant", "content": error_msg})
+        if not user_input.strip():
+            st.warning("Please enter a valid question.")
+        else:
+            st.session_state.messages.append({"role": "user", "content": user_input})
+            with st.chat_message("user"):
+                st.markdown(user_input)
+            with st.chat_message("assistant"):
+                with st.spinner("Searching Quran and Hadith..."):
+                    try:
+                        raw = call_api(user_input, st.session_state.chat_history)
+                        result = parse_response(raw)
+                        render_response(result)
+                        st.session_state.messages.append({"role": "assistant", "content": json.dumps(result)})
+                        st.session_state.chat_history.append({"user": user_input, "assistant": raw})
+                    except Exception as e:
+                        st.error(f"Error: {str(e)}. Please try again.")
 
 with tab2:
     st.markdown('<div class="section-title">Quran Reader — All 114 Surahs</div>', unsafe_allow_html=True)
     st.markdown('<div class="info-box">Select any Surah to read with Arabic text and English translation.</div>', unsafe_allow_html=True)
-
     col1, col2 = st.columns([1, 2])
     with col1:
         surah_options = [f"{num}. {name} ({verses} verses)" for num, name, verses in QURAN_SURAHS]
@@ -606,7 +601,6 @@ with tab2:
         surah_info = QURAN_SURAHS[surah_number - 1]
         st.markdown(f'<div class="info-box"><strong style="color:#d8b55a;">Surah {surah_info[0]}: {surah_info[1]}</strong><br>Total Ayahs: {surah_info[2]}</div>', unsafe_allow_html=True)
         load_button = st.button("Load Surah", type="primary", use_container_width=True)
-
     with col2:
         if load_button:
             with st.spinner(f"Loading Surah {surah_info[1]}..."):
@@ -620,7 +614,7 @@ with tab2:
                         arabic = ayah.get("text", "")
                         english = english_ayahs[i].get("text", "") if i < len(english_ayahs) else ""
                         ayah_num = ayah.get("numberInSurah", i + 1)
-                        st.markdown(f'<div class="reader-card"><span style="color:#d8b55a; font-size:12px; font-weight:700;">Ayah {ayah_num}</span><div class="arabic-text">{arabic} &#64831;{ayah_num}&#64832;</div><div class="translation-text">{english}</div></div>', unsafe_allow_html=True)
+                        st.markdown(f'<div class="reader-card"><span style="color:#d8b55a; font-size:12px; font-weight:700;">Ayah {ayah_num}</span><div class="arabic-text">{arabic}</div><div class="translation-text">{english}</div></div>', unsafe_allow_html=True)
                 else:
                     st.error("Could not load Surah. Please check your internet connection and try again.")
 
