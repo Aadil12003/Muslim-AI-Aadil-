@@ -644,5 +644,3 @@ with tab4:
         st.markdown(f'<div class="hadith-card"><span style="color:#d8b55a; font-size:13px; font-weight:700;">{hadith.get("number", "")}</span> <span class="{badge_class}">{auth}</span><div class="arabic-text">{hadith.get("arabic", "")}</div><strong style="color:#edf4fb;">{hadith.get("text", "")}</strong><br><br><small style="color:#b6c7d8;">Narrator: {hadith.get("narrator", "")}</small></div>', unsafe_allow_html=True)
         st.markdown("<br>", unsafe_allow_html=True)
     st.markdown('<div class="info-box">Ask the AI Assistant for more Hadith on any specific topic.</div>', unsafe_allow_html=True)
-```
-
