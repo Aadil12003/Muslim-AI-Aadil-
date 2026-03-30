@@ -1,10 +1,9 @@
 import streamlit as st
 import requests
-import json
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
-st.set_page_config(page_title="Muslim AI Hybrid", layout="wide")
+st.set_page_config(page_title="Muslim AI API System", layout="wide")
 
 # ================= STYLE =================
 st.markdown("""
@@ -22,34 +21,29 @@ h1 { color: #38bdf8; }
 </style>
 """, unsafe_allow_html=True)
 
-st.title("🕌 Muslim AI (Hybrid Authentic System)")
+st.title("🕌 Muslim AI (No Dataset Mode)")
 
 API_KEY = st.secrets.get("NVIDIA_API_KEY")
 
-# ================= LOAD HADITH =================
-@st.cache_data
-def load_hadith():
-    with open("hadith.json", "r", encoding="utf-8") as f:
-        return json.load(f)
+# ================= HADITH API =================
+def fetch_hadith_api(query):
+    try:
+        url = f"https://api.hadith.gading.dev/search?q={query}"
+        res = requests.get(url)
+        data = res.json()
 
-hadith_data = load_hadith()
+        results = []
+        for item in data["data"][:10]:
+            results.append({
+                "text": item["arab"] + " - " + item["id"],
+                "book": item["kitab"],
+                "number": item["hadits"]
+            })
 
-# ================= TF-IDF =================
-@st.cache_resource
-def build_vectorizer():
-    texts = [h["text"] for h in hadith_data]
-    vectorizer = TfidfVectorizer(stop_words="english")
-    matrix = vectorizer.fit_transform(texts)
-    return vectorizer, matrix
+        return results
 
-vectorizer, matrix = build_vectorizer()
-
-# ================= FAST SEARCH =================
-def tfidf_search(query):
-    query_vec = vectorizer.transform([query])
-    similarity = cosine_similarity(query_vec, matrix).flatten()
-    top_indices = similarity.argsort()[-10:][::-1]
-    return [hadith_data[i] for i in top_indices]
+    except:
+        return []
 
 # ================= AI RERANK =================
 def rerank_with_ai(question, candidates):
@@ -106,7 +100,7 @@ Hadith:
     except:
         return candidates[:3]
 
-# ================= QURAN SEARCH =================
+# ================= QURAN =================
 def search_quran(query):
     try:
         res = requests.get(f"https://api.alquran.cloud/v1/search/{query}/all/en")
@@ -117,7 +111,6 @@ def search_quran(query):
 # ================= AI ANSWER =================
 def get_ai_answer(question, hadith_results, quran_results):
 
-    # Determine mode
     if not hadith_results and not quran_results:
         mode = "general"
     else:
@@ -150,9 +143,7 @@ Hadith:
         prompt = f"""
 Answer using general Islamic knowledge.
 
-IMPORTANT:
-- No direct source found in dataset
-- Do NOT fake references
+Do NOT fabricate references.
 
 Question:
 {question}
@@ -176,33 +167,34 @@ Question:
             timeout=30
         )
 
-        answer = res.json()["choices"][0]["message"]["content"]
-        return answer, mode
+        return res.json()["choices"][0]["message"]["content"], mode
 
-    except Exception as e:
-        return f"❌ ERROR: {str(e)}", mode
+    except:
+        return "❌ AI Error", mode
 
 # ================= UI =================
 question = st.text_input("💬 Ask your question")
 
 if st.button("Ask") and question:
 
-    # STEP 1: SEARCH
-    candidates = tfidf_search(question)
+    # HADITH API
+    candidates = fetch_hadith_api(question)
     hadith_results = rerank_with_ai(question, candidates)
+
+    # QURAN
     quran_results = search_quran(question)
 
-    # STEP 2: ANSWER
+    # ANSWER
     answer, mode = get_ai_answer(question, hadith_results, quran_results)
 
     st.markdown("## 🧠 AI Answer")
 
     if mode == "general":
-        st.warning("⚠️ No direct Quran/Hadith found in dataset. Showing general explanation.")
+        st.warning("⚠️ No direct Quran/Hadith found. Showing general explanation.")
 
     st.markdown(f"<div class='card'>{answer}</div>", unsafe_allow_html=True)
 
-    # ================= HADITH =================
+    # HADITH
     st.markdown("## 📜 Hadith Sources")
     if hadith_results:
         for h in hadith_results:
@@ -211,9 +203,9 @@ if st.button("Ask") and question:
                 unsafe_allow_html=True
             )
     else:
-        st.info("No Hadith found in dataset")
+        st.info("No Hadith found")
 
-    # ================= QURAN =================
+    # QURAN
     st.markdown("## 📖 Quran Sources")
     if quran_results:
         for v in quran_results:
