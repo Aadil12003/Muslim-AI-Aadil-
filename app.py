@@ -183,7 +183,7 @@ html, body, .stApp {
 </style>
 """, unsafe_allow_html=True)
 
-NVIDIA_API_KEY = "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"
+NVIDIA_API_KEY = st.secrets["NVIDIA_API_KEY"]
 API_URL = "https://integrate.api.nvidia.com/v1/chat/completions"
 MODEL = "meta/llama-4-maverick-17b-128e-instruct"
 
