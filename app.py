@@ -22,7 +22,7 @@ h1 { color: #38bdf8; }
 </style>
 """, unsafe_allow_html=True)
 
-st.title("🕌 Muslim AI (Hybrid Search System)")
+st.title("🕌 Muslim AI (Hybrid Authentic System)")
 
 API_KEY = st.secrets.get("NVIDIA_API_KEY")
 
@@ -54,6 +54,9 @@ def tfidf_search(query):
 # ================= AI RERANK =================
 def rerank_with_ai(question, candidates):
 
+    if not candidates:
+        return []
+
     text_block = "\n".join([
         f"{i}. {h['text']} ({h['book']} {h['number']})"
         for i, h in enumerate(candidates)
@@ -71,25 +74,21 @@ Hadith:
 {text_block}
 """
 
-    payload = {
-        "model": "meta/llama-4-maverick-17b-128e-instruct",
-        "messages": [
-            {"role": "system", "content": "Islamic assistant"},
-            {"role": "user", "content": prompt}
-        ],
-        "max_tokens": 50
-    }
-
-    headers = {
-        "Authorization": f"Bearer {API_KEY}",
-        "Content-Type": "application/json"
-    }
-
     try:
         res = requests.post(
             "https://integrate.api.nvidia.com/v1/chat/completions",
-            headers=headers,
-            json=payload,
+            headers={
+                "Authorization": f"Bearer {API_KEY}",
+                "Content-Type": "application/json"
+            },
+            json={
+                "model": "meta/llama-4-maverick-17b-128e-instruct",
+                "messages": [
+                    {"role": "system", "content": "Islamic assistant"},
+                    {"role": "user", "content": prompt}
+                ],
+                "max_tokens": 50
+            },
             timeout=20
         )
 
@@ -107,7 +106,7 @@ Hadith:
     except:
         return candidates[:3]
 
-# ================= QURAN =================
+# ================= QURAN SEARCH =================
 def search_quran(query):
     try:
         res = requests.get(f"https://api.alquran.cloud/v1/search/{query}/all/en")
@@ -117,6 +116,12 @@ def search_quran(query):
 
 # ================= AI ANSWER =================
 def get_ai_answer(question, hadith_results, quran_results):
+
+    # Determine mode
+    if not hadith_results and not quran_results:
+        mode = "general"
+    else:
+        mode = "strict"
 
     hadith_text = "\n".join([
         f"{h['text']} ({h['book']} {h['number']})"
@@ -128,8 +133,9 @@ def get_ai_answer(question, hadith_results, quran_results):
         for v in quran_results
     ])
 
-    prompt = f"""
-Answer ONLY using sources below.
+    if mode == "strict":
+        prompt = f"""
+Answer ONLY using provided sources.
 
 Question:
 {question}
@@ -140,66 +146,83 @@ Quran:
 Hadith:
 {hadith_text}
 """
+    else:
+        prompt = f"""
+Answer using general Islamic knowledge.
 
-    payload = {
-        "model": "meta/llama-4-maverick-17b-128e-instruct",
-        "messages": [
-            {"role": "system", "content": "Islamic expert"},
-            {"role": "user", "content": prompt}
-        ],
-        "max_tokens": 800
-    }
+IMPORTANT:
+- No direct source found in dataset
+- Do NOT fake references
 
-    headers = {
-        "Authorization": f"Bearer {API_KEY}",
-        "Content-Type": "application/json"
-    }
+Question:
+{question}
+"""
 
     try:
         res = requests.post(
             "https://integrate.api.nvidia.com/v1/chat/completions",
-            headers=headers,
-            json=payload,
+            headers={
+                "Authorization": f"Bearer {API_KEY}",
+                "Content-Type": "application/json"
+            },
+            json={
+                "model": "meta/llama-4-maverick-17b-128e-instruct",
+                "messages": [
+                    {"role": "system", "content": "Islamic assistant"},
+                    {"role": "user", "content": prompt}
+                ],
+                "max_tokens": 800
+            },
             timeout=30
         )
-        return res.json()["choices"][0]["message"]["content"]
+
+        answer = res.json()["choices"][0]["message"]["content"]
+        return answer, mode
+
     except Exception as e:
-        return f"❌ ERROR: {str(e)}"
+        return f"❌ ERROR: {str(e)}", mode
 
 # ================= UI =================
 question = st.text_input("💬 Ask your question")
 
 if st.button("Ask") and question:
 
-    # STEP 1: FAST SEARCH
+    # STEP 1: SEARCH
     candidates = tfidf_search(question)
-
-    # STEP 2: AI RERANK
     hadith_results = rerank_with_ai(question, candidates)
-
-    # STEP 3: QURAN
     quran_results = search_quran(question)
 
-    # STEP 4: ANSWER
+    # STEP 2: ANSWER
+    answer, mode = get_ai_answer(question, hadith_results, quran_results)
+
     st.markdown("## 🧠 AI Answer")
-    answer = get_ai_answer(question, hadith_results, quran_results)
+
+    if mode == "general":
+        st.warning("⚠️ No direct Quran/Hadith found in dataset. Showing general explanation.")
+
     st.markdown(f"<div class='card'>{answer}</div>", unsafe_allow_html=True)
 
-    # HADITH
+    # ================= HADITH =================
     st.markdown("## 📜 Hadith Sources")
-    for h in hadith_results:
-        st.markdown(
-            f"<div class='card'>{h['text']}<br><b>{h['book']} {h['number']}</b></div>",
-            unsafe_allow_html=True
-        )
+    if hadith_results:
+        for h in hadith_results:
+            st.markdown(
+                f"<div class='card'>{h['text']}<br><b>{h['book']} {h['number']}</b></div>",
+                unsafe_allow_html=True
+            )
+    else:
+        st.info("No Hadith found in dataset")
 
-    # QURAN
+    # ================= QURAN =================
     st.markdown("## 📖 Quran Sources")
-    for v in quran_results:
-        st.markdown(
-            f"<div class='card'>{v['text']}<br><b>{v['surah']['name']} {v['numberInSurah']}</b></div>",
-            unsafe_allow_html=True
-        )
+    if quran_results:
+        for v in quran_results:
+            st.markdown(
+                f"<div class='card'>{v['text']}<br><b>{v['surah']['name']} {v['numberInSurah']}</b></div>",
+                unsafe_allow_html=True
+            )
+    else:
+        st.info("No Quran match found")
 
 # ================= DUA =================
 st.markdown("## 🤲 Duas")
