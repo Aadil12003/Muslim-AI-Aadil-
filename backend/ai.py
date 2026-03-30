@@ -3,7 +3,7 @@ import os
 import time
 
 API_URL = "https://integrate.api.nvidia.com/v1/chat/completions"
-API_KEY = os.getenv("NVIDIA_API_KEY")
+API_KEY = os.getenv("NVIDIA_API_KEY"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")
 
 def generate_answer(question):
     if not API_KEY:
