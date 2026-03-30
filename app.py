@@ -121,16 +121,6 @@ h1, h2, h3, .serif-text {
 .source-link:hover { opacity: 0.7; }
 
 /* ===== LABELS & BADGES ===== */
-.story-label {
-    display: inline-block;
-    font-size: 12px;
-    text-transform: uppercase;
-    letter-spacing: 1.5px;
-    color: #D4AF37;
-    margin-top: 16px;
-    margin-bottom: 4px;
-    font-weight: 600;
-}
 .pill-badge {
     font-size: 11px;
     border: 1px solid #D4AF37;
@@ -196,12 +186,12 @@ if not NVIDIA_API_KEY:
 API_URL = "https://integrate.api.nvidia.com/v1/chat/completions"
 MODEL = "meta/llama-4-maverick-17b-128e-instruct"
 
-SYSTEM_PROMPT = """You are an Islamic AI Assistant. Respond only with authentic Quran, Sahih Hadith, and recognized scholarly opinion.
+SYSTEM_PROMPT = """You are an Islamic AI Assistant. Respond only with authentic Quran, Sahih Hadith, and recognized classical scholarship (like Ibn Kathir).
 - Do NOT fabricate references.
-- If unsure, say you are unsure.
+- If generating a story, provide a deep, comprehensive, multi-paragraph narrative detailing the motives and profound morals.
 - Return ONLY valid JSON.
 {
-  "direct_answer": "concise answer",
+  "direct_answer": "concise answer or full story text",
   "quran_evidence": [{"arabic": "", "translation": "", "reference": "", "explanation": ""}],
   "hadith_evidence": [{"text": "", "arabic": "", "source": "", "authenticity": "Sahih", "note": ""}],
   "scholarly_opinions": [{"madhab": "", "opinion": "", "source": ""}],
@@ -211,10 +201,10 @@ SYSTEM_PROMPT = """You are an Islamic AI Assistant. Respond only with authentic 
   "conclusion": "summary",
   "consult_scholar": "Yes or No",
   "source_notice": "",
-  "language_detected": "English or Urdu or Arabic"
+  "language_detected": "English"
 }"""
 
-# Data
+# Data Sets
 SURAH_NAMES = [
     "Al-Fatiha","Al-Baqarah","Al-Imran","An-Nisa","Al-Maidah","Al-Anam","Al-Araf","Al-Anfal","At-Tawbah","Yunus","Hud","Yusuf",
     "Ar-Rad","Ibrahim","Al-Hijr","An-Nahl","Al-Isra","Al-Kahf","Maryam","Ta-Ha","Al-Anbiya","Al-Hajj","Al-Muminun","An-Nur",
@@ -228,7 +218,6 @@ SURAH_NAMES = [
     "Al-Kafirun","An-Nasr","Al-Masad","Al-Ikhlas","Al-Falaq","An-Nas"
 ]
 
-# Comprehensive Rabbana Duas + Existing
 DUA_CATEGORIES = {
     "Quranic Rabbana Duas": [
         {"title": "For Good in This World and the Hereafter", "arabic": "رَبَّنَا آتِنَا فِي الدُّنْيَا حَسَنَةً وَفِي الْآخِرَةِ حَسَنَةً وَقِنَا عَذَابَ النَّارِ", "transliteration": "Rabbana atina fid-dunya hasanatan wa fil 'akhirati hasanatan waqina 'adhaban-nar", "meaning": "Our Lord, give us in this world [that which is] good and in the Hereafter [that which is] good and protect us from the punishment of the Fire.", "reference": "Quran 2:201", "source_url": "https://quran.com/2/201"},
@@ -258,7 +247,6 @@ DUA_CATEGORIES = {
     ]
 }
 
-# 40 Hadith with Arabic and Sources
 HADITH_40 = [
     {"number": 1, "arabic": "إِنَّمَا الأَعْمَالُ بِالنِّيَّاتِ، وَإِنَّمَا لِكُلِّ امْرِئٍ مَا نَوَى", "text": "Actions are judged by intentions, and everyone will get what they intended.", "source": "Sahih al-Bukhari 1, Sahih Muslim 1907"},
     {"number": 2, "arabic": "بُنِيَ الإِسْلاَمُ عَلَى خَمْسٍ", "text": "Islam is built on five pillars...", "source": "Sahih al-Bukhari 8, Sahih Muslim 16"},
@@ -302,80 +290,19 @@ HADITH_40 = [
     {"number": 40, "arabic": "مَنْ حَسُنَ إِسْلاَمُهُ تَرَكَ مَا لاَ يَعْنِيهِ", "text": "Part of the perfection of a person's Islam is his leaving that which is of no concern to him.", "source": "Jami` at-Tirmidhi 2317 (Hasan)"}
 ]
 
-STORIES = [
-    {
-        "title": "Prophet Yusuf (as) and the Beauty of Patience", 
-        "summary": "Betrayed by his jealous brothers, thrown into a dark well, sold into slavery in Egypt, and falsely imprisoned for years due to the slander of the Minister's wife, Yusuf (as) never lost faith. Through immense trials, Allah granted him the ability to interpret dreams. Eventually, his gift brought him before the King of Egypt, where he saved the region from a devastating seven-year famine and was made a high-ranking minister. Years later, his brothers came begging for food, not recognizing him. He forgave them unconditionally, uniting his family.",
-        "moral": "True patience (Sabr Jameel) is not just waiting, but maintaining noble character and trust in Allah during the wait. No matter how dark the pit or prison, Allah's plan is superior.",
-        "motive": "To demonstrate that divine decree overrides human plotting. Jealousy destroys the plotter, while reliance on Allah elevates the oppressed.",
-        "source": "Quran: Surah Yusuf (Chapter 12) / Tafseer Ibn Kathir"
-    },
-    {
-        "title": "The People of the Cave (Ashab al-Kahf)", 
-        "summary": "A group of righteous youths living under a tyrannical, idolatrous king openly declared their monotheism. Facing persecution and execution, they fled the city with their dog and hid in a cave. They prayed to Allah for mercy. Miraculously, Allah caused them to fall into a deep sleep that lasted over 300 years. When they awoke, thinking only a day had passed, they sent one youth to buy food. The ancient coins he used revealed the miracle to the new generation, who had become believers. The youths then passed away peacefully.",
-        "moral": "When you give up the comforts of the world to protect your faith, Allah will provide refuge in ways beyond human comprehension.",
-        "motive": "To prove the reality of the Resurrection (life after death) to the disbelievers of Makkah and to establish that Allah protects the sincere youth who stand against corruption.",
-        "source": "Quran: Surah Al-Kahf (18:9-26)"
-    },
-    {
-        "title": "Prophet Musa (as) and Al-Khidr", 
-        "summary": "Musa (as), the most knowledgeable man of Bani Israel, was commanded by Allah to travel and meet Al-Khidr, a servant granted special divine wisdom. Musa asked to follow him to learn. Khidr agreed on the condition that Musa not question anything until Khidr explained it. On their journey, Khidr did three seemingly terrible things: he damaged a boat belonging to poor fishermen, he killed a young boy, and he rebuilt a wall in a town that refused them hospitality. Musa lost his patience and questioned all three. Khidr then revealed the divine realities: the boat was damaged to save it from a tyrannical king seizing good ships; the boy was destined to be a tyrant who would destroy his pious parents' faith; and the wall hid an orphan's treasure that would have been stolen if the wall collapsed.",
-        "moral": "Human knowledge is profoundly limited. What appears as a tragedy or injustice in our eyes may be a profound mercy and protection from Allah.",
-        "motive": "To teach humility in knowledge and complete submission to Qadar (Divine Decree), understanding that Allah's wisdom operates beyond our immediate perception.",
-        "source": "Quran: Surah Al-Kahf (18:60-82) / Sahih Bukhari"
-    },
-    {
-        "title": "Maryam (as) and the Miraculous Birth of Isa (as)", 
-        "summary": "Maryam, a pious virgin dedicated to the temple in Jerusalem, was visited by the Angel Jibril, who gave her glad tidings of a pure son. She was shocked, as no man had ever touched her. By Allah's command, she conceived Prophet Isa (as). Fearing the slander of her people, she withdrew to a remote place. During agonizing childbirth under a dry palm tree, she wished she had been forgotten. Allah comforted her, providing a miraculous stream and fresh dates. When she returned carrying the baby, her people accused her of unchastity. Pointing to the infant, the newborn Isa miraculously spoke from the cradle, defending his mother's honor and declaring his prophethood.",
-        "moral": "Purity and devotion to Allah will always be vindicated by Him. When society falsely accuses the innocent, Allah is their ultimate defender.",
-        "motive": "To establish the miraculous nature of Isa (as)'s birth, refuting the slanders of the Israelites and correcting the exaggerations of the Christians by showing he is a mighty Prophet, not God.",
-        "source": "Quran: Surah Maryam (19:16-36) / Tafseer Ibn Kathir"
-    }
+DYNAMIC_PROPHETS = [
+    "Prophet Adam (as)", "Prophet Nuh (as)", "Prophet Ibrahim (as)", 
+    "Prophet Yusuf (as)", "Prophet Musa (as)", "Prophet Dawud (as)", 
+    "Prophet Sulaiman (as)", "Prophet Yunus (as)", "Prophet Isa (as)", 
+    "Prophet Muhammad (ﷺ)"
 ]
 
-PROPHETS = [
-    {
-        "name": "Prophet Adam (as)",
-        "life": "The first human and Prophet. Created directly by Allah's hands from different types of earth. Allah taught him the names of all things, elevating him above the angels. Iblis (Satan) arrogantly refused to bow to him. Adam and Hawa were placed in Paradise but were tricked by Satan into eating from the forbidden tree. They immediately realized their mistake, felt immense remorse, and begged Allah for forgiveness using the profound words: 'Rabbana zalamna anfusana...' Allah forgave them and sent them to Earth as His vicegerents (Khalifah).",
-        "motive": "To establish human responsibility on Earth and teach that while humans are prone to error, sincere repentance (Tawbah) elevates their status with Allah.",
-        "moral": "Arrogance (like Iblis) leads to eternal damnation, while taking accountability and repenting (like Adam) leads to divine mercy.",
-        "sources": "Quran 2:30-38, 7:11-25; Sahih Hadith"
-    },
-    {
-        "name": "Prophet Nuh (as)",
-        "life": "Sent to a deeply corrupted, idolatrous nation, Nuh preached tirelessly for 950 years. He used every method—day and night, public and private—to call them back to Tawheed (monotheism). Only a tiny fraction believed, while the chiefs mocked him and physically assaulted him. By Allah's command, Nuh built a massive Ark on dry land amidst their ridicule. When the catastrophic global flood began, he took the believers and pairs of animals aboard. Tragically, his own son refused to board and drowned with the disbelievers.",
-        "motive": "To demonstrate that guidance is entirely in the hands of Allah (even a Prophet cannot save his own son if he disbelieves) and to cleanse the earth of deeply rooted Kufr.",
-        "moral": "Perseverance in Da'wah requires immense patience. Success is measured by fulfilling the effort, not by the numbers of followers.",
-        "sources": "Quran 11:25-49, Surah Nuh (71); Tafseer Ibn Kathir"
-    },
-    {
-        "name": "Prophet Ibrahim (as)",
-        "life": "Known as 'Khalilullah' (The Friend of Allah). He rejected the idol-worship of his father and people in Babylon. After destroying their idols to prove they had no power, he was thrown into a massive raging fire, but Allah commanded the fire to be 'coolness and peace' for him. He migrated, and later in life, faced the ultimate test: Allah commanded him in a dream to sacrifice his beloved, long-awaited son, Ismail. As both submitted entirely, Allah replaced Ismail with a ram. Later, he and Ismail built the Kaaba in Makkah.",
-        "motive": "To serve as the ultimate archetype of pure monotheism (Hanif) and absolute submission to Allah's will above all earthly attachments.",
-        "moral": "When you are willing to sacrifice what you love most for Allah, Allah preserves it for you and elevates your legacy forever.",
-        "sources": "Quran 21:51-70, 37:99-111; Sahih Bukhari"
-    },
-    {
-        "name": "Prophet Musa (as)",
-        "life": "Born during Pharaoh's genocide of Israelite boys, his mother trusted Allah and placed him in the river. He was miraculously raised in Pharaoh's own palace. After accidentally killing an Egyptian, he fled to Midian, returning years later as a Prophet with miracles (the staff that turned into a snake, the glowing hand). He confronted Pharaoh, demanding the release of Bani Israel. After the plagues, he led his people to the Red Sea, which Allah parted for them, while Pharaoh's army drowned. He later received the Torah on Mount Sinai.",
-        "motive": "To liberate an oppressed people and demonstrate that the arrogant power of tyrants is utterly powerless against the Will of Allah.",
-        "moral": "Allah's plan works in mysterious ways; the very tyrant trying to kill the savior ended up feeding and raising him in his own home.",
-        "sources": "Quran 20, 26, 28; Tafseer Tabari"
-    },
-    {
-        "name": "Prophet Isa (as) [Jesus]",
-        "life": "The Messiah (Al-Masih). Born miraculously to the virgin Maryam. He spoke from the cradle to defend her honor. Granted immense miracles by Allah's permission: healing the blind, curing lepers, and breathing life into clay birds. He brought the Injeel (Gospel) to soften the rigid hearts of the Israelites. When his enemies plotted to crucify him, Allah foiled their plan; they crucified another made to look like him, while Allah raised Isa (as) alive to the heavens. He will return before the Day of Judgment to establish justice.",
-        "motive": "To correct the materialism of his people, emphasize the spirit of the law over strict letter, and serve as a profound sign of Allah's creative power.",
-        "moral": "The truth cannot be killed. No matter how deeply the corrupt scheme, Allah's protection of His pure servants is absolute.",
-        "sources": "Quran 3:45-55, 4:157-158, 19:16-36; Authentic Ahadith regarding his return"
-    },
-    {
-        "name": "Prophet Muhammad (ﷺ)",
-        "life": "The Final Messenger and Seal of the Prophets. Born an orphan in Makkah (570 CE). Known for 40 years as 'Al-Amin' (The Trustworthy). He received the first revelation in the Cave of Hira. He faced brutal persecution, boycotts, and assassination attempts in Makkah for preaching monotheism. He migrated to Madinah (Hijrah), establishing a community based on brotherhood, justice, and the supreme law of Allah. Over 23 years, the entire Quran was revealed. He cleansed the Kaaba of 360 idols, forgiving his former persecutors upon the conquest of Makkah. Passed away at 63 years old.",
-        "motive": "To perfect human character, establish the final and uncorrupted universal Deen (Islam), and be sent as a 'Mercy to the worlds'.",
-        "moral": "Unyielding truthfulness, profound mercy even to enemies, and absolute reliance on Allah can transform the entire world.",
-        "sources": "Quran; Sahih Sirah (Ibn Hisham), Ar-Raheeq Al-Makhtum"
-    }
+DYNAMIC_STORIES = [
+    "People of the Cave (Ashab al-Kahf)",
+    "The Story of Musa and Al-Khidr",
+    "The Men of the Elephant (Ashab al-Fil)",
+    "The Story of Qarun (Korah)",
+    "The Believer of Pharaoh's Court"
 ]
 
 # State
@@ -393,8 +320,7 @@ def safe_html(value):
 def source_link(label, url):
     safe_label = safe_html(label)
     if url:
-        if not str(url).startswith(('http://', 'https://')):
-            url = '#'
+        if not str(url).startswith(('http://', 'https://')): url = '#'
         return f'<a class="source-link" href="{escape(url, quote=True)}" target="_blank">{safe_label}</a>'
     return safe_label
 
@@ -457,7 +383,7 @@ def call_api(user_message, history):
     messages.append({"role": "user", "content": user_message})
 
     headers = {"Authorization": f"Bearer {NVIDIA_API_KEY}", "Accept": "application/json", "Content-Type": "application/json"}
-    payload = {"model": MODEL, "messages": messages, "max_tokens": 1200, "temperature": 0.1, "stream": False}
+    payload = {"model": MODEL, "messages": messages, "max_tokens": 2000, "temperature": 0.2, "stream": False}
 
     for attempt in range(3):
         try:
@@ -493,10 +419,12 @@ def fetch_quran_surah(surah_number):
 
 def render_response(result):
     result = normalize_result(result)
+
     if result["source_notice"]:
         st.markdown(f'<div class="info-box">{safe_html(result["source_notice"])}</div>', unsafe_allow_html=True)
 
-    st.markdown(f'<div class="premium-card"><strong class="accent" style="font-family:\'Playfair Display\',serif; font-size:20px;">Answer</strong><br><br>{safe_html(result["direct_answer"])}</div>', unsafe_allow_html=True)
+    formatted_answer = safe_html(result["direct_answer"]).replace('\n', '<br>')
+    st.markdown(f'<div class="premium-card"><strong class="accent" style="font-family:\'Playfair Display\',serif; font-size:20px;">Answer</strong><br><br><span style="line-height:1.7; font-size:16px;">{formatted_answer}</span></div>', unsafe_allow_html=True)
 
     if result["quran_evidence"]:
         st.markdown('<div class="section-title">Quranic Evidence</div>', unsafe_allow_html=True)
@@ -575,7 +503,7 @@ with st.sidebar:
     st.markdown('<div class="creator-footer">Created by Aadil Rather</div>', unsafe_allow_html=True)
 
 
-tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(["AI Assistant", "Quran Reader", "Dua Collection", "40 Hadith", "Tafseer Stories", "The Prophets"])
+tab1, tab2, tab3, tab4, tab5 = st.tabs(["AI Assistant", "Quran Reader", "Dua Collection", "Deep Stories (AI)", "The Prophets (AI)"])
 
 with tab1:
     for msg in st.session_state.messages:
@@ -654,36 +582,25 @@ with tab3:
         )
 
 with tab4:
-    st.markdown('<div class="section-title" style="margin-top:0;">An-Nawawi\'s 40 Hadith</div>', unsafe_allow_html=True)
-    for h in HADITH_40:
-        st.markdown(
-            f'<div class="premium-card"><div class="muted" style="margin-bottom:16px; font-weight:600; color:#D4AF37 !important; letter-spacing:1px;">HADITH {h["number"]}</div>'
-            f'<div class="arabic">{safe_html(h["arabic"])}</div>'
-            f'<div style="font-size:18px; line-height:1.7; margin:20px 0; color:#eeeeee;">"{safe_html(h["text"])}"</div>'
-            f'<div style="border-top:1px solid #2a2a2a; padding-top:12px;"><span class="muted">Source: <span style="color:#D4AF37;">{safe_html(h["source"])}</span></span></div></div>',
-            unsafe_allow_html=True,
-        )
+    st.markdown('<div class="section-title" style="margin-top:0;">Dynamic Tafseer Stories</div>', unsafe_allow_html=True)
+    st.markdown('<div class="info-box">Select a story. The AI will generate a comprehensive, authentic narrative based on classical Tafseer.</div>', unsafe_allow_html=True)
+    
+    selected_story = st.selectbox("Select an Event", DYNAMIC_STORIES)
+    if st.button("Generate Full Authentic Story", key="gen_story"):
+        with st.spinner(f"Extracting authentic Tafseer for {selected_story}..."):
+            prompt = f"Provide a complete, multi-paragraph, highly detailed story of '{selected_story}'. Base it strictly on Quran and authentic Tafseer. Clearly detail the motives and the moral lessons."
+            raw = call_api(prompt, [])
+            result = parse_response(raw)
+            render_response(result)
 
 with tab5:
-    st.markdown('<div class="section-title" style="margin-top:0;">Stories from Tafseer & Hadith</div>', unsafe_allow_html=True)
-    for story in STORIES:
-        st.markdown(
-            f'<div class="premium-card"><h2 style="margin-top:0; font-size:26px;">{safe_html(story["title"])}</h2>'
-            f'<div style="font-size:16px; line-height:1.7; color:#cccccc; margin-bottom:20px;">{safe_html(story["summary"])}</div>'
-            f'<div class="story-label">The Divine Motive</div><div style="font-size:15px; color:#eeeeee; margin-bottom:12px; border-left:2px solid #D4AF37; padding-left:12px;">{safe_html(story["motive"])}</div>'
-            f'<div class="story-label">Moral Lesson</div><div style="font-size:15px; color:#eeeeee; margin-bottom:20px; border-left:2px solid #D4AF37; padding-left:12px;">{safe_html(story["moral"])}</div>'
-            f'<div style="border-top:1px solid #2a2a2a; padding-top:12px;"><span class="muted">Source Base: {safe_html(story["source"])}</span></div></div>',
-            unsafe_allow_html=True,
-        )
-
-with tab6:
-    st.markdown('<div class="section-title" style="margin-top:0;">Lives of the Messengers</div>', unsafe_allow_html=True)
-    for p in PROPHETS:
-        st.markdown(
-            f'<div class="premium-card"><h2 style="margin-top:0; font-size:28px;">{safe_html(p["name"])}</h2>'
-            f'<div style="font-size:16px; line-height:1.8; color:#cccccc; margin-bottom:24px;">{safe_html(p["life"])}</div>'
-            f'<div class="story-label">Prophetic Mission / Motive</div><div style="font-size:15px; color:#eeeeee; margin-bottom:12px; border-left:2px solid #D4AF37; padding-left:12px;">{safe_html(p["motive"])}</div>'
-            f'<div class="story-label">Moral Legacy</div><div style="font-size:15px; color:#eeeeee; margin-bottom:20px; border-left:2px solid #D4AF37; padding-left:12px;">{safe_html(p["moral"])}</div>'
-            f'<div style="border-top:1px solid #2a2a2a; padding-top:12px;"><span class="muted">Authentic Sources: {safe_html(p["sources"])}</span></div></div>',
-            unsafe_allow_html=True,
-        )
+    st.markdown('<div class="section-title" style="margin-top:0;">Lives of the Prophets</div>', unsafe_allow_html=True)
+    st.markdown('<div class="info-box">Select a Prophet. The AI will generate their full life profile based on Quranic texts and authentic Sunnah.</div>', unsafe_allow_html=True)
+    
+    selected_prophet = st.selectbox("Select a Prophet", DYNAMIC_PROPHETS)
+    if st.button("Generate Comprehensive Life Profile", key="gen_prophet"):
+        with st.spinner(f"Compiling authentic biography for {selected_prophet}..."):
+            prompt = f"Provide a comprehensive, highly detailed life story of {selected_prophet}. Base it strictly on the Quran and authentic Ahadith/Tafseer. Outline their prophetic mission, their major trials, and their moral legacy."
+            raw = call_api(prompt, [])
+            result = parse_response(raw)
+            render_response(result)
