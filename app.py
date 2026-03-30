@@ -4,7 +4,7 @@ import json
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
-st.set_page_config(page_title="Muslim AI Cloud", layout="wide")
+st.set_page_config(page_title="Muslim AI Hybrid", layout="wide")
 
 # ================= STYLE =================
 st.markdown("""
@@ -22,7 +22,7 @@ h1 { color: #38bdf8; }
 </style>
 """, unsafe_allow_html=True)
 
-st.title("🕌 Muslim AI (Cloud Optimized)")
+st.title("🕌 Muslim AI (Hybrid Search System)")
 
 API_KEY = st.secrets.get("NVIDIA_API_KEY")
 
@@ -34,7 +34,7 @@ def load_hadith():
 
 hadith_data = load_hadith()
 
-# ================= BUILD TF-IDF =================
+# ================= TF-IDF =================
 @st.cache_resource
 def build_vectorizer():
     texts = [h["text"] for h in hadith_data]
@@ -44,15 +44,68 @@ def build_vectorizer():
 
 vectorizer, matrix = build_vectorizer()
 
-# ================= SEARCH =================
-def semantic_search(query):
+# ================= FAST SEARCH =================
+def tfidf_search(query):
     query_vec = vectorizer.transform([query])
     similarity = cosine_similarity(query_vec, matrix).flatten()
+    top_indices = similarity.argsort()[-10:][::-1]
+    return [hadith_data[i] for i in top_indices]
 
-    top_indices = similarity.argsort()[-5:][::-1]
+# ================= AI RERANK =================
+def rerank_with_ai(question, candidates):
 
-    results = [hadith_data[i] for i in top_indices]
-    return results
+    text_block = "\n".join([
+        f"{i}. {h['text']} ({h['book']} {h['number']})"
+        for i, h in enumerate(candidates)
+    ])
+
+    prompt = f"""
+Select the 3 most relevant Hadith.
+
+Return ONLY numbers.
+
+Question:
+{question}
+
+Hadith:
+{text_block}
+"""
+
+    payload = {
+        "model": "meta/llama-4-maverick-17b-128e-instruct",
+        "messages": [
+            {"role": "system", "content": "Islamic assistant"},
+            {"role": "user", "content": prompt}
+        ],
+        "max_tokens": 50
+    }
+
+    headers = {
+        "Authorization": f"Bearer {API_KEY}",
+        "Content-Type": "application/json"
+    }
+
+    try:
+        res = requests.post(
+            "https://integrate.api.nvidia.com/v1/chat/completions",
+            headers=headers,
+            json=payload,
+            timeout=20
+        )
+
+        nums = res.json()["choices"][0]["message"]["content"]
+
+        selected = []
+        for n in nums.split():
+            if n.isdigit():
+                idx = int(n)
+                if idx < len(candidates):
+                    selected.append(candidates[idx])
+
+        return selected[:3]
+
+    except:
+        return candidates[:3]
 
 # ================= QURAN =================
 def search_quran(query):
@@ -62,7 +115,7 @@ def search_quran(query):
     except:
         return []
 
-# ================= AI =================
+# ================= AI ANSWER =================
 def get_ai_answer(question, hadith_results, quran_results):
 
     hadith_text = "\n".join([
@@ -76,7 +129,7 @@ def get_ai_answer(question, hadith_results, quran_results):
     ])
 
     prompt = f"""
-Answer ONLY using provided sources.
+Answer ONLY using sources below.
 
 Question:
 {question}
@@ -118,11 +171,16 @@ question = st.text_input("💬 Ask your question")
 
 if st.button("Ask") and question:
 
-    # SEARCH
-    hadith_results = semantic_search(question)
+    # STEP 1: FAST SEARCH
+    candidates = tfidf_search(question)
+
+    # STEP 2: AI RERANK
+    hadith_results = rerank_with_ai(question, candidates)
+
+    # STEP 3: QURAN
     quran_results = search_quran(question)
 
-    # AI
+    # STEP 4: ANSWER
     st.markdown("## 🧠 AI Answer")
     answer = get_ai_answer(question, hadith_results, quran_results)
     st.markdown(f"<div class='card'>{answer}</div>", unsafe_allow_html=True)
