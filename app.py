@@ -2,7 +2,7 @@ import streamlit as st
 import requests
 import json
 
-st.set_page_config(page_title="Muslim AI Intelligent", layout="wide")
+st.set_page_config(page_title="Muslim AI Semantic", layout="wide")
 
 # ================= STYLE =================
 st.markdown("""
@@ -23,8 +23,8 @@ h2, h3 { color: #e2e8f0; }
 """, unsafe_allow_html=True)
 
 # ================= TITLE =================
-st.title("🕌 Muslim AI (Intelligent System)")
-st.caption("AI + Quran + Hadith (No Hallucination Mode)")
+st.title("🕌 Muslim AI (Semantic System)")
+st.caption("AI + Quran + Hadith (Semantic Retrieval Mode)")
 
 API_KEY = st.secrets.get("NVIDIA_API_KEY")
 
@@ -36,23 +36,74 @@ def load_hadith():
 
 hadith_data = load_hadith()
 
-# ================= SEARCH HADITH =================
-def search_hadith(query):
-    results = []
-    for h in hadith_data:
-        if query.lower() in h["text"].lower():
-            results.append(h)
-    return results[:5]
+# ================= SEMANTIC HADITH SEARCH =================
+def semantic_hadith_search(question):
+    sample = hadith_data[:200]  # limit for performance
 
-# ================= SEARCH QURAN =================
-def search_quran(query):
+    hadith_text = "\n".join([
+        f"{i}. {h['text']} ({h['book']} {h['number']})"
+        for i, h in enumerate(sample)
+    ])
+
+    prompt = f"""
+You are an Islamic assistant.
+
+From the following Hadith list, select the 3 most relevant to the question.
+
+Return ONLY numbers.
+
+Question:
+{question}
+
+Hadith List:
+{hadith_text}
+"""
+
+    payload = {
+        "model": "meta/llama-4-maverick-17b-128e-instruct",
+        "messages": [
+            {"role": "system", "content": "Islamic assistant"},
+            {"role": "user", "content": prompt}
+        ],
+        "max_tokens": 100
+    }
+
+    headers = {
+        "Authorization": f"Bearer {API_KEY}",
+        "Content-Type": "application/json"
+    }
+
     try:
-        res = requests.get(f"https://api.alquran.cloud/v1/search/{query}/all/en")
-        return res.json()["data"]["matches"][:5]
+        res = requests.post(
+            "https://integrate.api.nvidia.com/v1/chat/completions",
+            headers=headers,
+            json=payload,
+            timeout=30
+        )
+
+        nums = res.json()["choices"][0]["message"]["content"]
+
+        selected = []
+        for n in nums.split():
+            if n.isdigit():
+                idx = int(n)
+                if idx < len(sample):
+                    selected.append(sample[idx])
+
+        return selected[:3]
+
     except:
         return []
 
-# ================= AI =================
+# ================= QURAN SEARCH =================
+def search_quran(query):
+    try:
+        res = requests.get(f"https://api.alquran.cloud/v1/search/{query}/all/en")
+        return res.json()["data"]["matches"][:3]
+    except:
+        return []
+
+# ================= AI ANSWER =================
 def get_ai_answer(question, hadith_results, quran_results):
 
     hadith_text = "\n".join([
@@ -66,12 +117,7 @@ def get_ai_answer(question, hadith_results, quran_results):
     ])
 
     prompt = f"""
-You are an Islamic assistant.
-
-STRICT RULES:
-- Use ONLY the provided Quran and Hadith
-- Do NOT add anything from your own knowledge
-- If no data is provided, say "No direct source found"
+Answer the question using ONLY the given sources.
 
 Question:
 {question}
@@ -83,9 +129,9 @@ Hadith:
 {hadith_text}
 
 Give:
-1. Direct Answer
+1. Answer
 2. Explanation
-3. References (only from above)
+3. References
 """
 
     payload = {
@@ -118,39 +164,27 @@ question = st.text_input("💬 Ask your question")
 
 if st.button("Ask") and question:
 
-    # STEP 1: SEARCH DATA
-    hadith_results = search_hadith(question)
+    # SEMANTIC SEARCH
+    hadith_results = semantic_hadith_search(question)
     quran_results = search_quran(question)
 
-    # STEP 2: AI ANSWER
+    # AI ANSWER
     st.markdown("## 🧠 AI Answer")
     answer = get_ai_answer(question, hadith_results, quran_results)
     st.markdown(f"<div class='card'>{answer}</div>", unsafe_allow_html=True)
 
-    # STEP 3: SHOW SOURCES
-
+    # QURAN
     st.markdown("## 📖 Quran Sources")
-    if quran_results:
-        for v in quran_results:
-            st.markdown(
-                f"<div class='card'>{v['text']}<br><b>{v['surah']['name']} {v['numberInSurah']}</b></div>",
-                unsafe_allow_html=True
-            )
-    else:
-        st.warning("No Quran match found")
+    for v in quran_results:
+        st.markdown(
+            f"<div class='card'>{v['text']}<br><b>{v['surah']['name']} {v['numberInSurah']}</b></div>",
+            unsafe_allow_html=True
+        )
 
+    # HADITH
     st.markdown("## 📜 Hadith Sources")
-    if hadith_results:
-        for h in hadith_results:
-            st.markdown(
-                f"<div class='card'>{h['text']}<br><b>{h['book']} {h['number']}</b></div>",
-                unsafe_allow_html=True
-            )
-    else:
-        st.warning("No Hadith match found")
-
-# ================= DUA =================
-st.markdown("## 🤲 Duas")
-
-st.markdown("<div class='card'>بِاسْمِكَ اللَّهُمَّ أَمُوتُ وَأَحْيَا</div>", unsafe_allow_html=True)
-st.markdown("<div class='card'>اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنَ الْهَمِّ وَالْحَزَنِ</div>", unsafe_allow_html=True)
+    for h in hadith_results:
+        st.markdown(
+            f"<div class='card'>{h['text']}<br><b>{h['book']} {h['number']}</b></div>",
+            unsafe_allow_html=True
+        )
