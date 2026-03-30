@@ -34,6 +34,7 @@ st.markdown(
     padding: 20px;
     margin-bottom: 20px;
     transition: all 0.3s ease;
+    word-break: break-word; /* Added to prevent long URLs from breaking layout */
 }
 .glass:hover {
     transform: translateY(-4px);
@@ -138,6 +139,7 @@ SYSTEM_PROMPT = """You are an Islamic AI Assistant. Respond only with authentic 
   "ikhtilaf": "Yes or No",
   "conclusion": "summary",
   "consult_scholar": "Yes or No",
+  "source_notice": "",
   "language_detected": "English or Urdu or Arabic"
 }"""
 
@@ -270,6 +272,9 @@ def safe_html(value):
 def source_link(label, url):
     safe_label = safe_html(label)
     if url:
+        # Added security: restrict URLs to http/https to prevent javascript: links
+        if not str(url).startswith(('http://', 'https://')):
+            url = '#'
         return f'<a class="source-link" style="color:#9bcdfb;" href="{escape(url, quote=True)}" target="_blank">{safe_label}</a>'
     return safe_label
 
@@ -307,6 +312,13 @@ def detect_curated_route(text):
 def normalize_result(result):
     if not isinstance(result, dict):
         result = {}
+        
+    # Helper to parse yes/no values from booleans or strings
+    def is_yes(val):
+        if isinstance(val, bool):
+            return val
+        return str(val).strip().lower() == "yes"
+
     return {
         "direct_answer": str(result.get("direct_answer", "")).strip(),
         "quran_evidence": result.get("quran_evidence", []) if isinstance(result.get("quran_evidence", []), list) else [],
@@ -314,10 +326,11 @@ def normalize_result(result):
         "scholarly_opinions": result.get("scholarly_opinions", []) if isinstance(result.get("scholarly_opinions", []), list) else [],
         "dua": result.get("dua", {}) if isinstance(result.get("dua", {}), dict) else {},
         "duas": result.get("duas", []) if isinstance(result.get("duas", []), list) else [],
-        "ikhtilaf": "Yes" if str(result.get("ikhtilaf", "")).strip().lower() == "yes" else "No",
+        "ikhtilaf": "Yes" if is_yes(result.get("ikhtilaf")) else "No",
         "conclusion": str(result.get("conclusion", "")).strip(),
-        "consult_scholar": "Yes" if str(result.get("consult_scholar", "")).strip().lower() == "yes" else "No",
+        "consult_scholar": "Yes" if is_yes(result.get("consult_scholar")) else "No",
         "source_notice": str(result.get("source_notice", "")).strip(),
+        "language_detected": str(result.get("language_detected", "English")).strip()
     }
 
 
@@ -542,7 +555,7 @@ with tab1:
                     st.session_state.messages.append({"role": "assistant", "content": json.dumps(result, ensure_ascii=False)})
                     st.session_state.chat_history.append({"user": user_input, "assistant": result.get("direct_answer", "")})
                 except Exception as e:
-                    st.error(f"Error: {str(e)}. Please try again.")
+                    st.error("There was an issue processing your request. Please try again.")
 
 with tab2:
     st.markdown('<div class="section-title">Quran Reader — All Surahs</div>', unsafe_allow_html=True)
