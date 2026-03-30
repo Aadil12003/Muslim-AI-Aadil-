@@ -4,16 +4,16 @@ import time
 import requests
 import streamlit as st
 
-st.set_page_config(page_title="Muslim AI Pro+", layout="wide")
+st.set_page_config(page_title="Muslim AI Pro", layout="wide")
 
 # ================= CONFIG =================
 API_KEY = st.secrets["NVIDIA_API_KEY"]
 API_URL = "https://integrate.api.nvidia.com/v1/chat/completions"
 MODEL = "meta/llama-4-maverick-17b-128e-instruct"
 
-# ================= MODES =================
-deep_mode = st.sidebar.toggle("🧠 Scholar Mode (Detailed)", value=True)
+deep_mode = st.sidebar.toggle("🧠 Scholar Mode", value=True)
 
+# ================= PROMPT =================
 SYSTEM_PROMPT = f"""
 You are an expert Islamic scholar AI.
 
@@ -22,9 +22,9 @@ RULES:
 - Quote FULL hadith text
 - Provide multiple evidences
 - Explain reasoning deeply
-- Mention ikhtilaf if exists
+- Mention ikhtilaf
 
-DEPTH MODE: {"DETAILED" if deep_mode else "NORMAL"}
+DEPTH: {"DETAILED" if deep_mode else "NORMAL"}
 
 RETURN JSON:
 {{
@@ -33,18 +33,10 @@ RETURN JSON:
  "quran_evidence":[],
  "hadith_evidence":[],
  "scholarly_opinions":[],
- "ikhtilaf":"",
+ "dua": {{}},
  "conclusion":""
 }}
 """
-
-# ================= SAFETY =================
-def validate_response(data):
-    if not isinstance(data, dict):
-        return False
-    if "direct_answer" not in data:
-        return False
-    return True
 
 # ================= API =================
 def call_api(prompt, history):
@@ -64,7 +56,7 @@ def call_api(prompt, history):
     }
 
     headers = {
-        "Authorization": f"Bearer {API_KEY}",
+        "Authorization": f"Bearer {API_KEY},
         "Content-Type": "application/json"
     }
 
@@ -76,7 +68,7 @@ def call_api(prompt, history):
         except:
             time.sleep(2 ** i)
 
-    return '{"direct_answer":"Service busy. Try again.","detailed_explanation":""}'
+    return '{"direct_answer":"Service busy"}'
 
 # ================= PARSE =================
 def parse(raw):
@@ -84,83 +76,110 @@ def parse(raw):
         cleaned = re.sub(r'```json|```', '', raw)
         start = cleaned.find('{')
         end = cleaned.rfind('}') + 1
-        data = json.loads(cleaned[start:end])
-
-        if validate_response(data):
-            return data
+        return json.loads(cleaned[start:end])
     except:
-        pass
-
-    return {"direct_answer": raw}
+        return {"direct_answer": raw}
 
 # ================= UI =================
-st.title("🕌 Aadil's Muslim AI Pro+")
-st.caption("Advanced Islamic AI with deep scholarly reasoning")
+st.title("🕌 Muslim AI Pro")
+st.caption("Quran • Hadith • Dua • Scholarly Knowledge")
 
 # ================= STATE =================
 if "history" not in st.session_state:
     st.session_state.history = []
 
-# ================= DISPLAY =================
-def display(data):
-    tabs = st.tabs(["Answer", "Explanation", "Quran", "Hadith", "Scholars"])
+# ================= RENDER =================
+def render(data):
+    st.markdown("## 📌 Answer")
+    st.write(data.get("direct_answer", ""))
 
-    with tabs[0]:
-        st.write(data.get("direct_answer", ""))
-        st.code(data.get("direct_answer", ""), language="text")
+    st.markdown("## 📖 Detailed Explanation")
+    st.write(data.get("detailed_explanation", ""))
 
-    with tabs[1]:
-        st.write(data.get("detailed_explanation", ""))
+    if data.get("quran_evidence"):
+        st.markdown("## 📖 Quran Evidence")
+        for q in data["quran_evidence"]:
+            st.markdown(f"**{q.get('reference','')}**")
+            st.write(q.get("arabic",""))
+            st.write(q.get("translation",""))
 
-    with tabs[2]:
-        for q in data.get("quran_evidence", []):
-            with st.expander(q.get("reference", "Quran")):
-                st.write(q.get("arabic", ""))
-                st.write(q.get("translation", ""))
+    if data.get("hadith_evidence"):
+        st.markdown("## 📜 Hadith Evidence")
+        for h in data["hadith_evidence"]:
+            st.markdown(f"**{h.get('source','')}**")
+            st.write(h.get("arabic",""))
+            st.write(h.get("text",""))
 
-    with tabs[3]:
-        for h in data.get("hadith_evidence", []):
-            with st.expander(h.get("source", "Hadith")):
-                st.write(h.get("arabic", ""))
-                st.write(h.get("text", ""))
-
-    with tabs[4]:
-        for s in data.get("scholarly_opinions", []):
+    if data.get("scholarly_opinions"):
+        st.markdown("## 🧠 Scholarly Opinions")
+        for s in data["scholarly_opinions"]:
             st.write(f"**{s.get('madhab','')}**: {s.get('opinion','')}")
 
-# ================= CHAT =================
-for h in st.session_state.history:
-    with st.chat_message("user"):
-        st.write(h["user"])
-    with st.chat_message("assistant"):
-        try:
-            display(json.loads(h["assistant"]))
-        except:
-            st.write(h["assistant"])
+    if data.get("dua") and data["dua"].get("arabic"):
+        st.markdown("## 🤲 Dua")
+        st.write(data["dua"]["arabic"])
+        st.write(data["dua"].get("transliteration",""))
+        st.write(data["dua"].get("meaning",""))
 
-# ================= INPUT =================
-user_input = st.chat_input("Ask anything about Islam...")
+    if data.get("conclusion"):
+        st.markdown("## 📌 Conclusion")
+        st.write(data["conclusion"])
 
-# ================= RATE LIMIT =================
-if "last_call" not in st.session_state:
-    st.session_state.last_call = 0
+# ================= NAVIGATION =================
+tab1, tab2, tab3, tab4 = st.tabs(["AI Assistant", "Quran", "Dua", "Hadith"])
 
-if user_input:
-    if time.time() - st.session_state.last_call < 2:
-        st.warning("Slow down. Wait 2 seconds.")
-        st.stop()
+# ================= AI TAB =================
+with tab1:
+    for h in st.session_state.history:
+        with st.chat_message("user"):
+            st.write(h["user"])
+        with st.chat_message("assistant"):
+            try:
+                render(json.loads(h["assistant"]))
+            except:
+                st.write(h["assistant"])
 
-    st.session_state.last_call = time.time()
+    user_input = st.chat_input("Ask your question...")
 
-    st.session_state.history.append({"user": user_input, "assistant": ""})
+    if user_input:
+        st.session_state.history.append({"user": user_input, "assistant": ""})
 
-    with st.chat_message("user"):
-        st.write(user_input)
+        with st.chat_message("user"):
+            st.write(user_input)
 
-    with st.chat_message("assistant"):
-        with st.spinner("Analyzing deeply..."):
-            raw = call_api(user_input, st.session_state.history)
-            data = parse(raw)
-            display(data)
+        with st.chat_message("assistant"):
+            with st.spinner("Thinking deeply..."):
+                raw = call_api(user_input, st.session_state.history)
+                data = parse(raw)
+                render(data)
 
-    st.session_state.history[-1]["assistant"] = json.dumps(data)
+        st.session_state.history[-1]["assistant"] = json.dumps(data)
+
+# ================= QURAN TAB =================
+with tab2:
+    st.subheader("📖 Quran Reader")
+    surah = st.number_input("Surah (1-114)", 1, 114, 1)
+
+    if st.button("Load Quran"):
+        res = requests.get(f"https://api.alquran.cloud/v1/surah/{surah}/en.asad")
+        data = res.json()
+
+        for ayah in data["data"]["ayahs"]:
+            st.write(f"{ayah['numberInSurah']}. {ayah['text']}")
+
+# ================= DUA TAB =================
+with tab3:
+    st.subheader("🤲 Dua Collection")
+
+    st.write("Before Sleep:")
+    st.write("بِاسْمِكَ اللَّهُمَّ أَمُوتُ وَأَحْيَا")
+
+    st.write("For Anxiety:")
+    st.write("اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنَ الْهَمِّ وَالْحَزَنِ")
+
+# ================= HADITH TAB =================
+with tab4:
+    st.subheader("📜 Hadith Library")
+
+    st.write("Bukhari 1:")
+    st.write("Actions are judged by intentions.")
