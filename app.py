@@ -25,7 +25,7 @@ h2, h3 { color: #e2e8f0; }
 
 # ================= TITLE =================
 st.title("🕌 Muslim AI (Authentic Mode)")
-st.caption("AI Explanation + Real Quran + Verified Hadith + Duas")
+st.caption("AI Explanation + Quran + Hadith + Duas")
 
 API_KEY = st.secrets.get("NVIDIA_API_KEY")
 
@@ -34,14 +34,12 @@ def get_ai_answer(question):
     prompt = f"""
 You are an Islamic assistant.
 
-IMPORTANT:
-- Do NOT invent Quran or Hadith
-- Only give explanation
-- Do NOT fabricate references
+Rules:
+- Do NOT generate fake Quran or Hadith
+- Only explain
 
 Question: {question}
 """
-
     payload = {
         "model": "meta/llama-4-maverick-17b-128e-instruct",
         "messages": [
@@ -70,22 +68,17 @@ Question: {question}
 # ================= QURAN =================
 def get_quran(surah):
     try:
+        ar = requests.get(f"https://api.alquran.cloud/v1/surah/{surah}/ar.alafasy").json()
         en = requests.get(f"https://api.alquran.cloud/v1/surah/{surah}/en.asad").json()
         ur = requests.get(f"https://api.alquran.cloud/v1/surah/{surah}/ur.jalandhry").json()
-        return en, ur
+        return ar, en, ur
     except:
-        return None, None
+        return None, None, None
 
-# ================= HADITH (STATIC VERIFIED SAMPLE) =================
+# ================= HADITH =================
 HADITH = [
-    {
-        "text": "Actions are judged by intentions...",
-        "source": "Sahih Bukhari 1"
-    },
-    {
-        "text": "The best among you are those who have the best manners...",
-        "source": "Sahih Bukhari"
-    }
+    {"text": "Actions are judged by intentions.", "source": "Sahih Bukhari 1"},
+    {"text": "The best among you are those with best manners.", "source": "Sahih Bukhari"}
 ]
 
 # ================= DUAS =================
@@ -102,27 +95,41 @@ DUAS = [
     }
 ]
 
-# ================= INPUT =================
-question = st.text_input("💬 Ask your question")
+# ================= LAYOUT =================
+col1, col2 = st.columns([2,1])
 
-if st.button("Ask") and question:
-
-    # -------- AI --------
+# ================= LEFT SIDE (AI) =================
+with col1:
     st.markdown("## 🧠 AI Explanation")
-    ai = get_ai_answer(question)
-    st.markdown(f"<div class='card'>{ai}</div>", unsafe_allow_html=True)
+
+    question = st.text_input("Ask your question")
+
+    if st.button("Ask") and question:
+        ai = get_ai_answer(question)
+        st.markdown(f"<div class='card'>{ai}</div>", unsafe_allow_html=True)
+
+# ================= RIGHT SIDE =================
+with col2:
 
     # -------- QURAN --------
     st.markdown("## 📖 Quran")
-    surah = 1  # default
-    en, ur = get_quran(surah)
 
-    if en:
-        for i in range(len(en["data"]["ayahs"])):
-            st.markdown(
-                f"<div class='card'><b>{i+1}</b><br>{en['data']['ayahs'][i]['text']}<br><i>{ur['data']['ayahs'][i]['text']}</i></div>",
-                unsafe_allow_html=True
-            )
+    surah = st.number_input("Surah (1-114)", 1, 114, 1)
+
+    if st.button("Load Quran"):
+        ar, en, ur = get_quran(surah)
+
+        if ar:
+            for i in range(len(ar["data"]["ayahs"])):
+                st.markdown(
+                    f"<div class='card'>"
+                    f"<b>{i+1}</b><br>"
+                    f"{ar['data']['ayahs'][i]['text']}<br><br>"
+                    f"{en['data']['ayahs'][i]['text']}<br>"
+                    f"<i>{ur['data']['ayahs'][i]['text']}</i>"
+                    f"</div>",
+                    unsafe_allow_html=True
+                )
 
     # -------- HADITH --------
     st.markdown("## 📜 Hadith")
