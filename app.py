@@ -8,131 +8,175 @@ import requests
 import streamlit as st
 
 # Page setup
-st.set_page_config(page_title="Aadil's Muslim AI", layout="wide", initial_sidebar_state="expanded")
+st.set_page_config(page_title="Muslim AI by Aadil", layout="wide", initial_sidebar_state="expanded")
 
-# Minimalist, Clean Styling
+# Premium Dark & Gold Styling
 st.markdown(
     """
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Scheherazade+New:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400&family=Scheherazade+New:wght@400;700&display=swap');
 
-/* ===== GLOBAL TYPOGRAPHY ===== */
+/* ===== GLOBAL TYPOGRAPHY & BACKGROUND ===== */
 html, body, [class*="css"] {
     font-family: 'Inter', sans-serif;
+    background-color: #0a0a0a !important;
+    color: #e0e0e0 !important;
+}
+
+.stApp {
+    background-color: #0a0a0a;
+    background-image: radial-gradient(circle at 50% 0%, #1a1a1a 0%, #0a0a0a 70%);
+}
+
+/* ===== HEADINGS ===== */
+h1, h2, h3, .serif-text {
+    font-family: 'Playfair Display', serif;
+    color: #D4AF37 !important; /* Premium Gold */
+    font-weight: 600;
+    letter-spacing: 0.5px;
 }
 
 /* ===== CLEAN CARD CONTAINER ===== */
-.clean-card {
-    background-color: rgba(128, 128, 128, 0.04);
-    border: 1px solid rgba(128, 128, 128, 0.2);
+.premium-card {
+    background-color: #121212;
+    border: 1px solid #2a2a2a;
     border-radius: 12px;
-    padding: 24px;
-    margin-bottom: 20px;
+    padding: 28px;
+    margin-bottom: 24px;
     word-break: break-word;
-    transition: background-color 0.2s ease;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+    transition: transform 0.2s ease, border-color 0.2s ease;
 }
-.clean-card:hover {
-    background-color: rgba(128, 128, 128, 0.08);
+.premium-card:hover {
+    border-color: #D4AF37;
+    transform: translateY(-2px);
 }
 
 /* ===== HERO ===== */
 .hero {
     text-align: center;
-    padding: 40px 20px;
-    margin-bottom: 30px;
-    border-bottom: 1px solid rgba(128, 128, 128, 0.2);
+    padding: 60px 20px 40px 20px;
+    margin-bottom: 40px;
+    border-bottom: 1px solid #2a2a2a;
+    background: linear-gradient(180deg, rgba(212, 175, 55, 0.05) 0%, rgba(10, 10, 10, 0) 100%);
 }
 .bismillah {
     font-family: 'Scheherazade New', serif;
-    font-size: 28px;
-    margin-bottom: 12px;
-    opacity: 0.8;
+    font-size: 36px;
+    color: #D4AF37;
+    margin-bottom: 16px;
+    text-shadow: 0 2px 10px rgba(212, 175, 55, 0.2);
 }
 .title {
-    font-size: 32px;
-    font-weight: 600;
+    font-size: 42px;
+    font-weight: 700;
     margin-bottom: 8px;
-    letter-spacing: -0.5px;
+    font-family: 'Playfair Display', serif;
+    color: #ffffff;
 }
 .subtitle {
     font-size: 16px;
-    opacity: 0.6;
-}
-
-/* ===== TEXT HIERARCHY ===== */
-.section-title {
-    font-size: 18px;
-    font-weight: 600;
-    margin: 30px 0 16px 0;
-    padding-bottom: 8px;
-    border-bottom: 1px solid rgba(128, 128, 128, 0.2);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    opacity: 0.8;
+    color: #a0a0a0;
+    font-weight: 300;
+    letter-spacing: 1px;
 }
 
 /* ===== ARABIC TEXT ===== */
 .arabic {
     font-family: 'Scheherazade New', serif;
-    font-size: 32px;
+    font-size: 34px;
     direction: rtl;
     text-align: right;
-    margin-bottom: 12px;
-    line-height: 1.6;
+    margin-bottom: 16px;
+    line-height: 1.8;
+    color: #D4AF37;
 }
 
 /* ===== UI ELEMENTS ===== */
+.section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 24px;
+    color: #D4AF37;
+    margin: 40px 0 20px 0;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #2a2a2a;
+}
 .info-box {
-    background-color: rgba(128, 128, 128, 0.08);
-    border-left: 3px solid rgba(128, 128, 128, 0.5);
+    background-color: rgba(212, 175, 55, 0.05);
+    border-left: 3px solid #D4AF37;
     border-radius: 4px;
-    padding: 12px 16px;
-    font-size: 14px;
-    margin-bottom: 20px;
+    padding: 16px 20px;
+    font-size: 15px;
+    margin-bottom: 24px;
+    color: #cccccc;
 }
-.warning-box {
-    background-color: rgba(239, 68, 68, 0.1);
-    border-left: 3px solid rgba(239, 68, 68, 0.5);
-    border-radius: 4px;
-    padding: 12px 16px;
-    font-size: 14px;
-    margin-bottom: 20px;
-}
-.accent {
-    font-weight: 600;
-    opacity: 0.9;
-}
-.muted {
-    opacity: 0.6;
-    font-size: 0.9em;
-}
+.accent { color: #D4AF37 !important; font-weight: 600; }
+.muted { color: #888888 !important; font-size: 0.9em; font-weight: 300; }
 .source-link {
-    color: inherit;
-    text-decoration: underline;
-    opacity: 0.7;
+    color: #D4AF37;
+    text-decoration: none;
+    border-bottom: 1px dotted #D4AF37;
     transition: opacity 0.2s;
 }
-.source-link:hover {
-    opacity: 1;
+.source-link:hover { opacity: 0.7; }
+
+/* ===== LABELS & BADGES ===== */
+.story-label {
+    display: inline-block;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: #D4AF37;
+    margin-top: 16px;
+    margin-bottom: 4px;
+    font-weight: 600;
 }
 .pill-badge {
-    font-size: 0.75em;
-    border: 1px solid rgba(128,128,128,0.4);
-    padding: 2px 8px;
-    border-radius: 12px;
+    font-size: 11px;
+    border: 1px solid #D4AF37;
+    color: #D4AF37;
+    padding: 4px 10px;
+    border-radius: 20px;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
-    margin-left: 8px;
-    opacity: 0.8;
+    letter-spacing: 1px;
+    margin-left: 10px;
 }
 
-/* ===== OVERRIDES FOR STREAMLIT NATIVE ELEMENTS ===== */
-.stButton > button {
-    border-radius: 8px;
-    font-weight: 500;
+/* ===== SIDEBAR & INPUT ===== */
+[data-testid="stSidebar"] {
+    background-color: #0f0f0f !important;
+    border-right: 1px solid #2a2a2a;
 }
 input, textarea {
+    background-color: #1a1a1a !important;
+    border: 1px solid #333 !important;
+    color: #fff !important;
     border-radius: 8px !important;
+}
+input:focus, textarea:focus {
+    border-color: #D4AF37 !important;
+    box-shadow: 0 0 0 1px #D4AF37 !important;
+}
+.stButton > button {
+    background-color: #1a1a1a;
+    color: #D4AF37;
+    border: 1px solid #D4AF37;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+.stButton > button:hover {
+    background-color: #D4AF37;
+    color: #000;
+}
+.creator-footer {
+    text-align: center;
+    padding: 30px 10px;
+    margin-top: auto;
+    font-family: 'Playfair Display', serif;
+    color: #D4AF37;
+    border-top: 1px solid #2a2a2a;
+    font-size: 18px;
+    letter-spacing: 1px;
 }
 </style>
 """,
@@ -155,7 +199,7 @@ MODEL = "meta/llama-4-maverick-17b-128e-instruct"
 SYSTEM_PROMPT = """You are an Islamic AI Assistant. Respond only with authentic Quran, Sahih Hadith, and recognized scholarly opinion.
 - Do NOT fabricate references.
 - If unsure, say you are unsure.
-- Return ONLY valid JSON, nothing else.
+- Return ONLY valid JSON.
 {
   "direct_answer": "concise answer",
   "quran_evidence": [{"arabic": "", "translation": "", "reference": "", "explanation": ""}],
@@ -184,101 +228,154 @@ SURAH_NAMES = [
     "Al-Kafirun","An-Nasr","Al-Masad","Al-Ikhlas","Al-Falaq","An-Nas"
 ]
 
+# Comprehensive Rabbana Duas + Existing
 DUA_CATEGORIES = {
-    "Morning Adhkar": [
-        {"title": "Morning Remembrance", "arabic": "أَصْبَحْنَا وَأَصْبَحَ الْمُلْكُ لِلَّهِ، وَالْحَمْدُ لِلَّهِ، لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ", "transliteration": "Asbahna wa asbaha al-mulku lillah, wal-hamdu lillah, la ilaha illa Allah wahdahu la sharika lah", "meaning": "We have entered the morning and the kingdom belongs to Allah. All praise is for Allah; none has the right to be worshipped except Him alone, without partner.", "reference": "Abu Dawood 4/317", "source_url": ""},
-        {"title": "Sayyidul Istighfar", "arabic": "اللَّهُمَّ أَنْتَ رَبِّي لَا إِلَهَ إِلَّا أَنْتَ، خَلَقْتَنِي وَأَنَا عَبْدُكَ", "transliteration": "Allahumma anta rabbi la ilaha illa anta, khalaqtani wa ana abduk", "meaning": "O Allah, You are my Lord; none has the right to be worshipped except You. You created me and I am Your servant.", "reference": "Bukhari 6306", "source_url": "https://sunnah.com/bukhari:6306"}
+    "Quranic Rabbana Duas": [
+        {"title": "For Good in This World and the Hereafter", "arabic": "رَبَّنَا آتِنَا فِي الدُّنْيَا حَسَنَةً وَفِي الْآخِرَةِ حَسَنَةً وَقِنَا عَذَابَ النَّارِ", "transliteration": "Rabbana atina fid-dunya hasanatan wa fil 'akhirati hasanatan waqina 'adhaban-nar", "meaning": "Our Lord, give us in this world [that which is] good and in the Hereafter [that which is] good and protect us from the punishment of the Fire.", "reference": "Quran 2:201", "source_url": "https://quran.com/2/201"},
+        {"title": "For Patience and Victory", "arabic": "رَبَّنَا أَفْرِغْ عَلَيْنَا صَبْرًا وَثَبِّتْ أَقْدَامَنَا وَانصُرْنَا عَلَى الْقَوْمِ الْكَافِرِينَ", "transliteration": "Rabbana afrigh 'alayna sabran wa thabbit aqdamana wansurna 'alal-qawmil-kafirin", "meaning": "Our Lord, pour upon us patience and plant firmly our feet and give us victory over the disbelieving people.", "reference": "Quran 2:250", "source_url": "https://quran.com/2/250"},
+        {"title": "For Forgiveness and Avoiding Burden", "arabic": "رَبَّنَا لَا تُؤَاخِذْنَا إِن نَّسِينَا أَوْ أَخْطَأْنَا ۚ رَبَّنَا وَلَا تَحْمِلْ عَلَيْنَا إِصْرًا كَمَا حَمَلْتَهُ عَلَى الَّذِينَ مِن قَبْلِنَا", "transliteration": "Rabbana la tuakhidhna in nasina aw akhta'na. Rabbana wa la tahmil 'alayna isran kama hamaltahu 'alal-ladhina min qablina", "meaning": "Our Lord, do not impose blame upon us if we have forgotten or erred. Our Lord, and lay not upon us a burden like that which You laid upon those before us.", "reference": "Quran 2:286", "source_url": "https://quran.com/2/286"},
+        {"title": "For Guidance of the Heart", "arabic": "رَبَّنَا لَا تُزِغْ قُلُوبَنَا بَعْدَ إِذْ هَدَيْتَنَا وَهَبْ لَنَا مِن لَّدُنكَ رَحْمَةً ۚ إِنَّكَ أَنتَ الْوَهَّابُ", "transliteration": "Rabbana la tuzigh quloobana ba'da idh hadaytana wa hab lana min ladunka rahmatan innaka antal-Wahhab", "meaning": "Our Lord, let not our hearts deviate after You have guided us and grant us from Yourself mercy. Indeed, You are the Bestower.", "reference": "Quran 3:8", "source_url": "https://quran.com/3/8"},
+        {"title": "Seeking Forgiveness of Sins", "arabic": "رَبَّنَا إِنَّنَا آمَنَّا فَاغْفِرْ لَنَا ذُنُوبَنَا وَقِنَا عَذَابَ النَّارِ", "transliteration": "Rabbana innana amanna faghfir lana dhunubana waqina 'adhaban-nar", "meaning": "Our Lord, indeed we have believed, so forgive us our sins and protect us from the punishment of the Fire.", "reference": "Quran 3:16", "source_url": "https://quran.com/3/16"},
+        {"title": "To Be Among the Witnesses of Truth", "arabic": "رَبَّنَا آمَنَّا بِمَا أَنزَلْتَ وَاتَّبَعْنَا الرَّسُولَ فَاكْتُبْنَا مَعَ الشَّاهِدِينَ", "transliteration": "Rabbana amanna bima anzalta wattaba'nar-rasula faktubna ma'ash-shahidin", "meaning": "Our Lord, we have believed in what You revealed and have followed the messenger, so register us among the witnesses.", "reference": "Quran 3:53", "source_url": "https://quran.com/3/53"},
+        {"title": "For Forgiveness of Excesses", "arabic": "رَبَّنَا اغْفِرْ لَنَا ذُنُوبَنَا وَإِسْرَافَنَا فِي أَمْرِنَا وَثَبِّتْ أَقْدَامَنَا وَانصُرْنَا عَلَى الْقَوْمِ الْكَافِرِينَ", "transliteration": "Rabbana-ghfir lana dhunubana wa israfana fi amrina wa thabbit aqdamana wansurna 'alal-qawmil-kafirin", "meaning": "Our Lord, forgive us our sins and the excess in our affairs and plant firmly our feet and give us victory over the disbelieving people.", "reference": "Quran 3:147", "source_url": "https://quran.com/3/147"},
+        {"title": "Contemplation of Creation", "arabic": "رَبَّنَا مَا خَلَقْتَ هَٰذَا بَاطِلًا سُبْحَانَكَ فَقِنَا عَذَابَ النَّارِ", "transliteration": "Rabbana ma khalaqta hadha batilan subhanaka faqina 'adhaban-nar", "meaning": "Our Lord, You did not create this aimlessly; exalted are You [above such a thing]; then protect us from the punishment of the Fire.", "reference": "Quran 3:191", "source_url": "https://quran.com/3/191"},
+        {"title": "For Fulfilling Promises", "arabic": "رَبَّنَا وَآتِنَا مَا وَعَدتَّنَا عَلَىٰ رُسُلِكَ وَلَا تُخْزِنَا يَوْمَ الْقِيَامَةِ ۗ إِنَّكَ لَا تُخْلِفُ الْمِيعَادَ", "transliteration": "Rabbana wa atina ma wa'adtana 'ala rusulika wa la tukhzina yawmal-qiyamati innaka la tukhliful-mi'ad", "meaning": "Our Lord, and grant us what You promised us through Your messengers and do not disgrace us on the Day of Resurrection. Indeed, You do not fail in [Your] promise.", "reference": "Quran 3:194", "source_url": "https://quran.com/3/194"},
+        {"title": "Dua of Adam and Hawa (Repentance)", "arabic": "رَبَّنَا ظَلَمْنَا أَنفُسَنَا وَإِن لَّمْ تَغْفِرْ لَنَا وَتَرْحَمْنَا لَنَكُونَنَّ مِنَ الْخَاسِرِينَ", "transliteration": "Rabbana zalamna anfusana wa in lam taghfir lana wa tarhamna lanakunanna minal-khasirin", "meaning": "Our Lord, we have wronged ourselves, and if You do not forgive us and have mercy upon us, we will surely be among the losers.", "reference": "Quran 7:23", "source_url": "https://quran.com/7/23"},
+        {"title": "Protection from Wrongdoers", "arabic": "رَبَّنَا لَا تَجْعَلْنَا مَعَ الْقَوْمِ الظَّالِمِينَ", "transliteration": "Rabbana la taj'alna ma'al-qawmiz-zalimin", "meaning": "Our Lord, do not place us with the wrongdoing people.", "reference": "Quran 7:47", "source_url": "https://quran.com/7/47"},
+        {"title": "Dua for Just Judgement", "arabic": "رَبَّنَا افْتَحْ بَيْنَنَا وَبَيْنَ قَوْمِنَا بِالْحَقِّ وَأَنتَ خَيْرُ الْفَاتِحِينَ", "transliteration": "Rabbana-ftah baynana wa bayna qawmina bil-haqqi wa anta khayrul-fatihin", "meaning": "Our Lord, decide between us and our people in truth, and You are the best of those who give decision.", "reference": "Quran 7:89", "source_url": "https://quran.com/7/89"},
+        {"title": "For Reliance on Allah", "arabic": "رَبَّنَا عَلَيْكَ تَوَكَّلْنَا وَإِلَيْكَ أَنَبْنَا وَإِلَيْكَ الْمَصِيرُ", "transliteration": "Rabbana 'alayka tawakkalna wa ilayka anabna wa ilaykal-masir", "meaning": "Our Lord, upon You we have relied, and to You we have returned, and to You is the destination.", "reference": "Quran 60:4", "source_url": "https://quran.com/60/4"},
+        {"title": "For Mercy and Right Guidance", "arabic": "رَبَّنَا آتِنَا مِن لَّدُنكَ رَحْمَةً وَهَيِّئْ لَنَا مِنْ أَمْرِنَا رَشَدًا", "transliteration": "Rabbana atina min ladunka rahmatan wa hayyi' lana min amrina rashada", "meaning": "Our Lord, grant us from Yourself mercy and prepare for us from our affair right guidance.", "reference": "Quran 18:10", "source_url": "https://quran.com/18/10"},
+        {"title": "Protection from Hellfire", "arabic": "رَبَّنَا اصْرِفْ عَنَّا عَذَابَ جَهَنَّمَ ۖ إِنَّ عَذَابَهَا كَانَ غَرَامًا", "transliteration": "Rabbana-srif 'anna 'adhaba jahannama inna 'adhabaha kana gharama", "meaning": "Our Lord, avert from us the punishment of Hell. Indeed, its punishment is ever adhering.", "reference": "Quran 25:65", "source_url": "https://quran.com/25/65"},
+        {"title": "For Righteous Spouses and Offspring", "arabic": "رَبَّنَا هَبْ لَنَا مِنْ أَزْوَاجِنَا وَذُرِّيَّاتِنَا قُرَّةَ أَعْيُنٍ وَاجْعَلْنَا لِلْمُتَّقِينَ إِمَامًا", "transliteration": "Rabbana hab lana min azwajina wa dhurriyyatina qurrata a'yunin waj'alna lil-muttaqina imama", "meaning": "Our Lord, grant us from among our wives and offspring comfort to our eyes and make us an example for the righteous.", "reference": "Quran 25:74", "source_url": "https://quran.com/25/74"},
+        {"title": "For Perfecting Our Light", "arabic": "رَبَّنَا أَتْمِمْ لَنَا نُورَنَا وَاغْفِرْ لَنَا ۖ إِنَّكَ عَلَىٰ كُلِّ شَيْءٍ قَدِيرٌ", "transliteration": "Rabbana atmim lana nurana waghfir lana innaka 'ala kulli shay'in qadir", "meaning": "Our Lord, perfect for us our light and forgive us. Indeed, You are over all things competent.", "reference": "Quran 66:8", "source_url": "https://quran.com/66/8"}
     ],
-    "Evening Adhkar": [
-        {"title": "Evening Remembrance", "arabic": "أَمْسَيْنَا وَأَمْسَى الْمُلْكُ لِلَّهِ، وَالْحَمْدُ لِلَّهِ، لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ", "transliteration": "Amsayna wa amsa al-mulku lillah, wal-hamdu lillah, la ilaha illa Allah wahdahu la sharika lah", "meaning": "We have entered the evening and the kingdom belongs to Allah. All praise is for Allah; none has the right to be worshipped but Him alone, without partner.", "reference": "Abu Dawood 4/317", "source_url": ""}
+    "Morning Adhkar": [
+        {"title": "Sayyidul Istighfar", "arabic": "اللَّهُمَّ أَنْتَ رَبِّي لَا إِلَهَ إِلَّا أَنْتَ، خَلَقْتَنِي وَأَنَا عَبْدُكَ", "transliteration": "Allahumma anta rabbi la ilaha illa anta, khalaqtani wa ana abduk", "meaning": "O Allah, You are my Lord; none has the right to be worshipped except You. You created me and I am Your servant.", "reference": "Bukhari 6306", "source_url": "https://sunnah.com/bukhari:6306"}
     ],
     "Before Sleep": [
         {"title": "Before Sleeping", "arabic": "بِاسْمِكَ اللَّهُمَّ أَمُوتُ وَأَحْيَا", "transliteration": "Bismika Allahumma amootu wa ahya", "meaning": "In Your name, O Allah, I die and I live.", "reference": "Bukhari 6324", "source_url": "https://sunnah.com/bukhari:6324"},
         {"title": "Ayatul Kursi", "arabic": "اللَّهُ لَا إِلَٰهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ", "transliteration": "Allahu la ilaha illa huwa al-hayyul-qayyum", "meaning": "Allah! None has the right to be worshipped but He, the Ever Living, the Sustainer of all.", "reference": "Quran 2:255", "source_url": "https://quran.com/2/255"}
-    ],
-    "Entering Home": [
-        {"title": "Entering Home", "arabic": "اللَّهُمَّ إِنِّي أَسْأَلُكَ خَيْرَ الْمَوْلَجِ وَخَيْرَ الْمَخْرَجِ", "transliteration": "Allahumma inni as'aluka khayral mawlaji wa khayral makhraji", "meaning": "O Allah, I ask You for the good of entering and the good of leaving.", "reference": "Abu Dawood 4/325", "source_url": ""}
-    ],
-    "Eating and Drinking": [
-        {"title": "Before Eating", "arabic": "بِسْمِ اللَّهِ", "transliteration": "Bismillah", "meaning": "In the name of Allah.", "reference": "Tirmidhi 1858", "source_url": "https://sunnah.com/tirmidhi:1858"},
-        {"title": "After Eating", "arabic": "الْحَمْدُ لِلَّهِ الَّذِي أَطْعَمَنَا وَسَقَانَا وَجَعَلَنَا مُسْلِمِينَ", "transliteration": "Alhamdu lillahil ladhi at'amana wa saqana wa ja'alana muslimin", "meaning": "All praise is for Allah who fed us, gave us drink, and made us Muslims.", "reference": "Abu Dawood 3850", "source_url": ""}
-    ],
-    "Anxiety and Distress": [
-        {"title": "Dua for Anxiety", "arabic": "اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنَ الْهَمِّ وَالْحَزَنِ", "transliteration": "Allahumma inni a'udhu bika minal hammi wal hazan", "meaning": "O Allah, I seek refuge in You from anxiety and grief.", "reference": "Bukhari 6363", "source_url": ""}
-    ],
-    "Travel": [
-        {"title": "Dua for Travel", "arabic": "سُبْحَانَ الَّذِي سَخَّرَ لَنَا هَذَا وَمَا كُنَّا لَهُ مُقْرِنِينَ", "transliteration": "Subhanal ladhi sakhkhara lana hadha wa ma kunna lahu muqrinin", "meaning": "Glory be to Him who has subjected this to us, and we could never have it by our efforts.", "reference": "Quran 43:13 / Abu Dawood 2599", "source_url": "https://quran.com/43/13"}
-    ],
-    "Forgiveness": [
-        {"title": "Seeking Forgiveness", "arabic": "رَبِّ اغْفِرْ لِي وَتُبْ عَلَيَّ إِنَّكَ أَنْتَ التَّوَّابُ الرَّحِيمُ", "transliteration": "Rabbighfir li wa tub alayya innaka anta at-Tawwabur-Rahim", "meaning": "My Lord, forgive me and accept my repentance. Truly, You are the Accepter of repentance, the Most Merciful.", "reference": "Abu Dawood / Ibn Majah", "source_url": ""}
     ]
 }
 
+# 40 Hadith with Arabic and Sources
 HADITH_40 = [
-    {"number": i + 1, "text": txt}
-    for i, txt in enumerate([
-        "Actions are judged by intentions.",
-        "Islam is built on five pillars.",
-        "Every innovation is misguidance.",
-        "The lawful is clear and the unlawful is clear.",
-        "Religion is sincere advice.",
-        "Avoid what is doubtful.",
-        "The world is a prison for the believer and a paradise for the disbeliever.",
-        "None of you truly believes until he loves for his brother what he loves for himself.",
-        "From the excellence of a person's Islam is leaving what does not concern him.",
-        "Do not become angry.",
-        "Say I believe in Allah and then be upright.",
-        "The believer is the mirror of his brother.",
-        "A good word is charity.",
-        "Purity is half of faith.",
-        "Whoever believes in Allah and the Last Day should speak good or remain silent.",
-        "Seek halal and your supplication will be answered.",
-        "Whoever is not merciful to people, Allah will not be merciful to him.",
-        "Modesty brings nothing but good.",
-        "From the perfection of faith is loving and hating for the sake of Allah.",
-        "The strong person controls himself when angry.",
-        "The best of you are those best to their families.",
-        "Backbiting is mentioning about your brother what he dislikes.",
-        "A Muslim is one from whose tongue and hand other Muslims are safe.",
-        "The upper hand is better than the lower hand.",
-        "Allah does not look at your forms but at your hearts and deeds.",
-        "Whoever does not thank people has not thanked Allah.",
-        "Make things easy and do not make them difficult.",
-        "He is not of us who does not show mercy to the young and respect the old.",
-        "Whoever cheats us is not one of us.",
-        "The best charity is that given when you are healthy and covetous.",
-        "The one who points to good is like the doer of it.",
-        "None truly believes until his desires follow what I have brought.",
-        "Leave what causes you doubt for what does not cause you doubt.",
-        "There should be neither harming nor reciprocating harm.",
-        "Allah is pure and accepts only what is pure.",
-        "Every act of kindness is charity.",
-        "Exchange gifts and you will love one another.",
-        "Whoever treads a path seeking knowledge, Allah makes easy for him a path to Paradise.",
-        "The best among you are those who learn the Qur'an and teach it.",
-        "The most beloved deeds to Allah are those done consistently, even if small."
-    ])
+    {"number": 1, "arabic": "إِنَّمَا الأَعْمَالُ بِالنِّيَّاتِ، وَإِنَّمَا لِكُلِّ امْرِئٍ مَا نَوَى", "text": "Actions are judged by intentions, and everyone will get what they intended.", "source": "Sahih al-Bukhari 1, Sahih Muslim 1907"},
+    {"number": 2, "arabic": "بُنِيَ الإِسْلاَمُ عَلَى خَمْسٍ", "text": "Islam is built on five pillars...", "source": "Sahih al-Bukhari 8, Sahih Muslim 16"},
+    {"number": 3, "arabic": "مَنْ أَحْدَثَ فِي أَمْرِنَا هَذَا مَا لَيْسَ فِيهِ فَهُوَ رَدٌّ", "text": "Whoever introduces into this matter of ours that which is not of it, it is rejected.", "source": "Sahih al-Bukhari 2697, Sahih Muslim 1718"},
+    {"number": 4, "arabic": "الْحَلاَلُ بَيِّنٌ وَالْحَرَامُ بَيِّنٌ", "text": "The lawful is clear and the unlawful is clear, and between them are doubtful matters.", "source": "Sahih al-Bukhari 52, Sahih Muslim 1599"},
+    {"number": 5, "arabic": "الدِّينُ النَّصِيحَةُ", "text": "Religion is sincere advice.", "source": "Sahih Muslim 55"},
+    {"number": 6, "arabic": "دَعْ مَا يَرِيبُكَ إِلَى مَا لاَ يَرِيبُكَ", "text": "Leave that which makes you doubt for that which does not make you doubt.", "source": "Jami` at-Tirmidhi 2518 (Hasan Sahih)"},
+    {"number": 7, "arabic": "الدُّنْيَا سِجْنُ الْمُؤْمِنِ وَجَنَّةُ الْكَافِرِ", "text": "The world is a prison for the believer and a paradise for the disbeliever.", "source": "Sahih Muslim 2956"},
+    {"number": 8, "arabic": "لاَ يُؤْمِنُ أَحَدُكُمْ حَتَّى يُحِبَّ لأَخِيهِ مَا يُحِبُّ لِنَفْسِهِ", "text": "None of you truly believes until he loves for his brother what he loves for himself.", "source": "Sahih al-Bukhari 13, Sahih Muslim 45"},
+    {"number": 9, "arabic": "مِنْ حُسْنِ إِسْلاَمِ الْمَرْءِ تَرْكُهُ مَا لاَ يَعْنِيهِ", "text": "From the excellence of a person's Islam is leaving what does not concern him.", "source": "Sunan Ibn Majah 3976, Tirmidhi (Hasan)"},
+    {"number": 10, "arabic": "لاَ تَغْضَبْ", "text": "Do not become angry.", "source": "Sahih al-Bukhari 6116"},
+    {"number": 11, "arabic": "قُلْ آمَنْتُ بِاللَّهِ ثُمَّ اسْتَقِمْ", "text": "Say, 'I believe in Allah,' and then remain steadfast.", "source": "Sahih Muslim 38"},
+    {"number": 12, "arabic": "الْمُؤْمِنُ مِرْآةُ الْمُؤْمِنِ", "text": "The believer is the mirror of his brother.", "source": "Sunan Abi Dawud 4918 (Hasan)"},
+    {"number": 13, "arabic": "وَالْكَلِمَةُ الطَّيِّبَةُ صَدَقَةٌ", "text": "A good word is charity.", "source": "Sahih al-Bukhari 2989, Sahih Muslim 1009"},
+    {"number": 14, "arabic": "الطُّهُورُ شَطْرُ الإِيمَانِ", "text": "Purity is half of faith.", "source": "Sahih Muslim 223"},
+    {"number": 15, "arabic": "مَنْ كَانَ يُؤْمِنُ بِاللَّهِ وَالْيَوْمِ الآخِرِ فَلْيَقُلْ خَيْرًا أَوْ لِيَصْمُتْ", "text": "Whoever believes in Allah and the Last Day should speak good or remain silent.", "source": "Sahih al-Bukhari 6018, Sahih Muslim 47"},
+    {"number": 16, "arabic": "مَنْ لاَ يَرْحَمُ لاَ يُرْحَمُ", "text": "Whoever is not merciful to people, Allah will not be merciful to him.", "source": "Sahih al-Bukhari 6013, Sahih Muslim 2318"},
+    {"number": 17, "arabic": "الْحَيَاءُ لاَ يَأْتِي إِلاَّ بِخَيْرٍ", "text": "Modesty brings nothing but good.", "source": "Sahih al-Bukhari 6117, Sahih Muslim 37"},
+    {"number": 18, "arabic": "لَيْسَ الشَّدِيدُ بِالصُّرْعَةِ، إِنَّمَا الشَّدِيدُ الَّذِي يَمْلِكُ نَفْسَهُ عِنْدَ الْغَضَبِ", "text": "The strong person is not the good wrestler. The strong person is the one who controls himself when angry.", "source": "Sahih al-Bukhari 6114, Sahih Muslim 2609"},
+    {"number": 19, "arabic": "خَيْرُكُمْ خَيْرُكُمْ لأَهْلِهِ", "text": "The best of you are those who are best to their families.", "source": "Sunan Ibn Majah 1977 (Sahih)"},
+    {"number": 20, "arabic": "الْمُسْلِمُ مَنْ سَلِمَ الْمُسْلِمُونَ مِنْ لِسَانِهِ وَيَدِهِ", "text": "A Muslim is the one from whose tongue and hand other Muslims are safe.", "source": "Sahih al-Bukhari 10, Sahih Muslim 40"},
+    {"number": 21, "arabic": "الْيَدُ الْعُلْيَا خَيْرٌ مِنَ الْيَدِ السُّفْلَى", "text": "The upper hand (giving) is better than the lower hand (receiving).", "source": "Sahih al-Bukhari 1429, Sahih Muslim 1033"},
+    {"number": 22, "arabic": "إِنَّ اللَّهَ لاَ يَنْظُرُ إِلَى صُوَرِكُمْ وَأَمْوَالِكُمْ، وَلَكِنْ يَنْظُرُ إِلَى قُلُوبِكُمْ وَأَعْمَالِكُمْ", "text": "Allah does not look at your forms or your wealth, but He looks at your hearts and your deeds.", "source": "Sahih Muslim 2564"},
+    {"number": 23, "arabic": "مَنْ لَمْ يَشْكُرِ النَّاسَ لَمْ يَشْكُرِ اللَّهَ", "text": "Whoever does not thank people has not thanked Allah.", "source": "Sunan Abi Dawud 4811 (Sahih)"},
+    {"number": 24, "arabic": "يَسِّرُوا وَلاَ تُعَسِّرُوا", "text": "Make things easy and do not make them difficult.", "source": "Sahih al-Bukhari 69, Sahih Muslim 1732"},
+    {"number": 25, "arabic": "لَيْسَ مِنَّا مَنْ لَمْ يَرْحَمْ صَغِيرَنَا وَيُوَقِّرْ كَبِيرَنَا", "text": "He is not of us who does not show mercy to our young ones and respect our old ones.", "source": "Jami` at-Tirmidhi 1919 (Sahih)"},
+    {"number": 26, "arabic": "مَنْ غَشَّنَا فَلَيْسَ مِنَّا", "text": "Whoever cheats us is not one of us.", "source": "Sahih Muslim 101"},
+    {"number": 27, "arabic": "الدَّالُّ عَلَى الْخَيْرِ كَفَاعِلِهِ", "text": "The one who guides to good is like the one who does it.", "source": "Jami` at-Tirmidhi 2670 (Sahih)"},
+    {"number": 28, "arabic": "لاَ ضَرَرَ وَلاَ ضِرَارَ", "text": "There should be neither harming nor reciprocating harm.", "source": "Sunan Ibn Majah 2340 (Hasan)"},
+    {"number": 29, "arabic": "إِنَّ اللَّهَ طَيِّبٌ لاَ يَقْبَلُ إِلاَّ طَيِّبًا", "text": "Indeed Allah is pure and He accepts only what is pure.", "source": "Sahih Muslim 1015"},
+    {"number": 30, "arabic": "كُلُّ مَعْرُوفٍ صَدَقَةٌ", "text": "Every act of goodness is charity.", "source": "Sahih al-Bukhari 6021, Sahih Muslim 1005"},
+    {"number": 31, "arabic": "تَهَادَوْا تَحَابُّوا", "text": "Exchange gifts, as that will lead to increasing your love to one another.", "source": "Al-Adab Al-Mufrad 594 (Hasan)"},
+    {"number": 32, "arabic": "مَنْ سَلَكَ طَرِيقًا يَلْتَمِسُ فِيهِ عِلْمًا سَهَّلَ اللَّهُ لَهُ بِهِ طَرِيقًا إِلَى الْجَنَّةِ", "text": "Whoever treads a path seeking knowledge, Allah makes easy for him a path to Paradise.", "source": "Sahih Muslim 2699"},
+    {"number": 33, "arabic": "خَيْرُكُمْ مَنْ تَعَلَّمَ الْقُرْآنَ وَعَلَّمَهُ", "text": "The best among you are those who learn the Qur'an and teach it.", "source": "Sahih al-Bukhari 5027"},
+    {"number": 34, "arabic": "أَحَبُّ الأَعْمَالِ إِلَى اللَّهِ تَعَالَى أَدْوَمُهَا وَإِنْ قَلَّ", "text": "The most beloved of deeds to Allah are those that are most consistent, even if it is small.", "source": "Sahih al-Bukhari 6464, Sahih Muslim 783"},
+    {"number": 35, "arabic": "اتَّقِ اللَّهَ حَيْثُمَا كُنْتَ", "text": "Fear Allah wherever you are.", "source": "Jami` at-Tirmidhi 1987 (Hasan)"},
+    {"number": 36, "arabic": "احْفَظِ اللَّهَ يَحْفَظْكَ", "text": "Be mindful of Allah and He will protect you.", "source": "Jami` at-Tirmidhi 2516 (Hasan Sahih)"},
+    {"number": 37, "arabic": "إِذَا سَأَلْتَ فَاسْأَلِ اللَّهَ", "text": "If you ask, ask of Allah; if you seek help, seek help from Allah.", "source": "Jami` at-Tirmidhi 2516 (Hasan Sahih)"},
+    {"number": 38, "arabic": "الْبِرُّ حُسْنُ الْخُلُقِ", "text": "Righteousness is good character.", "source": "Sahih Muslim 2553"},
+    {"number": 39, "arabic": "الصَّلاَةُ نُورٌ، وَالصَّدَقَةُ بُرْهَانٌ، وَالصَّبْرُ ضِيَاءٌ", "text": "Prayer is light, charity is a proof, and patience is illumination.", "source": "Sahih Muslim 223"},
+    {"number": 40, "arabic": "مَنْ حَسُنَ إِسْلاَمُهُ تَرَكَ مَا لاَ يَعْنِيهِ", "text": "Part of the perfection of a person's Islam is his leaving that which is of no concern to him.", "source": "Jami` at-Tirmidhi 2317 (Hasan)"}
 ]
 
 STORIES = [
-    {"title": "Prophet Yusuf and Patience", "summary": "Yusuf (as) faced betrayal by his brothers, imprisonment, and hardship yet remained patient and trusting in Allah. His patience led to honor and reunion. See Surah Yusuf (12).", "source": "Quran 12"},
-    {"title": "People of the Cave (Ashab al-Kahf)", "summary": "A group of youths fled oppression, sought refuge in a cave, and Allah preserved them for years as a sign of His power over life and death. See Surah Al-Kahf 18:9-26.", "source": "Quran 18:9-26"},
-    {"title": "Musa and Khidr", "summary": "Musa (as) traveled to learn from Khidr about divine wisdom behind events that seem harmful, teaching patience and trust in Allah's decree. See Surah Al-Kahf 18:60-82.", "source": "Quran 18:60-82"},
-    {"title": "Maryam and the Birth of Isa", "summary": "Maryam (as) miraculously conceived Prophet Isa (as) and gave birth under a palm tree, reaffirming Allah's limitless power. See Surah Maryam 19:16-36.", "source": "Quran 19:16-36"},
-    {"title": "Abraham and the Fire", "summary": "Ibrahim (as) was thrown into a fire by his people for rejecting idolatry, but Allah made the fire cool and safe for him. See Surah Al-Anbiya 21:68-70.", "source": "Quran 21:68-70"}
+    {
+        "title": "Prophet Yusuf (as) and the Beauty of Patience", 
+        "summary": "Betrayed by his jealous brothers, thrown into a dark well, sold into slavery in Egypt, and falsely imprisoned for years due to the slander of the Minister's wife, Yusuf (as) never lost faith. Through immense trials, Allah granted him the ability to interpret dreams. Eventually, his gift brought him before the King of Egypt, where he saved the region from a devastating seven-year famine and was made a high-ranking minister. Years later, his brothers came begging for food, not recognizing him. He forgave them unconditionally, uniting his family.",
+        "moral": "True patience (Sabr Jameel) is not just waiting, but maintaining noble character and trust in Allah during the wait. No matter how dark the pit or prison, Allah's plan is superior.",
+        "motive": "To demonstrate that divine decree overrides human plotting. Jealousy destroys the plotter, while reliance on Allah elevates the oppressed.",
+        "source": "Quran: Surah Yusuf (Chapter 12) / Tafseer Ibn Kathir"
+    },
+    {
+        "title": "The People of the Cave (Ashab al-Kahf)", 
+        "summary": "A group of righteous youths living under a tyrannical, idolatrous king openly declared their monotheism. Facing persecution and execution, they fled the city with their dog and hid in a cave. They prayed to Allah for mercy. Miraculously, Allah caused them to fall into a deep sleep that lasted over 300 years. When they awoke, thinking only a day had passed, they sent one youth to buy food. The ancient coins he used revealed the miracle to the new generation, who had become believers. The youths then passed away peacefully.",
+        "moral": "When you give up the comforts of the world to protect your faith, Allah will provide refuge in ways beyond human comprehension.",
+        "motive": "To prove the reality of the Resurrection (life after death) to the disbelievers of Makkah and to establish that Allah protects the sincere youth who stand against corruption.",
+        "source": "Quran: Surah Al-Kahf (18:9-26)"
+    },
+    {
+        "title": "Prophet Musa (as) and Al-Khidr", 
+        "summary": "Musa (as), the most knowledgeable man of Bani Israel, was commanded by Allah to travel and meet Al-Khidr, a servant granted special divine wisdom. Musa asked to follow him to learn. Khidr agreed on the condition that Musa not question anything until Khidr explained it. On their journey, Khidr did three seemingly terrible things: he damaged a boat belonging to poor fishermen, he killed a young boy, and he rebuilt a wall in a town that refused them hospitality. Musa lost his patience and questioned all three. Khidr then revealed the divine realities: the boat was damaged to save it from a tyrannical king seizing good ships; the boy was destined to be a tyrant who would destroy his pious parents' faith; and the wall hid an orphan's treasure that would have been stolen if the wall collapsed.",
+        "moral": "Human knowledge is profoundly limited. What appears as a tragedy or injustice in our eyes may be a profound mercy and protection from Allah.",
+        "motive": "To teach humility in knowledge and complete submission to Qadar (Divine Decree), understanding that Allah's wisdom operates beyond our immediate perception.",
+        "source": "Quran: Surah Al-Kahf (18:60-82) / Sahih Bukhari"
+    },
+    {
+        "title": "Maryam (as) and the Miraculous Birth of Isa (as)", 
+        "summary": "Maryam, a pious virgin dedicated to the temple in Jerusalem, was visited by the Angel Jibril, who gave her glad tidings of a pure son. She was shocked, as no man had ever touched her. By Allah's command, she conceived Prophet Isa (as). Fearing the slander of her people, she withdrew to a remote place. During agonizing childbirth under a dry palm tree, she wished she had been forgotten. Allah comforted her, providing a miraculous stream and fresh dates. When she returned carrying the baby, her people accused her of unchastity. Pointing to the infant, the newborn Isa miraculously spoke from the cradle, defending his mother's honor and declaring his prophethood.",
+        "moral": "Purity and devotion to Allah will always be vindicated by Him. When society falsely accuses the innocent, Allah is their ultimate defender.",
+        "motive": "To establish the miraculous nature of Isa (as)'s birth, refuting the slanders of the Israelites and correcting the exaggerations of the Christians by showing he is a mighty Prophet, not God.",
+        "source": "Quran: Surah Maryam (19:16-36) / Tafseer Ibn Kathir"
+    }
 ]
 
 PROPHETS = [
-    {"name": "Muhammad (ﷺ)", "life": "Born in Makkah 570 CE. Received the Quran over 23 years. Established the Muslim community in Madinah. Passed away 632 CE. Character noted for truthfulness and mercy.", "sources": "Quran; Sahih Sira (Ibn Hisham, Ibn Kathir)"},
-    {"name": "Ibrahim (as)", "life": "Called to pure monotheism, debated his people, tested with sacrifice of his son, rebuilt the Ka'bah with Ismail. Title: Khalilullah (friend of Allah).", "sources": "Quran 2:124-132; 6:74-83; 37:99-111"},
-    {"name": "Musa (as)", "life": "Raised in Pharaoh's palace, led Bani Israel out of Egypt, received the Torah, parted the sea by Allah's leave.", "sources": "Quran 20; 26; 28"},
-    {"name": "Isa (as)", "life": "Born miraculously to Maryam, spoke as an infant, performed miracles by Allah's permission, raised as a prophet to Bani Israel; not crucified—Allah raised him.", "sources": "Quran 3; 4:157-158; 5:110; 19"},
-    {"name": "Yusuf (as)", "life": "From well to slavery to prison to authority in Egypt; exemplified patience, chastity, and forgiveness.", "sources": "Quran 12"},
-    {"name": "Nuh (as)", "life": "Preached for 950 years, built the Ark by Allah's command, saved the believers from the flood.", "sources": "Quran 11:25-49; 71"},
-    {"name": "Dawud (as)", "life": "Prophet-king, given the Zabur, known for justice and a beautiful recitation.", "sources": "Quran 38:17-26"},
-    {"name": "Sulaiman (as)", "life": "Prophet-king with control over jinn, wind, and birds by Allah's permission; exemplified gratitude.", "sources": "Quran 27; 34:12-19; 38:30-40"},
-    {"name": "Yunus (as)", "life": "Left his people, swallowed by the great fish, repented with the dua 'La ilaha illa Anta...', delivered and returned to his people.", "sources": "Quran 21:87-88; 37:139-148"},
-    {"name": "Ayub (as)", "life": "Severely tested in health and wealth, remained patient; Allah restored him and praised his patience.", "sources": "Quran 21:83-84; 38:41-44"}
+    {
+        "name": "Prophet Adam (as)",
+        "life": "The first human and Prophet. Created directly by Allah's hands from different types of earth. Allah taught him the names of all things, elevating him above the angels. Iblis (Satan) arrogantly refused to bow to him. Adam and Hawa were placed in Paradise but were tricked by Satan into eating from the forbidden tree. They immediately realized their mistake, felt immense remorse, and begged Allah for forgiveness using the profound words: 'Rabbana zalamna anfusana...' Allah forgave them and sent them to Earth as His vicegerents (Khalifah).",
+        "motive": "To establish human responsibility on Earth and teach that while humans are prone to error, sincere repentance (Tawbah) elevates their status with Allah.",
+        "moral": "Arrogance (like Iblis) leads to eternal damnation, while taking accountability and repenting (like Adam) leads to divine mercy.",
+        "sources": "Quran 2:30-38, 7:11-25; Sahih Hadith"
+    },
+    {
+        "name": "Prophet Nuh (as)",
+        "life": "Sent to a deeply corrupted, idolatrous nation, Nuh preached tirelessly for 950 years. He used every method—day and night, public and private—to call them back to Tawheed (monotheism). Only a tiny fraction believed, while the chiefs mocked him and physically assaulted him. By Allah's command, Nuh built a massive Ark on dry land amidst their ridicule. When the catastrophic global flood began, he took the believers and pairs of animals aboard. Tragically, his own son refused to board and drowned with the disbelievers.",
+        "motive": "To demonstrate that guidance is entirely in the hands of Allah (even a Prophet cannot save his own son if he disbelieves) and to cleanse the earth of deeply rooted Kufr.",
+        "moral": "Perseverance in Da'wah requires immense patience. Success is measured by fulfilling the effort, not by the numbers of followers.",
+        "sources": "Quran 11:25-49, Surah Nuh (71); Tafseer Ibn Kathir"
+    },
+    {
+        "name": "Prophet Ibrahim (as)",
+        "life": "Known as 'Khalilullah' (The Friend of Allah). He rejected the idol-worship of his father and people in Babylon. After destroying their idols to prove they had no power, he was thrown into a massive raging fire, but Allah commanded the fire to be 'coolness and peace' for him. He migrated, and later in life, faced the ultimate test: Allah commanded him in a dream to sacrifice his beloved, long-awaited son, Ismail. As both submitted entirely, Allah replaced Ismail with a ram. Later, he and Ismail built the Kaaba in Makkah.",
+        "motive": "To serve as the ultimate archetype of pure monotheism (Hanif) and absolute submission to Allah's will above all earthly attachments.",
+        "moral": "When you are willing to sacrifice what you love most for Allah, Allah preserves it for you and elevates your legacy forever.",
+        "sources": "Quran 21:51-70, 37:99-111; Sahih Bukhari"
+    },
+    {
+        "name": "Prophet Musa (as)",
+        "life": "Born during Pharaoh's genocide of Israelite boys, his mother trusted Allah and placed him in the river. He was miraculously raised in Pharaoh's own palace. After accidentally killing an Egyptian, he fled to Midian, returning years later as a Prophet with miracles (the staff that turned into a snake, the glowing hand). He confronted Pharaoh, demanding the release of Bani Israel. After the plagues, he led his people to the Red Sea, which Allah parted for them, while Pharaoh's army drowned. He later received the Torah on Mount Sinai.",
+        "motive": "To liberate an oppressed people and demonstrate that the arrogant power of tyrants is utterly powerless against the Will of Allah.",
+        "moral": "Allah's plan works in mysterious ways; the very tyrant trying to kill the savior ended up feeding and raising him in his own home.",
+        "sources": "Quran 20, 26, 28; Tafseer Tabari"
+    },
+    {
+        "name": "Prophet Isa (as) [Jesus]",
+        "life": "The Messiah (Al-Masih). Born miraculously to the virgin Maryam. He spoke from the cradle to defend her honor. Granted immense miracles by Allah's permission: healing the blind, curing lepers, and breathing life into clay birds. He brought the Injeel (Gospel) to soften the rigid hearts of the Israelites. When his enemies plotted to crucify him, Allah foiled their plan; they crucified another made to look like him, while Allah raised Isa (as) alive to the heavens. He will return before the Day of Judgment to establish justice.",
+        "motive": "To correct the materialism of his people, emphasize the spirit of the law over strict letter, and serve as a profound sign of Allah's creative power.",
+        "moral": "The truth cannot be killed. No matter how deeply the corrupt scheme, Allah's protection of His pure servants is absolute.",
+        "sources": "Quran 3:45-55, 4:157-158, 19:16-36; Authentic Ahadith regarding his return"
+    },
+    {
+        "name": "Prophet Muhammad (ﷺ)",
+        "life": "The Final Messenger and Seal of the Prophets. Born an orphan in Makkah (570 CE). Known for 40 years as 'Al-Amin' (The Trustworthy). He received the first revelation in the Cave of Hira. He faced brutal persecution, boycotts, and assassination attempts in Makkah for preaching monotheism. He migrated to Madinah (Hijrah), establishing a community based on brotherhood, justice, and the supreme law of Allah. Over 23 years, the entire Quran was revealed. He cleansed the Kaaba of 360 idols, forgiving his former persecutors upon the conquest of Makkah. Passed away at 63 years old.",
+        "motive": "To perfect human character, establish the final and uncorrupted universal Deen (Islam), and be sent as a 'Mercy to the worlds'.",
+        "moral": "Unyielding truthfulness, profound mercy even to enemies, and absolute reliance on Allah can transform the entire world.",
+        "sources": "Quran; Sahih Sirah (Ibn Hisham), Ar-Raheeq Al-Makhtum"
+    }
 ]
 
 # State
@@ -286,15 +383,12 @@ if "messages" not in st.session_state:
     st.session_state.messages = []
 if "chat_history" not in st.session_state:
     st.session_state.chat_history = []
-if "quick_question" not in st.session_state:
-    st.session_state.quick_question = ""
 if "loaded_surah_number" not in st.session_state:
     st.session_state.loaded_surah_number = None
 
 # Helpers
 def safe_html(value):
     return escape("" if value is None else str(value))
-
 
 def source_link(label, url):
     safe_label = safe_html(label)
@@ -304,44 +398,24 @@ def source_link(label, url):
         return f'<a class="source-link" href="{escape(url, quote=True)}" target="_blank">{safe_label}</a>'
     return safe_label
 
-
 def contains_any(text, terms):
     return any(term in text for term in terms)
-
 
 def is_dua_query(text):
     q = text.lower().strip()
     return contains_any(q, ["dua", "duas", "adhkar", "azkar", "supplication", "dhikr", "zikr", "sleep", "anxiety", "stress", "travel", "home", "eat", "eating", "forgiveness", "دعاء", "ذكر"])
 
-
 def detect_curated_route(text):
     q = text.lower().strip()
-    if contains_any(q, ["sleep", "before sleep", "sleeping", "neend", "dua before sleeping"]):
-        return "Before Sleep"
-    if contains_any(q, ["morning adhkar", "morning azkar", "morning dua", "subah"]):
-        return "Morning Adhkar"
-    if contains_any(q, ["evening adhkar", "evening azkar", "evening dua", "shaam"]):
-        return "Evening Adhkar"
-    if contains_any(q, ["anxiety", "stress", "worry", "distress", "gham", "pareshani"]):
-        return "Anxiety and Distress"
-    if contains_any(q, ["travel", "journey", "safar"]):
-        return "Travel"
-    if contains_any(q, ["entering home", "enter home", "home dua", "ghar"]):
-        return "Entering Home"
-    if contains_any(q, ["before eating", "food dua", "eat", "khana"]):
-        return "Eating and Drinking"
-    if contains_any(q, ["forgiveness", "istighfar", "repentance", "tauba"]):
-        return "Forgiveness"
+    if contains_any(q, ["sleep", "before sleep", "sleeping"]): return "Before Sleep"
+    if contains_any(q, ["morning adhkar", "morning azkar", "subah"]): return "Morning Adhkar"
+    if contains_any(q, ["rabbana", "quran dua"]): return "Quranic Rabbana Duas"
     return None
 
-
 def normalize_result(result):
-    if not isinstance(result, dict):
-        result = {}
-        
+    if not isinstance(result, dict): result = {}
     def is_yes(val):
-        if isinstance(val, bool):
-            return val
+        if isinstance(val, bool): return val
         return str(val).strip().lower() == "yes"
 
     return {
@@ -355,34 +429,25 @@ def normalize_result(result):
         "conclusion": str(result.get("conclusion", "")).strip(),
         "consult_scholar": "Yes" if is_yes(result.get("consult_scholar")) else "No",
         "source_notice": str(result.get("source_notice", "")).strip(),
-        "language_detected": str(result.get("language_detected", "English")).strip()
     }
-
 
 def build_curated_response(category_name):
     return {
-        "direct_answer": "Here are verified duas for your request.",
-        "quran_evidence": [],
-        "hadith_evidence": [],
-        "scholarly_opinions": [],
-        "dua": {},
+        "direct_answer": f"Here are verified duas from the category: {category_name}",
+        "quran_evidence": [], "hadith_evidence": [], "scholarly_opinions": [], "dua": {},
         "duas": DUA_CATEGORIES.get(category_name, []),
-        "ikhtilaf": "No",
-        "conclusion": "",
-        "consult_scholar": "No",
+        "ikhtilaf": "No", "conclusion": "", "consult_scholar": "No",
         "source_notice": "Dua text pulled from built-in verified collection.",
     }
-
 
 def hide_unverified_model_dua(result):
     result = normalize_result(result)
     result["dua"] = {}
     result["duas"] = []
-    result["source_notice"] = "For safety, AI-generated dua wording is hidden. Use curated duas below."
+    result["source_notice"] = "For safety, AI-generated dua wording is hidden. Please refer to the authentic Dua Collection tab."
     if not result["conclusion"]:
-        result["conclusion"] = "This request is outside the curated dua set."
+        result["conclusion"] = "Please consult a verified Hisnul Muslim for highly specific unlisted duas."
     return result
-
 
 def call_api(user_message, history):
     messages = [{"role": "system", "content": SYSTEM_PROMPT}]
@@ -401,16 +466,10 @@ def call_api(user_message, history):
             data = response.json()
             if "choices" not in data:
                 raise RuntimeError(f"API error: {json.dumps(data)[:400]}")
-            content = data["choices"][0]["message"]["content"]
-            if not content:
-                raise RuntimeError("Empty response from API")
-            return content
+            return data["choices"][0]["message"]["content"]
         except Exception as exc:
-            if attempt < 2:
-                time.sleep(2 ** attempt)
-            else:
-                raise exc
-
+            if attempt < 2: time.sleep(2 ** attempt)
+            else: raise exc
 
 def parse_response(raw):
     try:
@@ -421,8 +480,7 @@ def parse_response(raw):
             cleaned = cleaned[start:end]
         return normalize_result(json.loads(cleaned))
     except Exception:
-        return normalize_result({"direct_answer": raw, "quran_evidence": [], "hadith_evidence": [], "scholarly_opinions": [], "dua": {}, "ikhtilaf": "No", "conclusion": "", "consult_scholar": "No"})
-
+        return normalize_result({"direct_answer": raw})
 
 @st.cache_data(ttl=3600)
 def fetch_quran_surah(surah_number):
@@ -431,24 +489,22 @@ def fetch_quran_surah(surah_number):
         response.raise_for_status()
         data = response.json()
         return data["data"] if data.get("status") == "OK" else None
-    except Exception:
-        return None
-
+    except Exception: return None
 
 def render_response(result):
     result = normalize_result(result)
     if result["source_notice"]:
         st.markdown(f'<div class="info-box">{safe_html(result["source_notice"])}</div>', unsafe_allow_html=True)
 
-    st.markdown(f'<div class="clean-card"><strong class="accent">Answer:</strong><br><br>{safe_html(result["direct_answer"])}</div>', unsafe_allow_html=True)
+    st.markdown(f'<div class="premium-card"><strong class="accent" style="font-family:\'Playfair Display\',serif; font-size:20px;">Answer</strong><br><br>{safe_html(result["direct_answer"])}</div>', unsafe_allow_html=True)
 
     if result["quran_evidence"]:
-        st.markdown('<div class="section-title">Quran Evidence</div>', unsafe_allow_html=True)
+        st.markdown('<div class="section-title">Quranic Evidence</div>', unsafe_allow_html=True)
         for verse in result["quran_evidence"]:
             st.markdown(
-                f'<div class="clean-card"><div class="arabic">{safe_html(verse.get("arabic", ""))}</div>'
-                f'<div>{safe_html(verse.get("translation", ""))}</div>'
-                f'<br><strong class="accent">{safe_html(verse.get("reference", ""))}</strong>'
+                f'<div class="premium-card"><div class="arabic">{safe_html(verse.get("arabic", ""))}</div>'
+                f'<div style="font-size:16px; line-height:1.6; margin-bottom:12px;">{safe_html(verse.get("translation", ""))}</div>'
+                f'<strong class="accent">{safe_html(verse.get("reference", ""))}</strong>'
                 f'<br><span class="muted">{safe_html(verse.get("explanation", ""))}</span></div>',
                 unsafe_allow_html=True,
             )
@@ -458,114 +514,86 @@ def render_response(result):
         for h in result["hadith_evidence"]:
             auth = h.get("authenticity", "Sahih")
             arabic_html = f'<div class="arabic">{safe_html(h.get("arabic", ""))}</div>' if h.get("arabic") else ""
-            note_html = f'<br><span class="muted">{safe_html(h.get("note", ""))}</span>' if h.get("note") else ""
+            note_html = f'<br><br><span class="muted">{safe_html(h.get("note", ""))}</span>' if h.get("note") else ""
             st.markdown(
-                f'<div class="clean-card">{arabic_html}<strong>{safe_html(h.get("text", ""))}</strong>'
-                f'<br><br><span class="muted">Source: {safe_html(h.get("source", ""))}</span> '
+                f'<div class="premium-card">{arabic_html}<div style="font-size:16px; line-height:1.6;">{safe_html(h.get("text", ""))}</div>'
+                f'<br><span class="muted">Source: {safe_html(h.get("source", ""))}</span> '
                 f'<span class="pill-badge">{safe_html(auth)}</span>{note_html}</div>',
                 unsafe_allow_html=True,
             )
 
     if result["scholarly_opinions"]:
-        st.markdown('<div class="section-title">Scholarly Opinions</div>', unsafe_allow_html=True)
+        st.markdown('<div class="section-title">Scholarly Viewpoints</div>', unsafe_allow_html=True)
         if result["ikhtilaf"] == "Yes":
-            st.markdown('<div class="info-box">There is a difference of opinion among scholars on this matter.</div>', unsafe_allow_html=True)
+            st.markdown('<div class="info-box">There is a recognized difference of opinion (Ikhtilaf) among classical scholars on this issue.</div>', unsafe_allow_html=True)
         for opinion in result["scholarly_opinions"]:
             st.markdown(
-                f'<div class="clean-card"><strong class="accent">{safe_html(opinion.get("madhab", ""))}:</strong> '
-                f'{safe_html(opinion.get("opinion", ""))}<br><span class="muted">Source: {safe_html(opinion.get("source", ""))}</span></div>',
+                f'<div class="premium-card"><strong class="accent">{safe_html(opinion.get("madhab", ""))}:</strong> '
+                f'<span style="line-height:1.6;">{safe_html(opinion.get("opinion", ""))}</span><br><br><span class="muted">Source: {safe_html(opinion.get("source", ""))}</span></div>',
                 unsafe_allow_html=True,
             )
 
     duas = result["duas"] or ([result["dua"]] if result.get("dua", {}).get("arabic") else [])
     if duas:
-        st.markdown('<div class="section-title">Dua</div>', unsafe_allow_html=True)
+        st.markdown('<div class="section-title">Supplication (Dua)</div>', unsafe_allow_html=True)
         for dua in duas:
             st.markdown(
-                f'<div class="clean-card"><strong class="accent" style="font-size: 1.1em;">{safe_html(dua.get("title", ""))}</strong>'
-                f'<div class="arabic">{safe_html(dua.get("arabic", ""))}</div>'
-                f'<strong>Transliteration:</strong><br><span class="muted">{safe_html(dua.get("transliteration", ""))}</span>'
-                f'<br><br><strong>Meaning:</strong><br>{safe_html(dua.get("meaning", ""))}'
+                f'<div class="premium-card"><strong class="accent" style="font-size: 1.2em; font-family:\'Playfair Display\',serif;">{safe_html(dua.get("title", ""))}</strong>'
+                f'<div class="arabic" style="margin-top:16px;">{safe_html(dua.get("arabic", ""))}</div>'
+                f'<strong class="accent" style="font-size:14px;">Transliteration</strong><br><span style="color:#cccccc; line-height:1.6;">{safe_html(dua.get("transliteration", ""))}</span>'
+                f'<br><br><strong class="accent" style="font-size:14px;">Meaning</strong><br><span style="line-height:1.6;">{safe_html(dua.get("meaning", ""))}</span>'
                 f'<br><br><span class="muted">Reference: {source_link(dua.get("reference", ""), dua.get("source_url", ""))}</span></div>',
                 unsafe_allow_html=True,
             )
 
     if result["conclusion"]:
         st.markdown('<div class="section-title">Conclusion</div>', unsafe_allow_html=True)
-        st.markdown(f'<div class="clean-card">{safe_html(result["conclusion"])}</div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="premium-card" style="line-height:1.6;">{safe_html(result["conclusion"])}</div>', unsafe_allow_html=True)
 
     if result["consult_scholar"] == "Yes":
-        st.markdown('<div class="warning-box">This matter can be sensitive. Please consult a qualified scholar for a personal ruling.</div>', unsafe_allow_html=True)
+        st.markdown('<div style="background-color:rgba(212, 175, 55, 0.1); border-left:3px solid #D4AF37; padding:16px; color:#D4AF37; margin-bottom:20px; border-radius:4px;"><strong>Note:</strong> This matter is nuanced or sensitive. Please consult a qualified local scholar for a definitive personal fatwa.</div>', unsafe_allow_html=True)
 
 # --------------------------------------------------------------------------- #
-# UI
+# UI Layout
 # --------------------------------------------------------------------------- #
 st.markdown(
     '<div class="hero"><div class="bismillah">بِسْمِ اللَّهِ الرَّحْمٰنِ الرَّحِيمِ</div>'
     '<div class="title">Muslim AI</div>'
-    '<div class="subtitle">Authentic answers grounded in Quran, Sahih Hadith, and classical scholarship</div></div>',
+    '<div class="subtitle">Authentic Islamic Knowledge grounded in Quran, Sahih Hadith, and Classical Scholarship</div></div>',
     unsafe_allow_html=True,
 )
 
 with st.sidebar:
-    st.markdown('<div class="accent" style="font-size:18px; text-align:center; margin-bottom:12px;">Quick Topics</div>', unsafe_allow_html=True)
-    topics = [
-        "What is the ruling on missing Fajr prayer?",
-        "Give me morning adhkar",
-        "What breaks the fast in Ramadan?",
-        "Is music halal or haram?",
-        "Dua for anxiety and stress",
-        "What is the ruling on zakah?",
-        "Dua before sleeping",
-        "What is tawakkul in Islam?",
-        "Is insurance halal?",
-        "Dua for entering home",
-        "Story of Prophet Yusuf and patience",
-        "Story of the People of the Cave (Ashab al-Kahf)",
-        "Story of Musa and Khidr",
-        "Life of Prophet Muhammad (s) summary",
-        "Life of Prophet Ibrahim",
-        "Life of Prophet Musa",
-        "Life of Prophet Isa",
-    ]
-    for topic in topics:
-        if st.button(topic, use_container_width=True, key=f"sidebar_{topic}"):
-            st.session_state.quick_question = topic
+    st.markdown('<div style="text-align:center; padding:20px 0;"><h2 style="color:#D4AF37; font-family:\'Playfair Display\',serif; margin-bottom:5px;">Muslim AI</h2><div style="color:#888; font-size:14px; letter-spacing:1px; text-transform:uppercase;">Knowledge & Reflection</div></div>', unsafe_allow_html=True)
     st.markdown("---")
-    st.markdown('<div class="muted" style="text-align:center;">Ask in English, Urdu, or Arabic.</div>', unsafe_allow_html=True)
-    st.markdown("---")
+    
     if st.button("Clear Chat History", use_container_width=True):
         st.session_state.chat_history = []
         st.session_state.messages = []
-        st.session_state.quick_question = ""
         st.rerun()
+        
+    st.markdown('<div class="creator-footer">Created by Aadil Rather</div>', unsafe_allow_html=True)
 
-tab5_label = "Stories"
-tab6_label = "Prophets"
-tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(["AI Assistant", "Quran Reader", "Dua Collection", "40 Hadith", tab5_label, tab6_label])
+
+tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(["AI Assistant", "Quran Reader", "Dua Collection", "40 Hadith", "Tafseer Stories", "The Prophets"])
 
 with tab1:
     for msg in st.session_state.messages:
         with st.chat_message(msg["role"]):
             if msg["role"] == "assistant":
-                try:
-                    render_response(json.loads(msg["content"]))
-                except Exception:
-                    st.markdown(msg["content"])
+                try: render_response(json.loads(msg["content"]))
+                except Exception: st.markdown(msg["content"])
             else:
-                st.markdown(msg["content"])
+                st.markdown(f'<div style="font-size:16px; line-height:1.5;">{msg["content"]}</div>', unsafe_allow_html=True)
 
-    quick_q = st.session_state.get("quick_question", "")
-    user_input = quick_q or st.chat_input("Ask your Islamic question...")
-    if quick_q:
-        st.session_state.quick_question = ""
+    user_input = st.chat_input("Ask your Islamic question (English, Urdu, or Arabic)...")
 
     if user_input:
         st.session_state.messages.append({"role": "user", "content": user_input})
         with st.chat_message("user"):
-            st.markdown(user_input)
+            st.markdown(f'<div style="font-size:16px; line-height:1.5;">{user_input}</div>', unsafe_allow_html=True)
         with st.chat_message("assistant"):
-            with st.spinner("Searching Quran and Hadith..."):
+            with st.spinner("Consulting Quran and Hadith..."):
                 try:
                     route = detect_curated_route(user_input)
                     if route:
@@ -579,18 +607,16 @@ with tab1:
                     st.session_state.messages.append({"role": "assistant", "content": json.dumps(result, ensure_ascii=False)})
                     st.session_state.chat_history.append({"user": user_input, "assistant": result.get("direct_answer", "")})
                 except Exception as e:
-                    st.error("There was an issue processing your request. Please try again.")
+                    st.error("There was an issue processing your request. Please check your API key or connection.")
 
 with tab2:
-    st.markdown('<div class="section-title" style="margin-top:0;">Quran Reader — All Surahs</div>', unsafe_allow_html=True)
-    st.markdown('<div class="info-box">Select any Surah to read with Arabic and English translation (Asad).</div>', unsafe_allow_html=True)
+    st.markdown('<div class="section-title" style="margin-top:0;">The Holy Quran — Reader</div>', unsafe_allow_html=True)
     col1, col2 = st.columns([1, 2])
     with col1:
         surah_options = [f"{i + 1}. {name}" for i, name in enumerate(SURAH_NAMES)]
         selected_surah = st.selectbox("Select Surah", surah_options)
         surah_number = int(selected_surah.split(".")[0]) if selected_surah else None
-        st.markdown(f'<div class="info-box"><strong class="accent">{safe_html(selected_surah)}</strong></div>', unsafe_allow_html=True)
-        if st.button("Load Surah", type="primary", use_container_width=True):
+        if st.button("Read Surah", type="primary", use_container_width=True):
             st.session_state.loaded_surah_number = surah_number
     with col2:
         if st.session_state.loaded_surah_number:
@@ -599,64 +625,65 @@ with tab2:
                 arabic_edition, english_edition = surah_data[0], surah_data[1]
                 english_ayahs = english_edition.get("ayahs", [])
                 st.markdown(
-                    f'<div style="font-family:\'Scheherazade New\',serif; font-size:32px; text-align:center; direction:rtl; margin:15px 0;">'
+                    f'<div style="font-family:\'Scheherazade New\',serif; font-size:40px; text-align:center; color:#D4AF37; direction:rtl; margin:20px 0 40px 0; text-shadow: 0 2px 10px rgba(212, 175, 55, 0.1);">'
                     f'{safe_html(arabic_edition.get("name", ""))}</div>',
                     unsafe_allow_html=True,
                 )
                 for i, ayah in enumerate(arabic_edition.get("ayahs", [])):
                     english = english_ayahs[i].get("text", "") if i < len(english_ayahs) else ""
                     st.markdown(
-                        f'<div class="clean-card"><span class="accent muted" style="font-size:12px;">Ayah {ayah.get("numberInSurah", i + 1)}</span>'
+                        f'<div class="premium-card"><div class="muted" style="margin-bottom:12px; font-weight:600; color:#D4AF37 !important;">AYAH {ayah.get("numberInSurah", i + 1)}</div>'
                         f'<div class="arabic">{safe_html(ayah.get("text", ""))}</div>'
-                        f'<div>{safe_html(english)}</div></div>',
+                        f'<div style="font-size:16px; line-height:1.7; color:#cccccc;">{safe_html(english)}</div></div>',
                         unsafe_allow_html=True,
                     )
-            else:
-                st.error("Could not load Surah. Please check your connection and try again.")
         else:
-            st.info("Select a Surah and click Load Surah.")
+            st.info("Select a Surah from the dropdown to begin reading.")
 
 with tab3:
-    st.markdown('<div class="section-title" style="margin-top:0;">Dua Collection</div>', unsafe_allow_html=True)
-    st.markdown('<div class="info-box">Curated duas stored directly in this app (no external files required).</div>', unsafe_allow_html=True)
-    selected_category = st.selectbox("Select Category", list(DUA_CATEGORIES.keys()))
+    st.markdown('<div class="section-title" style="margin-top:0;">Fortress of the Muslim (Dua)</div>', unsafe_allow_html=True)
+    selected_category = st.selectbox("Select Collection", list(DUA_CATEGORIES.keys()))
     for dua in DUA_CATEGORIES.get(selected_category, []):
         st.markdown(
-            f'<div class="clean-card"><strong class="accent" style="font-size:16px;">{safe_html(dua["title"])}</strong>'
-            f'<div class="arabic">{safe_html(dua["arabic"])}</div>'
-            f'<strong>Transliteration:</strong><br><span class="muted">{safe_html(dua["transliteration"])}</span><br><br>'
-            f'<strong>Meaning:</strong><br>{safe_html(dua["meaning"])}'
-            f'<br><br><span class="muted">Reference: {source_link(dua["reference"], dua.get("source_url", ""))}</span></div>',
+            f'<div class="premium-card"><h3 style="margin-top:0; color:#D4AF37; font-family:\'Playfair Display\',serif;">{safe_html(dua["title"])}</h3>'
+            f'<div class="arabic" style="margin: 20px 0;">{safe_html(dua["arabic"])}</div>'
+            f'<strong class="accent" style="font-size:14px; text-transform:uppercase;">Transliteration</strong><br><span style="color:#bbbbbb; line-height:1.6; display:inline-block; margin-bottom:16px;">{safe_html(dua["transliteration"])}</span><br>'
+            f'<strong class="accent" style="font-size:14px; text-transform:uppercase;">Meaning</strong><br><span style="font-size:16px; line-height:1.6; color:#eeeeee;">{safe_html(dua["meaning"])}</span>'
+            f'<div style="margin-top:20px; border-top:1px solid #2a2a2a; padding-top:12px;"><span class="muted">Reference: {source_link(dua["reference"], dua.get("source_url", ""))}</span></div></div>',
             unsafe_allow_html=True,
         )
 
 with tab4:
-    st.markdown('<div class="section-title" style="margin-top:0;">40 Short Hadith</div>', unsafe_allow_html=True)
-    st.markdown('<div class="info-box">Concise authentic sayings to reflect on daily.</div>', unsafe_allow_html=True)
+    st.markdown('<div class="section-title" style="margin-top:0;">An-Nawawi\'s 40 Hadith</div>', unsafe_allow_html=True)
     for h in HADITH_40:
         st.markdown(
-            f'<div class="clean-card"><span class="accent muted" style="font-size:13px;">Hadith {h["number"]}</span>'
-            f'<br><strong>{safe_html(h["text"])}</strong></div>',
+            f'<div class="premium-card"><div class="muted" style="margin-bottom:16px; font-weight:600; color:#D4AF37 !important; letter-spacing:1px;">HADITH {h["number"]}</div>'
+            f'<div class="arabic">{safe_html(h["arabic"])}</div>'
+            f'<div style="font-size:18px; line-height:1.7; margin:20px 0; color:#eeeeee;">"{safe_html(h["text"])}"</div>'
+            f'<div style="border-top:1px solid #2a2a2a; padding-top:12px;"><span class="muted">Source: <span style="color:#D4AF37;">{safe_html(h["source"])}</span></span></div></div>',
             unsafe_allow_html=True,
         )
 
 with tab5:
-    st.markdown('<div class="section-title" style="margin-top:0;">Famous Stories (Quran & Hadith)</div>', unsafe_allow_html=True)
-    st.markdown('<div class="info-box">Verified, concise retellings with references—no speculation.</div>', unsafe_allow_html=True)
+    st.markdown('<div class="section-title" style="margin-top:0;">Stories from Tafseer & Hadith</div>', unsafe_allow_html=True)
     for story in STORIES:
         st.markdown(
-            f'<div class="clean-card"><strong class="accent">{safe_html(story["title"])}</strong><br>'
-            f'{safe_html(story["summary"])}<br><br>'
-            f'<span class="muted">Source: {safe_html(story["source"])}</span></div>',
+            f'<div class="premium-card"><h2 style="margin-top:0; font-size:26px;">{safe_html(story["title"])}</h2>'
+            f'<div style="font-size:16px; line-height:1.7; color:#cccccc; margin-bottom:20px;">{safe_html(story["summary"])}</div>'
+            f'<div class="story-label">The Divine Motive</div><div style="font-size:15px; color:#eeeeee; margin-bottom:12px; border-left:2px solid #D4AF37; padding-left:12px;">{safe_html(story["motive"])}</div>'
+            f'<div class="story-label">Moral Lesson</div><div style="font-size:15px; color:#eeeeee; margin-bottom:20px; border-left:2px solid #D4AF37; padding-left:12px;">{safe_html(story["moral"])}</div>'
+            f'<div style="border-top:1px solid #2a2a2a; padding-top:12px;"><span class="muted">Source Base: {safe_html(story["source"])}</span></div></div>',
             unsafe_allow_html=True,
         )
 
 with tab6:
-    st.markdown('<div class="section-title" style="margin-top:0;">Lives of the Prophets</div>', unsafe_allow_html=True)
-    st.markdown('<div class="info-box">Brief, verified highlights only—no guesses or weak reports.</div>', unsafe_allow_html=True)
+    st.markdown('<div class="section-title" style="margin-top:0;">Lives of the Messengers</div>', unsafe_allow_html=True)
     for p in PROPHETS:
         st.markdown(
-            f'<div class="clean-card"><strong class="accent" style="font-size:16px;">{safe_html(p["name"])}</strong><br>'
-            f'{safe_html(p["life"])}<br><br><span class="muted">Sources: {safe_html(p["sources"])}</span></div>',
+            f'<div class="premium-card"><h2 style="margin-top:0; font-size:28px;">{safe_html(p["name"])}</h2>'
+            f'<div style="font-size:16px; line-height:1.8; color:#cccccc; margin-bottom:24px;">{safe_html(p["life"])}</div>'
+            f'<div class="story-label">Prophetic Mission / Motive</div><div style="font-size:15px; color:#eeeeee; margin-bottom:12px; border-left:2px solid #D4AF37; padding-left:12px;">{safe_html(p["motive"])}</div>'
+            f'<div class="story-label">Moral Legacy</div><div style="font-size:15px; color:#eeeeee; margin-bottom:20px; border-left:2px solid #D4AF37; padding-left:12px;">{safe_html(p["moral"])}</div>'
+            f'<div style="border-top:1px solid #2a2a2a; padding-top:12px;"><span class="muted">Authentic Sources: {safe_html(p["sources"])}</span></div></div>',
             unsafe_allow_html=True,
         )
