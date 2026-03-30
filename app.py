@@ -10,103 +10,130 @@ import streamlit as st
 # Page setup
 st.set_page_config(page_title="Muslim AI", layout="wide", initial_sidebar_state="expanded")
 
-# Premium styling
+# Minimalist, Clean Styling
 st.markdown(
     """
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&family=Scheherazade+New:wght@700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Scheherazade+New:wght@400;700&display=swap');
 
-/* ===== BACKGROUND ===== */
-.stApp {
-    background: radial-gradient(circle at 20% 20%, #0f172a, #020617 80%);
-    color: #e2e8f0;
-    font-family: 'Plus Jakarta Sans', sans-serif;
+/* ===== GLOBAL TYPOGRAPHY ===== */
+html, body, [class*="css"] {
+    font-family: 'Inter', sans-serif;
 }
 
-/* ===== GLASS CONTAINER ===== */
-.glass {
-    background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
-    border-radius: 18px;
-    border: 1px solid rgba(255,255,255,0.08);
-    box-shadow: 0 8px 32px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.05);
-    padding: 20px;
+/* ===== CLEAN CARD CONTAINER ===== */
+.clean-card {
+    background-color: rgba(128, 128, 128, 0.04);
+    border: 1px solid rgba(128, 128, 128, 0.2);
+    border-radius: 12px;
+    padding: 24px;
     margin-bottom: 20px;
-    transition: all 0.3s ease;
-    word-break: break-word; /* Added to prevent long URLs from breaking layout */
+    word-break: break-word;
+    transition: background-color 0.2s ease;
 }
-.glass:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 12px 40px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.08);
+.clean-card:hover {
+    background-color: rgba(128, 128, 128, 0.08);
 }
 
 /* ===== HERO ===== */
 .hero {
     text-align: center;
-    padding: 35px;
-    border-radius: 20px;
-    background: linear-gradient(135deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.6));
-    backdrop-filter: blur(20px);
-    box-shadow: 0 0 60px rgba(59,130,246,0.15), 0 10px 40px rgba(0,0,0,0.6);
+    padding: 40px 20px;
+    margin-bottom: 30px;
+    border-bottom: 1px solid rgba(128, 128, 128, 0.2);
+}
+.bismillah {
+    font-family: 'Scheherazade New', serif;
+    font-size: 28px;
+    margin-bottom: 12px;
+    opacity: 0.8;
+}
+.title {
+    font-size: 32px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    letter-spacing: -0.5px;
+}
+.subtitle {
+    font-size: 16px;
+    opacity: 0.6;
 }
 
 /* ===== TEXT HIERARCHY ===== */
-h1 { font-size: 34px; font-weight: 700; color: #f8fafc; }
-h2 { font-size: 22px; margin-top: 25px; margin-bottom: 10px; color: #e2e8f0; }
+.section-title {
+    font-size: 18px;
+    font-weight: 600;
+    margin: 30px 0 16px 0;
+    padding-bottom: 8px;
+    border-bottom: 1px solid rgba(128, 128, 128, 0.2);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    opacity: 0.8;
+}
 
 /* ===== ARABIC TEXT ===== */
 .arabic {
     font-family: 'Scheherazade New', serif;
-    font-size: 34px;
+    font-size: 32px;
     direction: rtl;
     text-align: right;
-    color: #facc15;
-    text-shadow: 0 0 12px rgba(250,204,21,0.35), 0 0 25px rgba(250,204,21,0.15);
+    margin-bottom: 12px;
+    line-height: 1.6;
 }
 
-/* ===== SECTION COLORS ===== */
-.answer { border-left: 4px solid #facc15; }
-.quran  { border-left: 4px solid #22c55e; }
-.hadith { border-left: 4px solid #3b82f6; }
-.dua    { border-left: 4px solid #a855f7; }
-.info-box { border-left: 4px solid #94a3b8; }
-.warning-card { border-left: 4px solid #f87171; }
-.scholar-card { border-left: 4px solid #facc15; }
-.reader-card  { border-left: 4px solid #22c55e; }
-
-/* ===== INPUT ===== */
-input, textarea {
-    background: rgba(255,255,255,0.06) !important;
-    border: 1px solid rgba(255,255,255,0.1) !important;
-    border-radius: 14px !important;
-    padding: 12px !important;
-    color: white !important;
+/* ===== UI ELEMENTS ===== */
+.info-box {
+    background-color: rgba(128, 128, 128, 0.08);
+    border-left: 3px solid rgba(128, 128, 128, 0.5);
+    border-radius: 4px;
+    padding: 12px 16px;
+    font-size: 14px;
+    margin-bottom: 20px;
 }
-.stChatInput textarea { min-height:44px !important; }
-
-/* ===== BUTTON ===== */
-.stButton > button {
-    background: linear-gradient(135deg, #3b82f6, #2563eb);
-    border-radius: 14px;
+.warning-box {
+    background-color: rgba(239, 68, 68, 0.1);
+    border-left: 3px solid rgba(239, 68, 68, 0.5);
+    border-radius: 4px;
+    padding: 12px 16px;
+    font-size: 14px;
+    margin-bottom: 20px;
+}
+.accent {
     font-weight: 600;
-    padding: 10px 22px;
-    border: none;
-    box-shadow: 0 6px 20px rgba(59,130,246,0.3);
-    transition: 0.25s ease;
+    opacity: 0.9;
 }
-.stButton > button:hover {
-    transform: scale(1.05);
-    box-shadow: 0 8px 30px rgba(59,130,246,0.5);
+.muted {
+    opacity: 0.6;
+    font-size: 0.9em;
+}
+.source-link {
+    color: inherit;
+    text-decoration: underline;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+}
+.source-link:hover {
+    opacity: 1;
+}
+.pill-badge {
+    font-size: 0.75em;
+    border: 1px solid rgba(128,128,128,0.4);
+    padding: 2px 8px;
+    border-radius: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-left: 8px;
+    opacity: 0.8;
 }
 
-/* ===== SIDEBAR ===== */
-[data-testid="stSidebar"] { background: rgba(15,23,42,0.9) !important; backdrop-filter: blur(12px); }
-[data-testid="stSidebar"] .stButton>button { width:100%; }
-
-/* ===== SCROLLBAR ===== */
-::-webkit-scrollbar { width: 8px; }
-::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 10px; }
+/* ===== OVERRIDES FOR STREAMLIT NATIVE ELEMENTS ===== */
+.stButton > button {
+    border-radius: 8px;
+    font-weight: 500;
+}
+input, textarea {
+    border-radius: 8px !important;
+}
 </style>
 """,
     unsafe_allow_html=True,
@@ -272,10 +299,9 @@ def safe_html(value):
 def source_link(label, url):
     safe_label = safe_html(label)
     if url:
-        # Added security: restrict URLs to http/https to prevent javascript: links
         if not str(url).startswith(('http://', 'https://')):
             url = '#'
-        return f'<a class="source-link" style="color:#9bcdfb;" href="{escape(url, quote=True)}" target="_blank">{safe_label}</a>'
+        return f'<a class="source-link" href="{escape(url, quote=True)}" target="_blank">{safe_label}</a>'
     return safe_label
 
 
@@ -313,7 +339,6 @@ def normalize_result(result):
     if not isinstance(result, dict):
         result = {}
         
-    # Helper to parse yes/no values from booleans or strings
     def is_yes(val):
         if isinstance(val, bool):
             return val
@@ -415,16 +440,16 @@ def render_response(result):
     if result["source_notice"]:
         st.markdown(f'<div class="info-box">{safe_html(result["source_notice"])}</div>', unsafe_allow_html=True)
 
-    st.markdown(f'<div class="glass answer"><strong style="color:var(--gold);">Answer:</strong><br><br>{safe_html(result["direct_answer"])}</div>', unsafe_allow_html=True)
+    st.markdown(f'<div class="clean-card"><strong class="accent">Answer:</strong><br><br>{safe_html(result["direct_answer"])}</div>', unsafe_allow_html=True)
 
     if result["quran_evidence"]:
         st.markdown('<div class="section-title">Quran Evidence</div>', unsafe_allow_html=True)
         for verse in result["quran_evidence"]:
             st.markdown(
-                f'<div class="glass quran"><div class="arabic">{safe_html(verse.get("arabic", ""))}</div>'
-                f'<div class="translation">{safe_html(verse.get("translation", ""))}</div>'
-                f'<br><span style="color:var(--success); font-weight:700;">{safe_html(verse.get("reference", ""))}</span>'
-                f'<br><em style="color:var(--muted);">{safe_html(verse.get("explanation", ""))}</em></div>',
+                f'<div class="clean-card"><div class="arabic">{safe_html(verse.get("arabic", ""))}</div>'
+                f'<div>{safe_html(verse.get("translation", ""))}</div>'
+                f'<br><strong class="accent">{safe_html(verse.get("reference", ""))}</strong>'
+                f'<br><span class="muted">{safe_html(verse.get("explanation", ""))}</span></div>',
                 unsafe_allow_html=True,
             )
 
@@ -432,13 +457,12 @@ def render_response(result):
         st.markdown('<div class="section-title">Hadith Evidence</div>', unsafe_allow_html=True)
         for h in result["hadith_evidence"]:
             auth = h.get("authenticity", "Sahih")
-            badge_class = "sahih" if auth == "Sahih" else "hasan" if auth == "Hasan" else "weak"
             arabic_html = f'<div class="arabic">{safe_html(h.get("arabic", ""))}</div>' if h.get("arabic") else ""
-            note_html = f'<br><span style="color:var(--muted); font-size:12px;">{safe_html(h.get("note", ""))}</span>' if h.get("note") else ""
+            note_html = f'<br><span class="muted">{safe_html(h.get("note", ""))}</span>' if h.get("note") else ""
             st.markdown(
-                f'<div class="glass hadith">{arabic_html}<strong>{safe_html(h.get("text", ""))}</strong>'
-                f'<br><br><strong>Source:</strong> {safe_html(h.get("source", ""))} '
-                f'<span class="badge {badge_class}">{safe_html(auth)}</span>{note_html}</div>',
+                f'<div class="clean-card">{arabic_html}<strong>{safe_html(h.get("text", ""))}</strong>'
+                f'<br><br><span class="muted">Source: {safe_html(h.get("source", ""))}</span> '
+                f'<span class="pill-badge">{safe_html(auth)}</span>{note_html}</div>',
                 unsafe_allow_html=True,
             )
 
@@ -448,8 +472,8 @@ def render_response(result):
             st.markdown('<div class="info-box">There is a difference of opinion among scholars on this matter.</div>', unsafe_allow_html=True)
         for opinion in result["scholarly_opinions"]:
             st.markdown(
-                f'<div class="glass scholar-card"><strong style="color:var(--gold);">{safe_html(opinion.get("madhab", ""))}:</strong> '
-                f'{safe_html(opinion.get("opinion", ""))}<br><small style="color:var(--muted);">Source: {safe_html(opinion.get("source", ""))}</small></div>',
+                f'<div class="clean-card"><strong class="accent">{safe_html(opinion.get("madhab", ""))}:</strong> '
+                f'{safe_html(opinion.get("opinion", ""))}<br><span class="muted">Source: {safe_html(opinion.get("source", ""))}</span></div>',
                 unsafe_allow_html=True,
             )
 
@@ -458,20 +482,20 @@ def render_response(result):
         st.markdown('<div class="section-title">Dua</div>', unsafe_allow_html=True)
         for dua in duas:
             st.markdown(
-                f'<div class="glass dua"><strong style="color:#d8b55a; font-size:16px;">{safe_html(dua.get("title", ""))}</strong>'
+                f'<div class="clean-card"><strong class="accent" style="font-size: 1.1em;">{safe_html(dua.get("title", ""))}</strong>'
                 f'<div class="arabic">{safe_html(dua.get("arabic", ""))}</div>'
-                f'<strong style="color:#a87ad8;">Transliteration:</strong><br><em>{safe_html(dua.get("transliteration", ""))}</em>'
-                f'<br><br><strong style="color:#d8b55a;">Meaning:</strong><br>{safe_html(dua.get("meaning", ""))}'
-                f'<br><br><small style="color:#a87ad8;">Reference: {source_link(dua.get("reference", ""), dua.get("source_url", ""))}</small></div>',
+                f'<strong>Transliteration:</strong><br><span class="muted">{safe_html(dua.get("transliteration", ""))}</span>'
+                f'<br><br><strong>Meaning:</strong><br>{safe_html(dua.get("meaning", ""))}'
+                f'<br><br><span class="muted">Reference: {source_link(dua.get("reference", ""), dua.get("source_url", ""))}</span></div>',
                 unsafe_allow_html=True,
             )
 
     if result["conclusion"]:
         st.markdown('<div class="section-title">Conclusion</div>', unsafe_allow_html=True)
-        st.markdown(f'<div class="glass answer">{safe_html(result["conclusion"])}</div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="clean-card">{safe_html(result["conclusion"])}</div>', unsafe_allow_html=True)
 
     if result["consult_scholar"] == "Yes":
-        st.markdown('<div class="glass warning-card">This matter can be sensitive. Please consult a qualified scholar for a personal ruling.</div>', unsafe_allow_html=True)
+        st.markdown('<div class="warning-box">This matter can be sensitive. Please consult a qualified scholar for a personal ruling.</div>', unsafe_allow_html=True)
 
 # --------------------------------------------------------------------------- #
 # UI
@@ -479,12 +503,12 @@ def render_response(result):
 st.markdown(
     '<div class="hero"><div class="bismillah">بِسْمِ اللَّهِ الرَّحْمٰنِ الرَّحِيمِ</div>'
     '<div class="title">Muslim AI</div>'
-    '<div class="subtitle">Premium experience · Authentic answers grounded in Quran, Sahih Hadith, and classical scholarship</div></div>',
+    '<div class="subtitle">Authentic answers grounded in Quran, Sahih Hadith, and classical scholarship</div></div>',
     unsafe_allow_html=True,
 )
 
 with st.sidebar:
-    st.markdown('<div style="color:var(--gold); font-size:18px; font-weight:700; text-align:center; margin-bottom:12px;">Quick Topics</div>', unsafe_allow_html=True)
+    st.markdown('<div class="accent" style="font-size:18px; text-align:center; margin-bottom:12px;">Quick Topics</div>', unsafe_allow_html=True)
     topics = [
         "What is the ruling on missing Fajr prayer?",
         "Give me morning adhkar",
@@ -508,7 +532,7 @@ with st.sidebar:
         if st.button(topic, use_container_width=True, key=f"sidebar_{topic}"):
             st.session_state.quick_question = topic
     st.markdown("---")
-    st.markdown('<div style="color:var(--muted); font-size:12px; text-align:center;">Ask in English, Urdu, or Arabic.</div>', unsafe_allow_html=True)
+    st.markdown('<div class="muted" style="text-align:center;">Ask in English, Urdu, or Arabic.</div>', unsafe_allow_html=True)
     st.markdown("---")
     if st.button("Clear Chat History", use_container_width=True):
         st.session_state.chat_history = []
@@ -558,14 +582,14 @@ with tab1:
                     st.error("There was an issue processing your request. Please try again.")
 
 with tab2:
-    st.markdown('<div class="section-title">Quran Reader — All Surahs</div>', unsafe_allow_html=True)
+    st.markdown('<div class="section-title" style="margin-top:0;">Quran Reader — All Surahs</div>', unsafe_allow_html=True)
     st.markdown('<div class="info-box">Select any Surah to read with Arabic and English translation (Asad).</div>', unsafe_allow_html=True)
     col1, col2 = st.columns([1, 2])
     with col1:
         surah_options = [f"{i + 1}. {name}" for i, name in enumerate(SURAH_NAMES)]
         selected_surah = st.selectbox("Select Surah", surah_options)
         surah_number = int(selected_surah.split(".")[0]) if selected_surah else None
-        st.markdown(f'<div class="info-box"><strong style="color:var(--gold);">{safe_html(selected_surah)}</strong></div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="info-box"><strong class="accent">{safe_html(selected_surah)}</strong></div>', unsafe_allow_html=True)
         if st.button("Load Surah", type="primary", use_container_width=True):
             st.session_state.loaded_surah_number = surah_number
     with col2:
@@ -575,16 +599,16 @@ with tab2:
                 arabic_edition, english_edition = surah_data[0], surah_data[1]
                 english_ayahs = english_edition.get("ayahs", [])
                 st.markdown(
-                    f'<div style="font-family:\'Scheherazade New\',serif; font-size:32px; color:#f0d589; text-align:center; direction:rtl; margin:15px 0;">'
+                    f'<div style="font-family:\'Scheherazade New\',serif; font-size:32px; text-align:center; direction:rtl; margin:15px 0;">'
                     f'{safe_html(arabic_edition.get("name", ""))}</div>',
                     unsafe_allow_html=True,
                 )
                 for i, ayah in enumerate(arabic_edition.get("ayahs", [])):
                     english = english_ayahs[i].get("text", "") if i < len(english_ayahs) else ""
                     st.markdown(
-                        f'<div class="glass reader-card"><span style="color:var(--gold); font-size:12px; font-weight:700;">Ayah {ayah.get("numberInSurah", i + 1)}</span>'
+                        f'<div class="clean-card"><span class="accent muted" style="font-size:12px;">Ayah {ayah.get("numberInSurah", i + 1)}</span>'
                         f'<div class="arabic">{safe_html(ayah.get("text", ""))}</div>'
-                        f'<div class="translation">{safe_html(english)}</div></div>',
+                        f'<div>{safe_html(english)}</div></div>',
                         unsafe_allow_html=True,
                     )
             else:
@@ -593,47 +617,46 @@ with tab2:
             st.info("Select a Surah and click Load Surah.")
 
 with tab3:
-    st.markdown('<div class="section-title">Dua Collection</div>', unsafe_allow_html=True)
+    st.markdown('<div class="section-title" style="margin-top:0;">Dua Collection</div>', unsafe_allow_html=True)
     st.markdown('<div class="info-box">Curated duas stored directly in this app (no external files required).</div>', unsafe_allow_html=True)
     selected_category = st.selectbox("Select Category", list(DUA_CATEGORIES.keys()))
     for dua in DUA_CATEGORIES.get(selected_category, []):
         st.markdown(
-            f'<div class="glass dua"><strong style="color:var(--gold); font-size:16px;">{safe_html(dua["title"])}</strong>'
+            f'<div class="clean-card"><strong class="accent" style="font-size:16px;">{safe_html(dua["title"])}</strong>'
             f'<div class="arabic">{safe_html(dua["arabic"])}</div>'
-            f'<strong style="color:#a87ad8;">Transliteration:</strong><br><em>{safe_html(dua["transliteration"])}</em><br><br>'
-            f'<strong style="color:var(--gold);">Meaning:</strong><br>{safe_html(dua["meaning"])}'
-            f'<br><br><small style="color:#a87ad8;">Reference: {source_link(dua["reference"], dua.get("source_url", ""))}</small></div>',
+            f'<strong>Transliteration:</strong><br><span class="muted">{safe_html(dua["transliteration"])}</span><br><br>'
+            f'<strong>Meaning:</strong><br>{safe_html(dua["meaning"])}'
+            f'<br><br><span class="muted">Reference: {source_link(dua["reference"], dua.get("source_url", ""))}</span></div>',
             unsafe_allow_html=True,
         )
-        st.markdown("<br>", unsafe_allow_html=True)
 
 with tab4:
-    st.markdown('<div class="section-title">40 Short Hadith</div>', unsafe_allow_html=True)
+    st.markdown('<div class="section-title" style="margin-top:0;">40 Short Hadith</div>', unsafe_allow_html=True)
     st.markdown('<div class="info-box">Concise authentic sayings to reflect on daily.</div>', unsafe_allow_html=True)
     for h in HADITH_40:
         st.markdown(
-            f'<div class="glass hadith"><span style="color:var(--gold); font-size:13px; font-weight:700;">Hadith {h["number"]}</span>'
+            f'<div class="clean-card"><span class="accent muted" style="font-size:13px;">Hadith {h["number"]}</span>'
             f'<br><strong>{safe_html(h["text"])}</strong></div>',
             unsafe_allow_html=True,
         )
 
 with tab5:
-    st.markdown('<div class="section-title">Famous Stories (Quran & Hadith)</div>', unsafe_allow_html=True)
+    st.markdown('<div class="section-title" style="margin-top:0;">Famous Stories (Quran & Hadith)</div>', unsafe_allow_html=True)
     st.markdown('<div class="info-box">Verified, concise retellings with references—no speculation.</div>', unsafe_allow_html=True)
     for story in STORIES:
         st.markdown(
-            f'<div class="glass card"><strong style="color:var(--gold);">{safe_html(story["title"])}</strong><br>'
+            f'<div class="clean-card"><strong class="accent">{safe_html(story["title"])}</strong><br>'
             f'{safe_html(story["summary"])}<br><br>'
-            f'<small style="color:var(--muted);">Source: {safe_html(story["source"])}</small></div>',
+            f'<span class="muted">Source: {safe_html(story["source"])}</span></div>',
             unsafe_allow_html=True,
         )
 
 with tab6:
-    st.markdown('<div class="section-title">Lives of the Prophets</div>', unsafe_allow_html=True)
+    st.markdown('<div class="section-title" style="margin-top:0;">Lives of the Prophets</div>', unsafe_allow_html=True)
     st.markdown('<div class="info-box">Brief, verified highlights only—no guesses or weak reports.</div>', unsafe_allow_html=True)
     for p in PROPHETS:
         st.markdown(
-            f'<div class="glass card"><strong style="color:var(--gold); font-size:16px;">{safe_html(p["name"])}</strong><br>'
-            f'{safe_html(p["life"])}<br><br><small style="color:var(--muted);">Sources: {safe_html(p["sources"])}</small></div>',
+            f'<div class="clean-card"><strong class="accent" style="font-size:16px;">{safe_html(p["name"])}</strong><br>'
+            f'{safe_html(p["life"])}<br><br><span class="muted">Sources: {safe_html(p["sources"])}</span></div>',
             unsafe_allow_html=True,
         )
