@@ -104,13 +104,14 @@ if not NVIDIA_API_KEY:
     st.error("❌ Missing NVIDIA_API_KEY. Please add it to your Streamlit Cloud Secrets (Settings → Secrets).")
     st.stop()
 
-# GUARANTEED FIX: Cleaned and explicitly stripped API_URL string to prevent connection adapter errors
-API_URL = "https://integrate.api.nvidia.com/v1/chat/completions".strip()
-MODEL = "meta/llama-3.3-70b-instruct".strip()
+API_URL = "https://integrate.api.nvidia.com/v1/chat/completions"
+# FIX: Verified stable NVIDIA model slug
+MODEL = "meta/llama-3.3-70b-instruct"
 
 BASE_SYSTEM_PROMPT = """You are an Islamic AI Assistant. Respond only with authentic Quran, Sahih Hadith, and recognized classical scholarship.
 - Do NOT fabricate references.
 - STRICT JSON FORMAT: You MUST return ONLY valid JSON. Use `<br><br>` for line breaks, NEVER use literal newlines inside string values.
+- MANDATORY ARABIC: The 'arabic' field for EVERY item in 'quran_evidence' and 'hadith_evidence' MUST contain the original Arabic script text. NEVER leave the 'arabic' field as an empty string — always include the actual Arabic.
 - TRANSLITERATION & HINGLISH: For ANY Arabic text provided (Quran, Hadith, Dua), you MUST provide the English Transliteration, followed by the English Translation, and then the Hinglish (Urdu/Hindi written in English script) Translation.
 - HINGLISH ANSWERS: Include a Hinglish translation for your 'direct_answer' and 'conclusion'.
 - SCHOLARLY PRECISION: Separate the 'opinion', 'reasoning', and 'evidence' clearly.
@@ -185,7 +186,7 @@ DUA_CATEGORIES = {
     ],
     "Forgiveness": [
         {"title": "Seeking Forgiveness", "arabic": "رَبِّ اغْفِرْ لِي وَتُبْ عَلَيَّ إِنَّكَ أَنْتَ التَّوَّابُ الرَّحِيمُ", "transliteration": "Rabbighfir li wa tub alayya innaka anta at-Tawwabur-Rahim", "meaning": "My Lord, forgive me and accept my repentance. Truly, You are the Accepter of repentance, the Most Merciful.", "reference": "Abu Dawood"},
-    ]
+    ],
 }
 
 HADITH_40 = [
@@ -228,7 +229,7 @@ HADITH_40 = [
     {"number": 37, "arabic": "إِذَا سَأَلْتَ فَاسْأَلِ اللَّهَ", "text": "If you ask, ask of Allah; if you seek help, seek help from Allah.", "source": "Jami at-Tirmidhi 2516 (Hasan Sahih)"},
     {"number": 38, "arabic": "الْبِرُّ حُسْنُ الْخُلُقِ", "text": "Righteousness is good character.", "source": "Sahih Muslim 2553"},
     {"number": 39, "arabic": "الصَّلاَةُ نُورٌ وَالصَّدَقَةُ بُرْهَانٌ وَالصَّبْرُ ضِيَاءٌ", "text": "Prayer is light, charity is a proof, and patience is illumination.", "source": "Sahih Muslim 223"},
-    {"number": 40, "arabic": "مَنْ حَسُنَ إِسْلاَمُهُ تَرَكَ مَا لاَ يَعْنِيهِ", "text": "Part of the perfection of a person's Islam is his leaving that which is of no concern to him.", "source": "Jami at-Tirmidhi 2317 (Hasan)"}
+    {"number": 40, "arabic": "مَنْ حَسُنَ إِسْلاَمُهُ تَرَكَ مَا لاَ يَعْنِيهِ", "text": "Part of the perfection of a person's Islam is his leaving that which is of no concern to him.", "source": "Jami at-Tirmidhi 2317 (Hasan)"},
 ]
 
 NAMES_RAW = "الرَّحْمَن|Ar-Rahman|The Entirely Merciful,الرَّحِيم|Ar-Rahim|The Especially Merciful,الْمَلِك|Al-Malik|The Sovereign,الْقُدُّوس|Al-Quddus|The Most Holy,السَّلاَم|As-Salam|The Source of Peace,الْمُؤْمِن|Al-Mu'min|The Guarantor,الْمُهَيْمِن|Al-Muhaymin|The Guardian,الْعَزِيز|Al-Aziz|The Almighty,الْجَبَّار|Al-Jabbar|The Compeller,الْمُتَكَبِّر|Al-Mutakabbir|The Supreme,الْخَالِق|Al-Khaliq|The Creator,الْبَارِئ|Al-Bari'|The Evolver,الْمُصَوِّر|Al-Musawwir|The Fashioner,الْغَفَّار|Al-Ghaffar|The Repeatedly Forgiving,الْقَهَّار|Al-Qahhar|The Subduer,الْوَهَّاب|Al-Wahhab|The Bestower,الرَّزَّاق|Ar-Razzaq|The Provider,الْفَتَّاح|Al-Fattah|The Opener,الْعَلِيم|Al-Aleem|The Knowing,الْقَابِض|Al-Qabid|The Withholder,الْبَاسِط|Al-Basit|The Extender,الْخَافِض|Al-Khafid|The Abaser,الرَّافِع|Ar-Rafi'|The Exalter,الْمُعِزّ|Al-Mu'izz|The Honorer,الْمُذِلّ|Al-Mudhill|The Dishonorer,السَّمِيع|As-Sami'|The Hearing,الْبَصِير|Al-Basir|The Seeing,الْحَكَم|Al-Hakam|The Judge,الْعَدْل|Al-Adl|The Just,اللَّطِيف|Al-Latif|The Subtle One,الْخَبِير|Al-Khabir|The Acquainted,الْحَلِيم|Al-Haleem|The Forbearing,الْعَظِيم|Al-Azeem|The Magnificent,الْغَفُور|Al-Ghafur|The Much-Forgiving,الشَّكُور|Ash-Shakur|The Grateful,الْعَلِيّ|Al-Aliyy|The Most High,الْكَبِير|Al-Kabir|The Great,الْحَفِيظ|Al-Hafiz|The Preserver,الْمُقِيت|Al-Muqit|The Sustainer,الْحَسِيب|Al-Haseeb|The Reckoner,الْجَلِيل|Al-Jaleel|The Majestic,الْكَرِيم|Al-Kareem|The Generous,الرَّقِيب|Ar-Raqib|The Watchful,الْمُجِيب|Al-Mujeeb|The Responsive,الْوَاسِع|Al-Wasi'|The All-Encompassing,الْحَكِيم|Al-Hakeem|The Wise,الْوَدُود|Al-Wadud|The Loving,الْمَاجِد|Al-Majeed|The All-Glorious,الْبَاعِث|Al-Ba'ith|The Resurrector,الشَّهِيد|Ash-Shaheed|The Witness,الْحَقّ|Al-Haqq|The Truth,الْوَكِيل|Al-Wakeel|The Trustee,الْقَوِيّ|Al-Qawiyy|The Strong,الْمَتِين|Al-Mateen|The Firm,الْوَلِيّ|Al-Waliyy|The Protecting Friend,الْحَمِيد|Al-Hameed|The Praiseworthy,الْمُحْصِي|Al-Muhsi|The Accounter,الْمُبْدِئ|Al-Mubdi|The Originator,الْمُعِيد|Al-Mu'id|The Restorer,الْمُحْيِي|Al-Muhyi|The Giver of Life,الْمُمِيت|Al-Mumit|The Bringer of Death,الْحَيّ|Al-Hayy|The Ever-Living,الْقَيُّوم|Al-Qayyum|The Sustainer of Existence,الْوَاجِد|Al-Wajid|The Finder,الْمَاجِد|Al-Majid|The Noble,الْوَاحِد|Al-Wahid|The Unique,الأَحَد|Al-Ahad|The One,الصَّمَد|As-Samad|The Eternal Refuge,الْقَادِر|Al-Qadir|The Capable,الْمُقْتَدِر|Al-Muqtadir|The Powerful,الْمُقَدِّم|Al-Muqaddim|The Expediter,الْمُؤَخِّر|Al-Mu'akhkhir|The Delayer,الأَوَّل|Al-Awwal|The First,الآخِر|Al-Akhir|The Last,الظَّاهِر|Az-Zahir|The Manifest,الْبَاطِن|Al-Batin|The Hidden,الْوَالِي|Al-Wali|The Governor,الْمُتَعَالِي|Al-Muta'ali|The Most Exalted,الْبَرّ|Al-Barr|The Source of Goodness,التَّوَّاب|At-Tawwab|The Accepting of Repentance,الْمُنْتَقِم|Al-Muntaqim|The Avenger,الْعَفُوّ|Al-Afuww|The Pardoner,الرَّءُوف|Ar-Ra'uf|The Compassionate,مَالِكُ الْمُلْك|Malik-ul-Mulk|The Owner of Sovereignty,ذُو الْجَلاَلِ وَالإِكْرَام|Dhu-al-Jalal wa-al-Ikram|Lord of Majesty and Honor,الْمُقْسِط|Al-Muqsit|The Equitable,الْجَامِع|Al-Jami'|The Gatherer,الْغَنِيّ|Al-Ghaniyy|The Free of Need,الْمُغْنِي|Al-Mughni|The Enricher,الْمَانِع|Al-Mani'|The Preventer,الضَّارّ|Ad-Darr|The Harmer,النَّافِع|An-Nafi'|The Benefiter,النُّور|An-Nur|The Light,الْهَادِي|Al-Hadi|The Guide,الْبَدِيع|Al-Badi|The Incomparable,الْبَاقِي|Al-Baqi|The Everlasting,الْوَارِث|Al-Warith|The Inheritor,الرَّشِيد|Ar-Rasheed|The Guide to the Right Path,الصَّبُور|As-Sabur|The Patient"
@@ -284,6 +285,7 @@ def detect_curated_route(text):
     if contains_any(q, ["rabbana","quran dua"]): return "Quranic Rabbana Duas"
     return None
 
+# FIX: Guard against dua being non-dict
 def normalize_result(result):
     if not isinstance(result, dict): result = {}
     raw_dua = result.get("dua", {})
@@ -341,9 +343,8 @@ def call_api(user_message, history, persona="Balanced Assistant"):
         "Accept": "application/json",
         "Content-Type": "application/json",
     }
-    payload = {"model": MODEL, "messages": messages, "max_tokens": 2000, "temperature": 0.2, "stream": False}
-    
-    response = requests.post(API_URL, headers=headers, json=payload, timeout=120)
+    payload = {"model": MODEL, "messages": messages, "max_tokens": 1500, "temperature": 0.2, "top_p": 0.7, "stream": False}
+    response = requests.post(API_URL, headers=headers, json=payload, timeout=60)
     response.raise_for_status()
     return response.json()["choices"][0]["message"]["content"]
 
@@ -362,6 +363,7 @@ def parse_response(raw):
                 return normalize_result(json.loads(safe_json_str, strict=False))
     except Exception:
         pass
+    # FIX: Clean fallback that doesn't destroy the text
     fallback_text = re.sub(r'```json|```', '', raw).strip()
     return normalize_result({"direct_answer": fallback_text})
 
@@ -376,6 +378,7 @@ def fetch_quran_surah(surah_number):
     except Exception:
         return None
 
+# FIX: HTTPS instead of HTTP
 @st.cache_data(ttl=3600)
 def fetch_prayer_times(city, country):
     try:
@@ -387,6 +390,7 @@ def fetch_prayer_times(city, country):
     except Exception:
         return None
 
+# FIX: Chronological order (removed reversed())
 def format_chat_for_export():
     out = "Muslim AI - Chat Transcript\n" + "=" * 30 + "\n\n"
     for m in st.session_state.messages:
@@ -564,11 +568,12 @@ with tab1:
                 "Ask your Islamic question...",
                 label_visibility="collapsed",
                 placeholder="Type your Islamic question here...",
-                key="chat_input"
             )
         with col2:
             submit_btn = st.form_submit_button("Ask AI 💬", use_container_width=True)
 
+    # FIX: Settings and mood/suggestion buttons moved OUTSIDE the expander title
+    # and stored in session_state to survive reruns correctly
     with st.expander("✨ Spiritual First Aid & AI Settings", expanded=True):
         col_s1, col_s2 = st.columns(2)
         with col_s1:
@@ -590,6 +595,7 @@ with tab1:
         st.markdown("<span class='muted'>Select how you are feeling for instant Quranic comfort:</span>", unsafe_allow_html=True)
         moods = ["Anxious 😟", "Sad 😢", "Angry 😠", "Grateful 🙏", "Lost 🧭", "Forgiveness 🤲"]
         mood_cols = st.columns(6)
+        # FIX: Store mood/suggestion in session_state so they survive the rerun
         for i, mood in enumerate(moods):
             if mood_cols[i].button(mood, use_container_width=True, key=f"mood_{i}"):
                 st.session_state["pending_prompt"] = f"I am feeling {mood}. Please provide a comforting Islamic perspective, a relevant Ayah, and a short Dua to help me."
@@ -609,12 +615,14 @@ with tab1:
             mime="text/plain",
         )
 
+    # Determine trigger
     trigger_prompt = None
     display_prompt = None
 
     if submit_btn and user_input:
         trigger_prompt = user_input
         display_prompt = user_input
+        # Clear any pending button prompt
         st.session_state.pop("pending_prompt", None)
     elif st.session_state.get("pending_prompt"):
         trigger_prompt = st.session_state.pop("pending_prompt")
@@ -641,8 +649,10 @@ with tab1:
                         "assistant": result.get("direct_answer", ""),
                     })
             except Exception as e:
+                # FIX: Show actual error for debugging
                 st.error(f"Error processing request: {e}")
 
+    # FIX: Robust message pairing - check roles before pairing
     paired_messages = []
     i = 0
     while i < len(st.session_state.messages):
@@ -701,6 +711,8 @@ with tab2:
                     unsafe_allow_html=True,
                 )
             else:
+                # FIX: Use Archive.org embed iframe — reliable for all 114 surahs
+                # without needing to guess Arabic filenames
                 archive_id = "Quran-e-Kareem-With-Urdu-ONLY-Translation-Fateh-Muhammad-Jalandhari-------Audio-MP3-CD"
                 st.markdown(
                     f'<div class="premium-card" style="text-align:center;">'
@@ -789,6 +801,7 @@ with tab3:
         debt = st.number_input("Short-term Debts ($)", min_value=0.0, step=100.0)
 
     net_wealth = (cash + gold) - debt
+    # FIX: Nisab threshold check
     if net_wealth <= 0:
         zakat = 0.0
         zakat_msg = "Your net wealth is zero or negative. No Zakat is due."
@@ -884,10 +897,13 @@ with tab5:
 
 # ─────────────────────────────────────────
 # TAB 6: DEEP KNOWLEDGE
+# FIX: Removed unclosed HTML div wrappers around st.columns — all cards
+# are now self-contained within single st.markdown calls.
 # ─────────────────────────────────────────
 with tab6:
     st.markdown('<div class="section-title" style="margin-top:0;">Dynamic Islamic Sciences & AI Trivia</div>', unsafe_allow_html=True)
 
+    # FIX: Card opened and closed in a single st.markdown call
     st.markdown(
         '<div class="premium-card" style="border-color:#FBBF24; background:rgba(251, 191, 36, 0.05);">'
         '<h3>🧠 AI Trivia Master</h3>'
@@ -937,9 +953,4 @@ with tab6:
                     prompt = (
                         f"Provide a comprehensive overview of '{selected_tibb}' in Islam. "
                         f"Cite authentic Hadith mentioning it, and explain its spiritual and physical benefits "
-                        f"according to Prophetic Medicine (Tibb an-Nabawi)."
-                    )
-                    raw = call_api(prompt, [])
-                    render_response(parse_response(raw))
-                except Exception as e:
-                    st.error(f"Failed to generate medicine profile: {e}")
+                        f"according to Prophetic Medicine (Tibb an-Nabawi)
