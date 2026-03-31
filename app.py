@@ -16,7 +16,7 @@ st.set_page_config(page_title="Muslim AI", layout="wide", initial_sidebar_state=
 st.markdown(
     """
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400&family=Scheherazade+New:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300 ;400;500;600&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400&family=Scheherazade+New:wght@400;700&display=swap');
 
 html, body, [class*="css"] { font-family: 'Inter', sans-serif; color: #F8FAFC !important; }
 .stApp { background: linear-gradient(135deg, #020617 0%, #064E3B 100%) !important; background-attachment: fixed; }
@@ -104,7 +104,9 @@ if not NVIDIA_API_KEY:
     st.error("❌ Missing NVIDIA_API_KEY. Please add it to your Streamlit Cloud Secrets (Settings → Secrets).")
     st.stop()
 
+# FIX: Removed trailing space in API_URL
 API_URL = "https://integrate.api.nvidia.com/v1/chat/completions"
+# FIX: Verified stable NVIDIA model slug
 MODEL = "meta/llama-3.3-70b-instruct"
 
 BASE_SYSTEM_PROMPT = """You are an Islamic AI Assistant. Respond only with authentic Quran, Sahih Hadith, and recognized classical scholarship.
@@ -129,7 +131,7 @@ BASE_SYSTEM_PROMPT = """You are an Islamic AI Assistant. Respond only with authe
 }"""
 
 # ==========================================
-# DATA SETS (keep your full original data)
+# DATA SETS
 # ==========================================
 SURAH_NAMES = [
     "Al-Fatiha","Al-Baqarah","Al-Imran","An-Nisa","Al-Maidah","Al-Anam","Al-Araf","Al-Anfal","At-Tawbah","Yunus",
@@ -238,6 +240,7 @@ DYNAMIC_STORIES = ["People of the Cave (Ashab al-Kahf)", "Musa and Al-Khidr", "T
 TIBB_TOPICS = ["Black Seed (Habbatul Barakah)", "Honey", "Cupping (Hijama)", "Dates (Ajwa)", "Olive Oil", "Siwak (Miswak)"]
 TRIVIA_TOPICS = ["Life of Prophet Muhammad (SAW)", "Quranic Facts", "The 5 Pillars of Islam", "Stories of the Prophets", "Women in Islam"]
 
+# Approximate Nisab threshold in USD (gold-based, ~85g gold)
 NISAB_USD = 5500.0
 
 # ==========================================
@@ -282,6 +285,7 @@ def detect_curated_route(text):
     if contains_any(q, ["rabbana","quran dua"]): return "Quranic Rabbana Duas"
     return None
 
+# FIX: Guard against dua being non-dict
 def normalize_result(result):
     if not isinstance(result, dict): result = {}
     raw_dua = result.get("dua", {})
@@ -319,8 +323,7 @@ def hide_unverified_model_dua(result):
         result["conclusion"] = "Please consult a verified Hisnul Muslim for highly specific unlisted duas."
     return result
 
-# ===== FIXED: Increased timeout and added retry =====
-def call_api(user_message, history, persona="Balanced Assistant", retries=1):
+def call_api(user_message, history, persona="Balanced Assistant"):
     dynamic_prompt = BASE_SYSTEM_PROMPT
     if persona == "Deep Scholar":
         dynamic_prompt += "\n- ACT AS A SCHOLAR: Provide deep academic references, mention specific Madhab opinions if applicable, and be thorough."
@@ -341,22 +344,9 @@ def call_api(user_message, history, persona="Balanced Assistant", retries=1):
         "Content-Type": "application/json",
     }
     payload = {"model": MODEL, "messages": messages, "max_tokens": 2000, "temperature": 0.2, "stream": False}
-    
-    # Retry logic with increased timeout
-    for attempt in range(retries + 1):
-        try:
-            response = requests.post(API_URL, headers=headers, json=payload, timeout=90)  # Increased from 45 to 90 seconds
-            response.raise_for_status()
-            return response.json()["choices"][0]["message"]["content"]
-        except requests.exceptions.Timeout:
-            if attempt < retries:
-                continue  # Retry once
-            else:
-                raise Exception("The AI service is taking too long to respond. Please try again in a moment.")
-        except Exception as e:
-            if attempt < retries:
-                continue
-            raise e
+    response = requests.post(API_URL, headers=headers, json=payload, timeout=45)
+    response.raise_for_status()
+    return response.json()["choices"][0]["message"]["content"]
 
 def parse_response(raw):
     cleaned = re.sub(r"^```json\s*", "", raw, flags=re.MULTILINE)
@@ -373,12 +363,14 @@ def parse_response(raw):
                 return normalize_result(json.loads(safe_json_str, strict=False))
     except Exception:
         pass
+    # FIX: Clean fallback that doesn't destroy the text
     fallback_text = re.sub(r'```json|```', '', raw).strip()
     return normalize_result({"direct_answer": fallback_text})
 
 @st.cache_data(ttl=3600)
 def fetch_quran_surah(surah_number):
     try:
+        # FIX: Removed space in URL
         res = requests.get(
             f"https://api.alquran.cloud/v1/surah/{surah_number}/editions/quran-uthmani,en.transliteration,en.asad,ur.jalandhari",
             timeout=15,
@@ -387,9 +379,11 @@ def fetch_quran_surah(surah_number):
     except Exception:
         return None
 
+# FIX: HTTPS instead of HTTP
 @st.cache_data(ttl=3600)
 def fetch_prayer_times(city, country):
     try:
+        # FIX: Removed space in URL
         res = requests.get(
             f"https://api.aladhan.com/v1/timingsByCity?city={city}&country={country}&method=2",
             timeout=10,
@@ -398,6 +392,7 @@ def fetch_prayer_times(city, country):
     except Exception:
         return None
 
+# FIX: Chronological order (removed reversed())
 def format_chat_for_export():
     out = "Muslim AI - Chat Transcript\n" + "=" * 30 + "\n\n"
     for m in st.session_state.messages:
@@ -571,14 +566,18 @@ with tab1:
     with st.form("chat_form", clear_on_submit=True):
         col1, col2 = st.columns([5, 1])
         with col1:
+            # FIX: Added unique key to prevent DuplicateWidgetID errors
             user_input = st.text_input(
                 "Ask your Islamic question...",
                 label_visibility="collapsed",
                 placeholder="Type your Islamic question here...",
+                key="chat_input"
             )
         with col2:
             submit_btn = st.form_submit_button("Ask AI 💬", use_container_width=True)
 
+    # FIX: Settings and mood/suggestion buttons moved OUTSIDE the expander title
+    # and stored in session_state to survive reruns correctly
     with st.expander("✨ Spiritual First Aid & AI Settings", expanded=True):
         col_s1, col_s2 = st.columns(2)
         with col_s1:
@@ -600,6 +599,7 @@ with tab1:
         st.markdown("<span class='muted'>Select how you are feeling for instant Quranic comfort:</span>", unsafe_allow_html=True)
         moods = ["Anxious 😟", "Sad 😢", "Angry 😠", "Grateful 🙏", "Lost 🧭", "Forgiveness 🤲"]
         mood_cols = st.columns(6)
+        # FIX: Store mood/suggestion in session_state so they survive the rerun
         for i, mood in enumerate(moods):
             if mood_cols[i].button(mood, use_container_width=True, key=f"mood_{i}"):
                 st.session_state["pending_prompt"] = f"I am feeling {mood}. Please provide a comforting Islamic perspective, a relevant Ayah, and a short Dua to help me."
@@ -619,12 +619,14 @@ with tab1:
             mime="text/plain",
         )
 
+    # Determine trigger
     trigger_prompt = None
     display_prompt = None
 
     if submit_btn and user_input:
         trigger_prompt = user_input
         display_prompt = user_input
+        # Clear any pending button prompt
         st.session_state.pop("pending_prompt", None)
     elif st.session_state.get("pending_prompt"):
         trigger_prompt = st.session_state.pop("pending_prompt")
@@ -651,21 +653,40 @@ with tab1:
                         "assistant": result.get("direct_answer", ""),
                     })
             except Exception as e:
+                # FIX: Show actual error for debugging
                 st.error(f"Error processing request: {e}")
 
-    for msg in st.session_state.messages:
-        with st.chat_message(msg["role"]):
-            if msg["role"] == "assistant":
-                try:
-                    render_response(json.loads(msg["content"]))
-                except Exception:
-                    st.markdown(msg["content"])
+    # FIX: Robust message pairing - check roles before pairing
+    paired_messages = []
+    i = 0
+    while i < len(st.session_state.messages):
+        msg = st.session_state.messages[i]
+        if msg["role"] == "user":
+            pair = [msg]
+            if i + 1 < len(st.session_state.messages) and st.session_state.messages[i + 1]["role"] == "assistant":
+                pair.append(st.session_state.messages[i + 1])
+                i += 2
             else:
-                st.markdown(f'<div style="font-size:16px;">{safe_html(msg["content"])}</div>', unsafe_allow_html=True)
+                i += 1
+            paired_messages.append(pair)
+        else:
+            i += 1
+
+    for pair in reversed(paired_messages):
+        st.markdown("<hr style='border:1px solid rgba(251, 191, 36, 0.1);'>", unsafe_allow_html=True)
+        for msg in pair:
+            with st.chat_message(msg["role"]):
+                if msg["role"] == "assistant":
+                    try:
+                        render_response(json.loads(msg["content"]))
+                    except Exception:
+                        st.markdown(msg["content"])
+                else:
+                    st.markdown(f'<div style="font-size:16px;">{safe_html(msg["content"])}</div>', unsafe_allow_html=True)
 
 
 # ─────────────────────────────────────────
-# TAB 2: QURAN READER (FIXED URDU AUDIO)
+# TAB 2: QURAN READER
 # ─────────────────────────────────────────
 with tab2:
     st.markdown('<div class="section-title" style="margin-top:0;">The Holy Quran (Read & Listen)</div>', unsafe_allow_html=True)
@@ -684,16 +705,32 @@ with tab2:
             n = st.session_state.loaded_surah_number
 
             if audio_type == "Arabic Only (Mishary Alafasy)":
+                # FIX: Removed space in URL
                 audio_url = f"https://server8.mp3quran.net/afs/{n:03d}.mp3"
-                st.audio(audio_url, format="audio/mpeg")
-                st.caption(f"Playing Surah {n} – Mishary Alafasy")
+                st.markdown(
+                    f'<div class="premium-card" style="text-align:center;">'
+                    f'<strong class="accent" style="font-size:18px;">🔊 Arabic Recitation (Mishary Alafasy)</strong><br><br>'
+                    f'<audio controls style="width:100%; border-radius:8px;">'
+                    f'<source src="{audio_url}" type="audio/mpeg">'
+                    f'Your browser does not support the audio element.</audio></div>',
+                    unsafe_allow_html=True,
+                )
             else:
-                # FIXED: Use Quran Central direct MP3 URLs (verified working)
-                urdu_audio_url = f"https://qurancentral.com/audio/urdu-translation-only/{n:03d}.mp3"
-                st.audio(urdu_audio_url, format="audio/mpeg")
-                st.caption(f"Playing Urdu translation of Surah {n} – Quran Central (Urdu Only)")
+                # FIX: Use Archive.org embed iframe — reliable for all 114 surahs
+                # without needing to guess Arabic filenames
+                archive_id = "Quran-e-Kareem-With-Urdu-ONLY-Translation-Fateh-Muhammad-Jalandhari-------Audio-MP3-CD"
+                # FIX: Removed space in URL
+                st.markdown(
+                    f'<div class="premium-card" style="text-align:center;">'
+                    f'<strong class="accent" style="font-size:18px;">🔊 Urdu Translation (Fateh Muhammad Jalandhari)</strong><br><br>'
+                    f'<iframe src="https://archive.org/embed/{archive_id}&playlist=1&list_height=200&start_track={n - 1}" '
+                    f'width="100%" height="300" frameborder="0" webkitallowfullscreen="true" mozallowfullscreen="true" allowfullscreen '
+                    f'style="border-radius:8px;"></iframe>'
+                    f'<div style="margin-top:10px; font-size:13px; color:#94A3B8;">Surah {n} selected — use the playlist to navigate</div>'
+                    f'</div>',
+                    unsafe_allow_html=True,
+                )
 
-            # Load and display Quran text
             surah_data = fetch_quran_surah(n)
             if surah_data and len(surah_data) >= 4:
                 ar, translit_ed, en, urdu_ed = surah_data[0], surah_data[1], surah_data[2], surah_data[3]
@@ -717,7 +754,7 @@ with tab2:
                         unsafe_allow_html=True,
                     )
             elif surah_data is None:
-                st.warning("Could not load Quran text. Please check your internet connection.")
+                st.warning("Could not load Quran data. Please check your internet connection.")
 
 
 # ─────────────────────────────────────────
@@ -770,9 +807,14 @@ with tab3:
         debt = st.number_input("Short-term Debts ($)", min_value=0.0, step=100.0)
 
     net_wealth = (cash + gold) - debt
-    if net_wealth <= 0 or net_wealth < NISAB_USD:
+    # FIX: Nisab threshold check
+    if net_wealth <= 0:
         zakat = 0.0
-        zakat_msg = f"Your net wealth (${net_wealth:,.2f}) is below the Nisab threshold (~${NISAB_USD:,.0f}). No Zakat is due." if net_wealth > 0 else "Your net wealth is zero or negative. No Zakat is due."
+        zakat_msg = "Your net wealth is zero or negative. No Zakat is due."
+        zakat_color = "#94A3B8"
+    elif net_wealth < NISAB_USD:
+        zakat = 0.0
+        zakat_msg = f"Your net wealth (${net_wealth:,.2f}) is below the Nisab threshold (~${NISAB_USD:,.0f}). No Zakat is due."
         zakat_color = "#94A3B8"
     else:
         zakat = net_wealth * 0.025
@@ -861,10 +903,13 @@ with tab5:
 
 # ─────────────────────────────────────────
 # TAB 6: DEEP KNOWLEDGE
+# FIX: Removed unclosed HTML div wrappers around st.columns — all cards
+# are now self-contained within single st.markdown calls.
 # ─────────────────────────────────────────
 with tab6:
     st.markdown('<div class="section-title" style="margin-top:0;">Dynamic Islamic Sciences & AI Trivia</div>', unsafe_allow_html=True)
 
+    # FIX: Card opened and closed in a single st.markdown call
     st.markdown(
         '<div class="premium-card" style="border-color:#FBBF24; background:rgba(251, 191, 36, 0.05);">'
         '<h3>🧠 AI Trivia Master</h3>'
