@@ -122,26 +122,6 @@ input:focus, textarea:focus { border-color: #FBBF24 !important; box-shadow: 0 0 
 
 /* ===== TASBIH STYLES ===== */
 .tasbih-count { font-size: 56px; color: #FBBF24; text-align: center; font-family: 'Inter', sans-serif; font-weight: 700; text-shadow: 0 0 20px rgba(251, 191, 36, 0.3); }
-
-/* ========================================== */
-/* 📱 MOBILE RESPONSIVENESS (MEDIA QUERIES) */
-/* ========================================== */
-@media (max-width: 768px) {
-    .title { font-size: 32px; }
-    .bismillah { font-size: 28px; }
-    .subtitle { font-size: 14px; }
-    .hero { padding: 30px 10px 20px 10px; margin-bottom: 20px; }
-    
-    .premium-card { padding: 16px; margin-bottom: 16px; }
-    .arabic { font-size: 28px; }
-    .section-title { font-size: 22px; margin: 25px 0 15px 0; }
-    
-    .tasbih-count { font-size: 40px; }
-    .name-card .arabic { font-size: 24px; }
-    
-    /* Ensure chat input forms stack nicely if needed */
-    [data-testid="stForm"] { padding: 10px; }
-}
 </style>
 """,
     unsafe_allow_html=True,
@@ -162,14 +142,16 @@ if not NVIDIA_API_KEY:
 API_URL = "https://integrate.api.nvidia.com/v1/chat/completions"
 MODEL = "meta/llama-4-maverick-17b-128e-instruct"
 
+# Updated Base Prompt to require Reasoning & Evidence
 BASE_SYSTEM_PROMPT = """You are an Islamic AI Assistant. Respond only with authentic Quran, Sahih Hadith, and recognized classical scholarship (like Ibn Kathir).
 - Do NOT fabricate references.
+- For 'scholarly_opinions', you MUST include the views of different schools of thought (Madhabs), their detailed reasoning, and the exact Quranic verse or Hadith they use as evidence.
 - Return ONLY valid JSON.
 {
   "direct_answer": "concise answer or full narrative text",
   "quran_evidence": [{"arabic": "", "translation": "", "reference": "", "explanation": ""}],
   "hadith_evidence": [{"text": "", "arabic": "", "source": "", "authenticity": "Sahih", "note": ""}],
-  "scholarly_opinions": [{"madhab": "", "opinion": "", "source": ""}],
+  "scholarly_opinions": [{"madhab": "", "opinion": "", "reasoning": "", "evidence": "", "source": ""}],
   "dua": {"title": "", "arabic": "", "transliteration": "", "meaning": "", "reference": "", "source_url": ""},
   "duas": [],
   "ikhtilaf": "Yes or No",
@@ -287,6 +269,7 @@ HADITH_40 = [
     {"number": 40, "arabic": "مَنْ حَسُنَ إِسْلاَمُهُ تَرَكَ مَا لاَ يَعْنِيهِ", "text": "Part of the perfection of a person's Islam is his leaving that which is of no concern to him.", "source": "Jami` at-Tirmidhi 2317 (Hasan)"}
 ]
 
+# Full 99 Names of Allah
 NAMES_RAW = "الرَّحْمَن|Ar-Rahman|The Entirely Merciful,الرَّحِيم|Ar-Rahim|The Especially Merciful,الْمَلِك|Al-Malik|The Sovereign,الْقُدُّوس|Al-Quddus|The Most Holy,السَّلاَم|As-Salam|The Source of Peace,الْمُؤْمِن|Al-Mu'min|The Guarantor,الْمُهَيْمِن|Al-Muhaymin|The Guardian,الْعَزِيز|Al-Aziz|The Almighty,الْجَبَّار|Al-Jabbar|The Compeller,الْمُتَكَبِّر|Al-Mutakabbir|The Supreme,الْخَالِق|Al-Khaliq|The Creator,الْبَارِئ|Al-Bari'|The Evolver,الْمُصَوِّر|Al-Musawwir|The Fashioner,الْغَفَّار|Al-Ghaffar|The Repeatedly Forgiving,الْقَهَّار|Al-Qahhar|The Subduer,الْوَهَّاب|Al-Wahhab|The Bestower,الرَّزَّاق|Ar-Razzaq|The Provider,الْفَتَّاح|Al-Fattah|The Opener,الْعَلِيم|Al-Aleem|The Knowing,الْقَابِض|Al-Qabid|The Withholder,الْبَاسِط|Al-Basit|The Extender,الْخَافِض|Al-Khafid|The Abaser,الرَّافِع|Ar-Rafi'|The Exalter,الْمُعِزّ|Al-Mu'izz|The Honorer,الْمُذِلّ|Al-Mudhill|The Dishonorer,السَّمِيع|As-Sami'|The Hearing,الْبَصِير|Al-Basir|The Seeing,الْحَكَم|Al-Hakam|The Judge,الْعَدْل|Al-Adl|The Just,اللَّطِيف|Al-Latif|The Subtle One,الْخَبِير|Al-Khabir|The Acquainted,الْحَلِيم|Al-Haleem|The Forbearing,الْعَظِيم|Al-Azeem|The Magnificent,الْغَفُور|Al-Ghafur|The Much-Forgiving,الشَّكُور|Ash-Shakur|The Grateful,الْعَلِيّ|Al-Aliyy|The Most High,الْكَبِير|Al-Kabir|The Great,الْحَفِيظ|Al-Hafiz|The Preserver,الْمُقِيت|Al-Muqit|The Sustainer,الْحَسِيب|Al-Haseeb|The Reckoner,الْجَلِيل|Al-Jaleel|The Majestic,الْكَرِيم|Al-Kareem|The Generous,الرَّقِيب|Ar-Raqib|The Watchful,الْمُجِيب|Al-Mujeeb|The Responsive,الْوَاسِع|Al-Wasi'|The All-Encompassing,الْحَكِيم|Al-Hakeem|The Wise,الْوَدُود|Al-Wadud|The Loving,الْمَاجِد|Al-Majeed|The All-Glorious,الْبَاعِث|Al-Ba'ith|The Resurrector,الشَّهِيد|Ash-Shaheed|The Witness,الْحَقّ|Al-Haqq|The Truth,الْوَكِيل|Al-Wakeel|The Trustee,الْقَوِيّ|Al-Qawiyy|The Strong,الْمَتِين|Al-Mateen|The Firm,الْوَلِيّ|Al-Waliyy|The Protecting Friend,الْحَمِيد|Al-Hameed|The Praiseworthy,الْمُحْصِي|Al-Muhsi|The Accounter,الْمُبْدِئ|Al-Mubdi|The Originator,الْمُعِيد|Al-Mu'id|The Restorer,الْمُحْيِي|Al-Muhyi|The Giver of Life,الْمُمِيت|Al-Mumit|The Bringer of Death,الْحَيّ|Al-Hayy|The Ever-Living,الْقَيُّوم|Al-Qayyum|The Sustainer of Existence,الْوَاجِد|Al-Wajid|The Finder,الْمَاجِد|Al-Majid|The Noble,الْوَاحِد|Al-Wahid|The Unique,الأَحَد|Al-Ahad|The One,الصَّمَد|As-Samad|The Eternal Refuge,الْقَادِر|Al-Qadir|The Capable,الْمُقْتَدِر|Al-Muqtadir|The Powerful,الْمُقَدِّم|Al-Muqaddim|The Expediter,الْمُؤَخِّر|Al-Mu'akhkhir|The Delayer,الأَوَّل|Al-Awwal|The First,الآخِر|Al-Akhir|The Last,الظَّاهِر|Az-Zahir|The Manifest,الْبَاطِن|Al-Batin|The Hidden,الْوَالِي|Al-Wali|The Governor,الْمُتَعَالِي|Al-Muta'ali|The Most Exalted,الْبَرّ|Al-Barr|The Source of Goodness,التَّوَّاب|At-Tawwab|The Accepting of Repentance,الْمُنْتَقِم|Al-Muntaqim|The Avenger,الْعَفُوّ|Al-Afuww|The Pardoner,الرَّءُوف|Ar-Ra'uf|The Compassionate,مَالِكُ الْمُلْك|Malik-ul-Mulk|The Owner of Sovereignty,ذُو الْجَلاَلِ وَالإِكْرَام|Dhu-al-Jalal wa-al-Ikram|Lord of Majesty and Honor,الْمُقْسِط|Al-Muqsit|The Equitable,الْجَامِع|Al-Jami'|The Gatherer,الْغَنِيّ|Al-Ghaniyy|The Free of Need,الْمُغْنِي|Al-Mughni|The Enricher,الْمَانِع|Al-Mani'|The Preventer,الضَّارّ|Ad-Darr|The Harmer,النَّافِع|An-Nafi'|The Benefiter,النُّور|An-Nur|The Light,الْهَادِي|Al-Hadi|The Guide,الْبَدِيع|Al-Badi|The Incomparable,الْبَاقِي|Al-Baqi|The Everlasting,الْوَارِث|Al-Warith|The Inheritor,الرَّشِيد|Ar-Rasheed|The Guide to the Right Path,الصَّبُور|As-Sabur|The Patient"
 NAMES_99 = [name.split('|') for name in NAMES_RAW.split(',')]
 
@@ -411,7 +394,7 @@ def fetch_prayer_times(city, country):
 
 def format_chat_for_export():
     out = "Muslim AI - Chat Transcript\n" + "="*30 + "\n\n"
-    for m in st.session_state.messages:
+    for m in reversed(st.session_state.messages):
         role = "YOU" if m["role"] == "user" else "MUSLIM AI"
         out += f"{role}:\n{m['content']}\n\n" + "-"*30 + "\n\n"
     return out
@@ -430,6 +413,26 @@ def render_response(result):
         st.markdown('<div class="section-title">Hadith Evidence</div>', unsafe_allow_html=True)
         for h in result["hadith_evidence"]:
             st.markdown(f'<div class="premium-card"><div class="arabic">{safe_html(h.get("arabic", ""))}</div><div style="font-size:16px;">{safe_html(h.get("text", ""))}</div><br><span class="muted">Source: {safe_html(h.get("source", ""))}</span></div>', unsafe_allow_html=True)
+
+    if result["scholarly_opinions"]:
+        st.markdown('<div class="section-title">Scholarly Viewpoints & Reasoning</div>', unsafe_allow_html=True)
+        if result["ikhtilaf"] == "Yes":
+            st.markdown('<div class="info-box">There is a recognized difference of opinion (Ikhtilaf) among classical scholars on this issue.</div>', unsafe_allow_html=True)
+        for opinion in result["scholarly_opinions"]:
+            reasoning = opinion.get("reasoning", "")
+            evidence = opinion.get("evidence", "")
+            
+            reason_html = f'<br><br><strong class="accent" style="font-size:15px;">Reasoning:</strong><br><span style="line-height:1.6; color:#CBD5E1;">{safe_html(reasoning)}</span>' if reasoning else ""
+            evid_html = f'<br><br><strong class="accent" style="font-size:15px;">Evidence Referenced:</strong><br><span style="line-height:1.6; color:#CBD5E1;">{safe_html(evidence)}</span>' if evidence else ""
+            
+            st.markdown(
+                f'<div class="premium-card"><strong class="accent" style="font-size:18px;">{safe_html(opinion.get("madhab", ""))}:</strong> '
+                f'<br><span style="line-height:1.6; font-size:16px;">{safe_html(opinion.get("opinion", ""))}</span>'
+                f'{reason_html}'
+                f'{evid_html}'
+                f'<div style="margin-top:16px; border-top:1px solid rgba(251, 191, 36, 0.2); padding-top:12px;"><span class="muted">Source: {safe_html(opinion.get("source", ""))}</span></div></div>',
+                unsafe_allow_html=True,
+            )
 
 # ==========================================
 # UI LAYOUT & SIDEBAR
@@ -538,13 +541,19 @@ with tab1:
             except Exception as e: 
                 st.error("Error processing request.")
 
-    # 4. RENDER CHAT HISTORY (Below the Search Bar)
-    for msg in st.session_state.messages:
-        with st.chat_message(msg["role"]):
-            if msg["role"] == "assistant":
-                try: render_response(json.loads(msg["content"]))
-                except Exception: st.markdown(msg["content"])
-            else: st.markdown(f'<div style="font-size:16px;">{msg["content"]}</div>', unsafe_allow_html=True)
+    # 4. RENDER CHAT HISTORY (Below the Search Bar - Newest First)
+    paired_messages = []
+    for i in range(0, len(st.session_state.messages), 2):
+        paired_messages.append(st.session_state.messages[i:i+2])
+        
+    for pair in reversed(paired_messages):
+        st.markdown("<hr style='border:1px solid rgba(251, 191, 36, 0.1);'>", unsafe_allow_html=True)
+        for msg in pair:
+            with st.chat_message(msg["role"]):
+                if msg["role"] == "assistant":
+                    try: render_response(json.loads(msg["content"]))
+                    except Exception: st.markdown(msg["content"])
+                else: st.markdown(f'<div style="font-size:16px;">{msg["content"]}</div>', unsafe_allow_html=True)
 
 # ----------------- TAB 2: QURAN & AUDIO -----------------
 with tab2: 
