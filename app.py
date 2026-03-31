@@ -122,6 +122,11 @@ input:focus, textarea:focus { border-color: #FBBF24 !important; box-shadow: 0 0 
 
 /* ===== TASBIH STYLES ===== */
 .tasbih-count { font-size: 56px; color: #FBBF24; text-align: center; font-family: 'Inter', sans-serif; font-weight: 700; text-shadow: 0 0 20px rgba(251, 191, 36, 0.3); }
+
+/* ===== SCHOLARLY BOXES ===== */
+.reasoning-box { margin-top: 12px; padding: 12px 16px; background: rgba(0, 0, 0, 0.3); border-radius: 8px; border-left: 3px solid #60A5FA; }
+.evidence-box { margin-top: 10px; padding: 12px 16px; background: rgba(0, 0, 0, 0.3); border-radius: 8px; border-left: 3px solid #10B981; }
+
 </style>
 """,
     unsafe_allow_html=True,
@@ -142,20 +147,23 @@ if not NVIDIA_API_KEY:
 API_URL = "https://integrate.api.nvidia.com/v1/chat/completions"
 MODEL = "meta/llama-4-maverick-17b-128e-instruct"
 
-# Updated Base Prompt to require Reasoning & Evidence
-BASE_SYSTEM_PROMPT = """You are an Islamic AI Assistant. Respond only with authentic Quran, Sahih Hadith, and recognized classical scholarship (like Ibn Kathir).
+# Updated Base Prompt to enforce Hinglish, Transliteration, and Strict Systematic Markdown formatting
+BASE_SYSTEM_PROMPT = """You are an Islamic AI Assistant. Respond only with authentic Quran, Sahih Hadith, and recognized classical scholarship.
 - Do NOT fabricate references.
-- For 'scholarly_opinions', you MUST include the views of different schools of thought (Madhabs), their detailed reasoning, and the exact Quranic verse or Hadith they use as evidence.
-- Return ONLY valid JSON.
+- TRANSLITERATION & HINGLISH: For ANY Arabic text provided (Quran, Hadith, Dua), you MUST provide the English Transliteration, followed by the English Translation, and then the Hinglish (Hindi/Urdu written in English script) Translation.
+- HINGLISH ANSWERS: Include a Hinglish translation for your 'direct_answer' and 'conclusion'. Use line breaks.
+- SCHOLARLY PRECISION: Separate the 'opinion', 'reasoning' (step-by-step logic), and 'evidence' (exact verse/hadith) clearly.
+- EVIDENCE FIRST: You MUST populate 'quran_evidence' and 'hadith_evidence' arrays if applicable, do not just skip to scholarly opinions.
+- Return ONLY valid JSON matching this structure exactly. Do not add markdown outside the JSON.
 {
-  "direct_answer": "concise answer or full narrative text",
-  "quran_evidence": [{"arabic": "", "translation": "", "reference": "", "explanation": ""}],
-  "hadith_evidence": [{"text": "", "arabic": "", "source": "", "authenticity": "Sahih", "note": ""}],
-  "scholarly_opinions": [{"madhab": "", "opinion": "", "reasoning": "", "evidence": "", "source": ""}],
-  "dua": {"title": "", "arabic": "", "transliteration": "", "meaning": "", "reference": "", "source_url": ""},
+  "direct_answer": "English Text \n\n Hinglish: [Hinglish text]",
+  "quran_evidence": [{"arabic": "", "translation": "Transliteration: ... \n\n English: ... \n\n Hinglish: ...", "reference": "", "explanation": ""}],
+  "hadith_evidence": [{"text": "English: ... \n\n Hinglish: ...", "arabic": "", "source": "", "authenticity": "Sahih", "note": ""}],
+  "scholarly_opinions": [{"madhab": "", "opinion": "Clear statement of the view", "reasoning": "Step-by-step breakdown of why they hold this view", "evidence": "Exact text of the Quran/Hadith used", "source": ""}],
+  "dua": {"title": "", "arabic": "", "transliteration": "", "meaning": "English: ... \n\n Hinglish: ...", "reference": "", "source_url": ""},
   "duas": [],
   "ikhtilaf": "Yes or No",
-  "conclusion": "summary",
+  "conclusion": "English summary \n\n Hinglish: [Hinglish summary]",
   "consult_scholar": "Yes or No",
   "source_notice": "",
   "language_detected": "English"
@@ -401,38 +409,50 @@ def format_chat_for_export():
 
 def render_response(result):
     result = normalize_result(result)
+    
+    # Process line breaks cleanly for Hinglish/Translations
     formatted_answer = safe_html(result["direct_answer"]).replace('\n', '<br>')
     st.markdown(f'<div class="premium-card"><strong class="accent" style="font-size:20px;">Response</strong><br><br><span style="line-height:1.7; font-size:16px;">{formatted_answer}</span></div>', unsafe_allow_html=True)
 
     if result["quran_evidence"]:
         st.markdown('<div class="section-title">Quranic Evidence</div>', unsafe_allow_html=True)
         for verse in result["quran_evidence"]:
-            st.markdown(f'<div class="premium-card"><div class="arabic">{safe_html(verse.get("arabic", ""))}</div><div style="font-size:16px; margin-bottom:12px;">{safe_html(verse.get("translation", ""))}</div><strong class="accent">{safe_html(verse.get("reference", ""))}</strong></div>', unsafe_allow_html=True)
+            q_translation = safe_html(verse.get("translation", "")).replace('\n', '<br>')
+            st.markdown(f'<div class="premium-card"><div class="arabic">{safe_html(verse.get("arabic", ""))}</div><div style="font-size:16px; margin-bottom:12px; line-height:1.6;">{q_translation}</div><strong class="accent">{safe_html(verse.get("reference", ""))}</strong></div>', unsafe_allow_html=True)
 
     if result["hadith_evidence"]:
         st.markdown('<div class="section-title">Hadith Evidence</div>', unsafe_allow_html=True)
         for h in result["hadith_evidence"]:
-            st.markdown(f'<div class="premium-card"><div class="arabic">{safe_html(h.get("arabic", ""))}</div><div style="font-size:16px;">{safe_html(h.get("text", ""))}</div><br><span class="muted">Source: {safe_html(h.get("source", ""))}</span></div>', unsafe_allow_html=True)
+            h_text = safe_html(h.get("text", "")).replace('\n', '<br>')
+            st.markdown(f'<div class="premium-card"><div class="arabic">{safe_html(h.get("arabic", ""))}</div><div style="font-size:16px; line-height:1.6;">{h_text}</div><br><span class="muted">Source: {safe_html(h.get("source", ""))}</span></div>', unsafe_allow_html=True)
 
     if result["scholarly_opinions"]:
         st.markdown('<div class="section-title">Scholarly Viewpoints & Reasoning</div>', unsafe_allow_html=True)
         if result["ikhtilaf"] == "Yes":
             st.markdown('<div class="info-box">There is a recognized difference of opinion (Ikhtilaf) among classical scholars on this issue.</div>', unsafe_allow_html=True)
+        
         for opinion in result["scholarly_opinions"]:
             reasoning = opinion.get("reasoning", "")
             evidence = opinion.get("evidence", "")
             
-            reason_html = f'<br><br><strong class="accent" style="font-size:15px;">Reasoning:</strong><br><span style="line-height:1.6; color:#CBD5E1;">{safe_html(reasoning)}</span>' if reasoning else ""
-            evid_html = f'<br><br><strong class="accent" style="font-size:15px;">Evidence Referenced:</strong><br><span style="line-height:1.6; color:#CBD5E1;">{safe_html(evidence)}</span>' if evidence else ""
+            # New Systematic Layout for Scholar Thoughts
+            reason_html = f'<div class="reasoning-box"><strong class="accent" style="font-size:14px; color:#60A5FA !important;">Logical Reasoning:</strong><br><span style="line-height:1.6; color:#E2E8F0; font-size:14px;">{safe_html(reasoning).replace(chr(10), "<br>")}</span></div>' if reasoning else ""
+            evid_html = f'<div class="evidence-box"><strong class="accent" style="font-size:14px; color:#10B981 !important;">Evidence Referenced:</strong><br><span style="line-height:1.6; color:#E2E8F0; font-size:14px;">{safe_html(evidence).replace(chr(10), "<br>")}</span></div>' if evidence else ""
             
             st.markdown(
                 f'<div class="premium-card"><strong class="accent" style="font-size:18px;">{safe_html(opinion.get("madhab", ""))}:</strong> '
-                f'<br><span style="line-height:1.6; font-size:16px;">{safe_html(opinion.get("opinion", ""))}</span>'
+                f'<br><span style="line-height:1.6; font-size:16px;">{safe_html(opinion.get("opinion", "")).replace(chr(10), "<br>")}</span>'
                 f'{reason_html}'
                 f'{evid_html}'
                 f'<div style="margin-top:16px; border-top:1px solid rgba(251, 191, 36, 0.2); padding-top:12px;"><span class="muted">Source: {safe_html(opinion.get("source", ""))}</span></div></div>',
                 unsafe_allow_html=True,
             )
+
+    if result["conclusion"]:
+        c_text = safe_html(result["conclusion"]).replace('\n', '<br>')
+        st.markdown('<div class="section-title">Conclusion</div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="premium-card" style="line-height:1.6;">{c_text}</div>', unsafe_allow_html=True)
+
 
 # ==========================================
 # UI LAYOUT & SIDEBAR
@@ -507,7 +527,7 @@ with tab1:
         st.markdown("---")
         st.download_button("📥 Download Chat Transcript", data=format_chat_for_export(), file_name=f"Muslim_AI_Chat_{datetime.now().strftime('%Y%m%d')}.txt", mime="text/plain")
 
-    # 3. HANDLE ALL INPUTS (Form Submit or Button Clicks)
+    # 3. HANDLE ALL INPUTS
     trigger_prompt = None
     display_prompt = None
 
@@ -561,12 +581,19 @@ with tab2:
     col1, col2 = st.columns([1, 2])
     with col1:
         selected_surah = st.selectbox("Select Surah", [f"{i + 1}. {name}" for i, name in enumerate(SURAH_NAMES)])
+        audio_type = st.radio("Select Recitation Audio", ["Arabic Only (Mishary Alafasy)", "Arabic + Urdu Translation (Saad Al Ghamdi)"])
         if st.button("Load Surah", type="primary", use_container_width=True): 
             st.session_state.loaded_surah_number = int(selected_surah.split(".")[0])
             
     with col2:
         if st.session_state.loaded_surah_number:
-            audio_url = f"https://server8.mp3quran.net/afs/{st.session_state.loaded_surah_number:03d}.mp3"
+            # Set Audio URL based on selection
+            if audio_type == "Arabic Only (Mishary Alafasy)":
+                audio_url = f"https://server8.mp3quran.net/afs/{st.session_state.loaded_surah_number:03d}.mp3"
+            else:
+                # Saad Al Ghamdi with Urdu translation
+                audio_url = f"https://server7.mp3quran.net/s_gmd_urdu/{st.session_state.loaded_surah_number:03d}.mp3"
+                
             st.markdown('<div class="premium-card" style="text-align:center;"><strong class="accent" style="font-size:18px;">🔊 Listen to Full Surah Recitation:</strong><br><br>', unsafe_allow_html=True)
             st.audio(audio_url, format="audio/mp3")
             st.markdown('</div>', unsafe_allow_html=True)
