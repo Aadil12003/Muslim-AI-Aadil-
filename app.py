@@ -16,111 +16,76 @@ st.set_page_config(page_title="Muslim AI", layout="wide", initial_sidebar_state=
 st.markdown(
     """
 <style>
-@import url('[https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400&family=Scheherazade+New:wght@400;700&display=swap](https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400&family=Scheherazade+New:wght@400;700&display=swap)');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400&family=Scheherazade+New:wght@400;700&display=swap');
 
-/* ===== GLOBAL TYPOGRAPHY & RICH BACKGROUND ===== */
-html, body, [class*="css"] { 
-    font-family: 'Inter', sans-serif; 
-    color: #F8FAFC !important; 
-}
-.stApp { 
-    background: linear-gradient(135deg, #020617 0%, #064E3B 100%) !important; 
-    background-attachment: fixed;
-}
-h1, h2, h3, .serif-text { 
-    font-family: 'Playfair Display', serif; 
-    color: #FBBF24 !important; 
-    font-weight: 600; 
-    letter-spacing: 0.5px; 
-}
+html, body, [class*="css"] { font-family: 'Inter', sans-serif; color: #F8FAFC !important; }
+.stApp { background: linear-gradient(135deg, #020617 0%, #064E3B 100%) !important; background-attachment: fixed; }
+h1, h2, h3, .serif-text { font-family: 'Playfair Display', serif; color: #FBBF24 !important; font-weight: 600; letter-spacing: 0.5px; }
 
-/* ===== GLASSMORPHISM CARDS ===== */
-.premium-card { 
-    background-color: rgba(15, 23, 42, 0.45); 
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(251, 191, 36, 0.25); 
-    border-radius: 16px; 
-    padding: 28px; 
-    margin-bottom: 24px; 
-    word-break: break-word; 
-    box-shadow: 0 10px 30px rgba(0,0,0,0.5); 
-    transition: all 0.3s ease; 
+.premium-card {
+    background-color: rgba(15, 23, 42, 0.45);
+    backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(251, 191, 36, 0.25);
+    border-radius: 16px; padding: 28px; margin-bottom: 24px;
+    word-break: break-word; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    transition: all 0.3s ease;
 }
-.premium-card:hover { 
-    border-color: rgba(251, 191, 36, 0.8); 
-    background-color: rgba(15, 23, 42, 0.6);
-    transform: translateY(-4px); 
-    box-shadow: 0 15px 40px rgba(0,0,0,0.6), 0 0 15px rgba(251, 191, 36, 0.1);
+.premium-card:hover {
+    border-color: rgba(251, 191, 36, 0.8); background-color: rgba(15, 23, 42, 0.6);
+    transform: translateY(-4px); box-shadow: 0 15px 40px rgba(0,0,0,0.6), 0 0 15px rgba(251, 191, 36, 0.1);
 }
-.name-card { 
-    text-align: center; 
-    padding: 20px; 
-    border: 1px solid rgba(251, 191, 36, 0.2); 
-    border-radius: 12px; 
-    background: rgba(15, 23, 42, 0.4);
-    backdrop-filter: blur(8px);
-    transition: all 0.2s ease; 
+.name-card {
+    text-align: center; padding: 20px;
+    border: 1px solid rgba(251, 191, 36, 0.2); border-radius: 12px;
+    background: rgba(15, 23, 42, 0.4); backdrop-filter: blur(8px);
+    transition: all 0.2s ease; margin-bottom: 16px;
 }
-.name-card:hover { 
-    border-color: #FBBF24; 
-    background: rgba(15, 23, 42, 0.7);
-}
+.name-card:hover { border-color: #FBBF24; background: rgba(15, 23, 42, 0.7); }
 
-/* ===== HERO SECTION ===== */
-.hero { 
-    text-align: center; 
-    padding: 60px 20px 40px 20px; 
-    margin-bottom: 40px; 
-    border-bottom: 1px solid rgba(255,255,255,0.05); 
-    background: radial-gradient(circle at top, rgba(251, 191, 36, 0.15) 0%, transparent 70%); 
+.hero {
+    text-align: center; padding: 60px 20px 40px 20px; margin-bottom: 40px;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    background: radial-gradient(circle at top, rgba(251, 191, 36, 0.15) 0%, transparent 70%);
 }
-.bismillah { 
-    font-family: 'Scheherazade New', serif; 
-    font-size: 42px; 
-    color: #FBBF24; 
-    margin-bottom: 16px; 
-    text-shadow: 0 0 20px rgba(251, 191, 36, 0.4); 
-}
-.title { 
-    font-size: 48px; 
-    font-weight: 700; 
-    margin-bottom: 8px; 
-    font-family: 'Playfair Display', serif; 
+.bismillah { font-family: 'Scheherazade New', serif; font-size: 42px; color: #FBBF24; margin-bottom: 16px; text-shadow: 0 0 20px rgba(251, 191, 36, 0.4); }
+.title {
+    font-size: 48px; font-weight: 700; margin-bottom: 8px;
+    font-family: 'Playfair Display', serif;
     background: linear-gradient(to right, #FBBF24, #FEF08A);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    text-shadow: 0 2px 10px rgba(251, 191, 36, 0.2);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
 }
 .subtitle { font-size: 18px; color: #CBD5E1; font-weight: 300; letter-spacing: 1px; }
 
-/* ===== TEXT & UI ELEMENTS ===== */
-.arabic { 
-    font-family: 'Scheherazade New', serif; 
-    font-size: 36px; 
-    direction: rtl; 
-    text-align: right; 
-    margin-bottom: 16px; 
-    line-height: 1.8; 
-    color: #FDE047; 
-    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+.arabic {
+    font-family: 'Scheherazade New', serif; font-size: 36px;
+    direction: rtl; text-align: right; margin-bottom: 16px;
+    line-height: 1.8; color: #FDE047; text-shadow: 0 2px 4px rgba(0,0,0,0.5);
 }
-.section-title { font-family: 'Playfair Display', serif; font-size: 26px; color: #FBBF24; margin: 40px 0 20px 0; padding-bottom: 10px; border-bottom: 1px solid rgba(251, 191, 36, 0.2); }
-.info-box { background-color: rgba(251, 191, 36, 0.08); border-left: 4px solid #FBBF24; border-radius: 6px; padding: 16px 20px; font-size: 15px; margin-bottom: 24px; color: #F8FAFC; backdrop-filter: blur(4px); }
+.section-title {
+    font-family: 'Playfair Display', serif; font-size: 26px; color: #FBBF24;
+    margin: 40px 0 20px 0; padding-bottom: 10px;
+    border-bottom: 1px solid rgba(251, 191, 36, 0.2);
+}
+.info-box {
+    background-color: rgba(251, 191, 36, 0.08); border-left: 4px solid #FBBF24;
+    border-radius: 6px; padding: 16px 20px; font-size: 15px;
+    margin-bottom: 24px; color: #F8FAFC; backdrop-filter: blur(4px);
+}
 .accent { color: #FBBF24 !important; font-weight: 600; }
 .muted { color: #94A3B8 !important; font-size: 0.9em; font-weight: 400; }
 .source-link { color: #60A5FA; text-decoration: none; border-bottom: 1px dotted #60A5FA; transition: opacity 0.2s; }
 .source-link:hover { opacity: 0.7; color: #93C5FD; }
 
-/* ===== SIDEBAR & INPUT ===== */
 [data-testid="stSidebar"] { background-color: rgba(2, 6, 23, 0.8) !important; backdrop-filter: blur(15px); border-right: 1px solid rgba(251, 191, 36, 0.15); }
 input, textarea { background-color: rgba(15, 23, 42, 0.6) !important; border: 1px solid rgba(251, 191, 36, 0.3) !important; color: #fff !important; border-radius: 8px !important; }
 input:focus, textarea:focus { border-color: #FBBF24 !important; box-shadow: 0 0 8px rgba(251, 191, 36, 0.4) !important; }
-.stButton > button { background: linear-gradient(135deg, rgba(251, 191, 36, 0.1), rgba(251, 191, 36, 0.05)); color: #FBBF24; border: 1px solid #FBBF24; border-radius: 8px; transition: all 0.3s ease; font-weight: 500; }
+.stButton > button {
+    background: linear-gradient(135deg, rgba(251, 191, 36, 0.1), rgba(251, 191, 36, 0.05));
+    color: #FBBF24; border: 1px solid #FBBF24; border-radius: 8px;
+    transition: all 0.3s ease; font-weight: 500;
+}
 .stButton > button:hover { background: #FBBF24; color: #020617; transform: scale(1.02); box-shadow: 0 4px 15px rgba(251, 191, 36, 0.3); }
 .creator-footer { text-align: center; padding: 30px 10px; margin-top: auto; font-family: 'Playfair Display', serif; color: #FBBF24; border-top: 1px solid rgba(251, 191, 36, 0.2); font-size: 18px; letter-spacing: 1px; }
-
-/* ===== TASBIH STYLES ===== */
 .tasbih-count { font-size: 56px; color: #FBBF24; text-align: center; font-family: 'Inter', sans-serif; font-weight: 700; text-shadow: 0 0 20px rgba(251, 191, 36, 0.3); }
 </style>
 """,
@@ -139,8 +104,9 @@ if not NVIDIA_API_KEY:
     st.error("❌ Missing NVIDIA_API_KEY. Please add it to your Streamlit Cloud Secrets (Settings → Secrets).")
     st.stop()
 
-API_URL = "[https://integrate.api.nvidia.com/v1/chat/completions](https://integrate.api.nvidia.com/v1/chat/completions)"
-MODEL = "meta/llama-3.3-70b-instruct"
+# GUARANTEED FIX: Cleaned and explicitly stripped API_URL string to prevent connection adapter errors
+API_URL = "https://integrate.api.nvidia.com/v1/chat/completions".strip()
+MODEL = "meta/llama-3.3-70b-instruct".strip()
 
 BASE_SYSTEM_PROMPT = """You are an Islamic AI Assistant. Respond only with authentic Quran, Sahih Hadith, and recognized classical scholarship.
 - Do NOT fabricate references.
@@ -377,7 +343,6 @@ def call_api(user_message, history, persona="Balanced Assistant"):
     }
     payload = {"model": MODEL, "messages": messages, "max_tokens": 2000, "temperature": 0.2, "stream": False}
     
-    # Timeout increased to 120s to ensure the model has time to answer
     response = requests.post(API_URL, headers=headers, json=payload, timeout=120)
     response.raise_for_status()
     return response.json()["choices"][0]["message"]["content"]
@@ -393,21 +358,18 @@ def parse_response(raw):
             try:
                 return normalize_result(json.loads(json_str, strict=False))
             except Exception:
-                safe_json_str = json_str.replace('\n', '\\n').replace('\r', '')
+                safe_json_str = json_str.replace('\n', ' ').replace('\r', '')
                 return normalize_result(json.loads(safe_json_str, strict=False))
     except Exception:
         pass
-    
-    # Robust fallback: strips all markdown and brackets so it displays clearly as text
     fallback_text = re.sub(r'```json|```', '', raw).strip()
-    fallback_text = fallback_text.replace('{', '').replace('}', '').replace('"', '').strip()
     return normalize_result({"direct_answer": fallback_text})
 
 @st.cache_data(ttl=3600)
 def fetch_quran_surah(surah_number):
     try:
         res = requests.get(
-            f"[https://api.alquran.cloud/v1/surah/](https://api.alquran.cloud/v1/surah/){surah_number}/editions/quran-uthmani,en.transliteration,en.asad,ur.jalandhari",
+            f"https://api.alquran.cloud/v1/surah/{surah_number}/editions/quran-uthmani,en.transliteration,en.asad,ur.jalandhari",
             timeout=15,
         )
         return res.json()["data"] if res.status_code == 200 else None
@@ -418,7 +380,7 @@ def fetch_quran_surah(surah_number):
 def fetch_prayer_times(city, country):
     try:
         res = requests.get(
-            f"[https://api.aladhan.com/v1/timingsByCity?city=](https://api.aladhan.com/v1/timingsByCity?city=){city}&country={country}&method=2",
+            f"https://api.aladhan.com/v1/timingsByCity?city={city}&country={country}&method=2",
             timeout=10,
         )
         return res.json()["data"] if res.status_code == 200 else None
@@ -729,7 +691,7 @@ with tab2:
             n = st.session_state.loaded_surah_number
 
             if audio_type == "Arabic Only (Mishary Alafasy)":
-                audio_url = f"[https://server8.mp3quran.net/afs/](https://server8.mp3quran.net/afs/){n:03d}.mp3"
+                audio_url = f"https://server8.mp3quran.net/afs/{n:03d}.mp3"
                 st.markdown(
                     f'<div class="premium-card" style="text-align:center;">'
                     f'<strong class="accent" style="font-size:18px;">🔊 Arabic Recitation (Mishary Alafasy)</strong><br><br>'
@@ -743,7 +705,7 @@ with tab2:
                 st.markdown(
                     f'<div class="premium-card" style="text-align:center;">'
                     f'<strong class="accent" style="font-size:18px;">🔊 Urdu Translation (Fateh Muhammad Jalandhari)</strong><br><br>'
-                    f'<iframe src="[https://archive.org/embed/](https://archive.org/embed/){archive_id}&playlist=1&list_height=200&start_track={n - 1}" '
+                    f'<iframe src="https://archive.org/embed/{archive_id}&playlist=1&list_height=200&start_track={n - 1}" '
                     f'width="100%" height="300" frameborder="0" webkitallowfullscreen="true" mozallowfullscreen="true" allowfullscreen '
                     f'style="border-radius:8px;"></iframe>'
                     f'<div style="margin-top:10px; font-size:13px; color:#94A3B8;">Surah {n} selected — use the playlist to navigate</div>'
