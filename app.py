@@ -373,10 +373,14 @@ def call_api(user_message, history, persona="Balanced Assistant"):
     payload = {"model": MODEL, "messages": messages, "max_tokens": 2000, "temperature": 0.2, "stream": False}
     response = requests.post(API_URL, headers=headers, json=payload, timeout=45)
     response.raise_for_status()
-    return response.json()["choices"][0]["message"]["content"]
+    data = response.json()
+    if "error" in data:
+        raise Exception(f"API Error: {data['error']}")
+    return data["choices"][0]["message"]["content"]
 
+# ===== FIXED: Robust JSON parsing with fallback =====
 def parse_response(raw):
-    # Strip any markdown wrapping the AI might have erroneously included
+    # Strip markdown wrapping
     cleaned = re.sub(r"^```json\s*", "", raw, flags=re.MULTILINE)
     cleaned = re.sub(r"^```\s*", "", cleaned, flags=re.MULTILINE).strip()
     
@@ -385,38 +389,51 @@ def parse_response(raw):
         end = cleaned.rfind("}") + 1
         if start != -1 and end > start:
             json_str = cleaned[start:end]
+            # Escape literal newlines inside strings to prevent JSON breakage
+            json_str = re.sub(r'(?<!\\)\\n', '\\\\n', json_str)
+            json_str = re.sub(r'[\x00-\x1f\x7f]', '', json_str)  # remove control chars
             try:
                 return normalize_result(json.loads(json_str, strict=False))
-            except Exception:
-                # If JSON fails, it's usually unescaped newlines inside strings. Strip them out safely.
-                safe_json_str = json_str.replace('\n', '\\n').replace('\r', '')
-                return normalize_result(json.loads(safe_json_str, strict=False))
+            except json.JSONDecodeError:
+                # Fallback: extract direct_answer using regex
+                da_match = re.search(r'"direct_answer"\s*:\s*"([^"]*)"', json_str, re.DOTALL)
+                if da_match:
+                    return normalize_result({"direct_answer": da_match.group(1).replace('\\n', '<br>')})
     except Exception:
         pass
-        
-    # ULTIMATE FALLBACK: If JSON completely breaks, extract text to prevent UI from breaking
-    fallback_text = raw.replace('```json', '').replace('```', '').strip()
-    if fallback_text.startswith('{') and fallback_text.endswith('}'):
-        match = re.search(r'"direct_answer"\s*:\s*"(.*?)"(?=,"quran_evidence"|}|\Z)', fallback_text, re.DOTALL)
-        if match:
-            return normalize_result({"direct_answer": match.group(1).replace('\\n', '<br>')})
-        fallback_text = fallback_text[1:-1].replace('"', '')
-        
-    return normalize_result({"direct_answer": fallback_text.replace('\n', '<br>')})
+    
+    # Ultimate fallback - plain text
+    fallback_text = raw.replace('```json', '').replace('```', '').replace('{', '').replace('}', '')
+    return normalize_result({"direct_answer": fallback_text[:1000]})
 
+# ===== FIXED: Safer Quran API fetch =====
 @st.cache_data(ttl=3600)
 def fetch_quran_surah(surah_number):
     try:
         res = requests.get(f"https://api.alquran.cloud/v1/surah/{surah_number}/editions/quran-uthmani,en.transliteration,en.asad,ur.jalandhari", timeout=15)
-        return res.json()["data"] if res.status_code == 200 else None
-    except Exception: return None
+        if res.status_code == 200:
+            data = res.json()
+            if data.get("code") == 200 and "data" in data:
+                editions = data["data"]
+                # Ensure we have at least 4 editions, fill missing with empty dicts
+                while len(editions) < 4:
+                    editions.append({"ayahs": []})
+                return editions
+    except Exception:
+        pass
+    return None
 
 @st.cache_data(ttl=3600)
 def fetch_prayer_times(city, country):
     try:
         res = requests.get(f"http://api.aladhan.com/v1/timingsByCity?city={city}&country={country}&method=2", timeout=10)
-        return res.json()["data"] if res.status_code == 200 else None
-    except Exception: return None
+        if res.status_code == 200:
+            data = res.json()
+            if data.get("code") == 200 and "data" in data:
+                return data["data"]
+    except Exception:
+        pass
+    return None
 
 def format_chat_for_export():
     out = "Muslim AI - Chat Transcript\n" + "="*30 + "\n\n"
@@ -534,9 +551,8 @@ with st.sidebar:
 # ==========================================
 tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(["🤖 AI Chat", "📖 Quran Reader", "🕌 Prayer & Qibla", "📿 Tasbih & Dua", "📚 Hadith & Names", "📜 Deep Knowledge"])
 
-# ----------------- TAB 1: AI CHAT (REPOSITIONED SEARCH) -----------------
+# ----------------- TAB 1: AI CHAT -----------------
 with tab1: 
-    # 1. PRIMARY SEARCH AT TOP
     st.markdown('<h3 class="accent" style="margin-top:0;">Ask Muslim AI</h3>', unsafe_allow_html=True)
     with st.form("chat_form", clear_on_submit=True):
         col1, col2 = st.columns([5, 1])
@@ -545,7 +561,6 @@ with tab1:
         with col2:
             submit_btn = st.form_submit_button("Ask AI 💬", use_container_width=True)
 
-    # 2. SETTINGS & QUICK ACTIONS (Compact Expander)
     with st.expander("✨ Spiritual First Aid & AI Settings", expanded=False):
         col_s1, col_s2 = st.columns(2)
         with col_s1:
@@ -573,7 +588,6 @@ with tab1:
         st.markdown("---")
         st.download_button("📥 Download Chat Transcript", data=format_chat_for_export(), file_name=f"Muslim_AI_Chat_{datetime.now().strftime('%Y%m%d')}.txt", mime="text/plain")
 
-    # 3. HANDLE ALL INPUTS
     trigger_prompt = None
     display_prompt = None
 
@@ -605,9 +619,8 @@ with tab1:
                 if st.session_state.use_memory:
                     st.session_state.chat_history.append({"user": trigger_prompt, "assistant": result.get("direct_answer", "")})
             except Exception as e: 
-                st.error("Error processing request.")
+                st.error(f"Error processing request: {str(e)}")
 
-    # 4. RENDER CHAT HISTORY (Below the Search Bar - Newest First)
     paired_messages = []
     for i in range(0, len(st.session_state.messages), 2):
         paired_messages.append(st.session_state.messages[i:i+2])
@@ -636,19 +649,15 @@ with tab2:
             if audio_type == "Arabic Only (Mishary Alafasy)":
                 audio_url = f"https://server8.mp3quran.net/afs/{st.session_state.loaded_surah_number:03d}.mp3"
             else:
-                # Official Archive.org URL for Urdu translation audio matching QuranCentral
                 audio_url = f"https://archive.org/download/UrduTranslationOfQuranAudio/{st.session_state.loaded_surah_number:03d}.mp3"
                 
             st.markdown('<div class="premium-card" style="text-align:center;"><strong class="accent" style="font-size:18px;">🔊 Listen to Full Surah Recitation:</strong><br><br>', unsafe_allow_html=True)
-            
-            # Using HTML audio element completely bypasses Streamlit's MediaFileStorageError!
             st.markdown(f'''
                 <audio controls style="width: 100%; outline: none; border-radius: 8px;">
                   <source src="{audio_url}" type="audio/mpeg">
                   Your browser does not support the audio element.
                 </audio>
             ''', unsafe_allow_html=True)
-            
             st.markdown('</div>', unsafe_allow_html=True)
             
             surah_data = fetch_quran_surah(st.session_state.loaded_surah_number)
@@ -668,9 +677,11 @@ with tab2:
                         <div class="arabic">{safe_html(ayah.get("text"))}</div>
                         <div style="font-size:15px; color:#94A3B8; font-style:italic; margin-bottom:12px;"><strong>Transliteration:</strong> {safe_html(t_text)}</div>
                         <div style="font-size:16px; line-height:1.6; color:#E2E8F0; margin-bottom:8px;"><strong>English:</strong> {safe_html(eng_text)}</div>
-                        <div style="font-size:24px; line-height:1.8; color:#FDE047; text-align:right; font-family:'Jameel Noori Nastaleeq', 'Noto Nastaliq Urdu', Arial, sans-serif; direction:rtl;"><strong>اردو:</strong> {safe_html(ur_text)}</div>
+                        <div style="font-size:24px; line-height:1.8; color:#FDE047; text-align:right; font-family:Arial, sans-serif; direction:rtl;"><strong>اردو:</strong> {safe_html(ur_text)}</div>
                     </div>
                     ''', unsafe_allow_html=True)
+            else:
+                st.warning("Could not load Surah data. Please try again later.")
 
 # ----------------- TAB 3: PRAYER, QIBLA & ZAKAT -----------------
 with tab3: 
@@ -681,24 +692,28 @@ with tab3:
     
     if st.button("Get Timings & Qibla", type="primary"):
         times_data = fetch_prayer_times(city, country)
-        if times_data:
+        if times_data and "timings" in times_data:
             timings = times_data["timings"]
-            date_hijri = times_data["date"]["hijri"]
+            date_hijri = times_data.get("date", {}).get("hijri", {})
             
             qibla_deg = times_data.get("meta", {}).get("qibla")
             if qibla_deg is not None:
-                compass_dir = get_compass_dir(float(qibla_deg))
-                qibla_text = f"{qibla_deg}° {compass_dir}"
+                try:
+                    compass_dir = get_compass_dir(float(qibla_deg))
+                    qibla_text = f"{qibla_deg}° {compass_dir}"
+                except:
+                    qibla_text = "Calculation error"
             else:
-                qibla_text = "Unknown"
+                qibla_text = "Not available"
             
-            st.markdown(f'<div class="info-box" style="text-align:center; font-size:20px;"><strong class="accent">{date_hijri["day"]} {date_hijri["month"]["en"]} {date_hijri["year"]} AH</strong><br><br>🧭 <strong style="color:#60A5FA;">Qibla Direction:</strong> {qibla_text} <span class="muted">(from True North)</span></div>', unsafe_allow_html=True)
+            st.markdown(f'<div class="info-box" style="text-align:center; font-size:20px;"><strong class="accent">{date_hijri.get("day", "")} {date_hijri.get("month", {}).get("en", "")} {date_hijri.get("year", "")} AH</strong><br><br>🧭 <strong style="color:#60A5FA;">Qibla Direction:</strong> {qibla_text} <span class="muted">(from True North)</span></div>', unsafe_allow_html=True)
             
             cols = st.columns(6)
             prayers = ["Fajr", "Sunrise", "Dhuhr", "Asr", "Maghrib", "Isha"]
             for i, p in enumerate(prayers):
-                cols[i].markdown(f'<div class="name-card"><strong class="accent">{p}</strong><br><br><span style="font-size:22px; color:#fff;">{timings[p]}</span></div>', unsafe_allow_html=True)
-        else: st.error("Could not fetch times. Check city/country spelling.")
+                cols[i].markdown(f'<div class="name-card"><strong class="accent">{p}</strong><br><br><span style="font-size:22px; color:#fff;">{timings.get(p, "N/A")}</span></div>', unsafe_allow_html=True)
+        else:
+            st.error("Could not fetch times. Check city/country spelling.")
 
     st.markdown('<div class="section-title">Zakat Calculator (2.5%)</div>', unsafe_allow_html=True)
     st.markdown('<div class="info-box">Enter your assets. If your net wealth is above the Nisab threshold, your Zakat is 2.5%.</div>', unsafe_allow_html=True)
@@ -772,7 +787,7 @@ with tab6:
         if st.button("Generate Custom Quiz", use_container_width=True):
             with st.spinner("Generating Quiz..."):
                 try:
-                    prompt = f"Create a 5-question multiple choice trivia quiz about '{selected_trivia}'. Put the Answer Key at the very bottom. You MUST return your entire response inside the 'direct_answer' field of the required JSON structure."
+                    prompt = f"Create a 5-question multiple choice trivia quiz about '{selected_trivia}'. Format it clearly with Question 1, 2, etc. Put the Answer Key at the very bottom."
                     raw = call_api(prompt, [])
                     render_response(parse_response(raw))
                 except Exception: st.error("Failed to generate quiz.")
@@ -785,7 +800,7 @@ with tab6:
         if st.button("Generate History Profile", use_container_width=True):
             with st.spinner(f"Extracting authentic history for {selected_story}..."):
                 try:
-                    prompt = f"Provide a detailed profile of '{selected_story}'. Base it strictly on authentic sources. You MUST return your entire response inside the 'direct_answer' field of the required JSON structure."
+                    prompt = f"Provide a complete, multi-paragraph, highly detailed profile of '{selected_story}'. Base it strictly on Quran and authentic Ahadith/Tafseer. Detail the motives, major events, and moral legacy."
                     raw = call_api(prompt, [])
                     render_response(parse_response(raw))
                 except Exception: st.error("Failed to generate history.")
@@ -796,7 +811,7 @@ with tab6:
         if st.button("Generate Medicine Profile", use_container_width=True):
             with st.spinner(f"Extracting authentic knowledge on {selected_tibb}..."):
                 try:
-                    prompt = f"Provide a comprehensive overview of '{selected_tibb}' in Islam. You MUST return your entire response inside the 'direct_answer' field of the required JSON structure."
+                    prompt = f"Provide a comprehensive overview of '{selected_tibb}' in Islam. Cite authentic Hadith mentioning it, and explain its spiritual and physical benefits according to Prophetic Medicine."
                     raw = call_api(prompt, [])
                     render_response(parse_response(raw))
                 except Exception: st.error("Failed to generate medicine profile.")
