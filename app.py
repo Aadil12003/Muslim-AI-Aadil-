@@ -122,11 +122,6 @@ input:focus, textarea:focus { border-color: #FBBF24 !important; box-shadow: 0 0 
 
 /* ===== TASBIH STYLES ===== */
 .tasbih-count { font-size: 56px; color: #FBBF24; text-align: center; font-family: 'Inter', sans-serif; font-weight: 700; text-shadow: 0 0 20px rgba(251, 191, 36, 0.3); }
-
-/* ===== SCHOLARLY BOXES ===== */
-.reasoning-box { margin-top: 12px; padding: 12px 16px; background: rgba(0, 0, 0, 0.3); border-radius: 8px; border-left: 3px solid #60A5FA; }
-.evidence-box { margin-top: 10px; padding: 12px 16px; background: rgba(0, 0, 0, 0.3); border-radius: 8px; border-left: 3px solid #10B981; }
-
 </style>
 """,
     unsafe_allow_html=True,
@@ -150,7 +145,7 @@ MODEL = "meta/llama-4-maverick-17b-128e-instruct"
 # Updated Base Prompt to enforce Hinglish, Transliteration, and Strict Systematic Markdown formatting
 BASE_SYSTEM_PROMPT = """You are an Islamic AI Assistant. Respond only with authentic Quran, Sahih Hadith, and recognized classical scholarship.
 - Do NOT fabricate references.
-- TRANSLITERATION & HINGLISH: For ANY Arabic text provided (Quran, Hadith, Dua), you MUST provide the English Transliteration, followed by the English Translation, and then the Hinglish (Hindi/Urdu written in English script) Translation.
+- TRANSLITERATION & HINGLISH: For ANY Arabic text provided (Quran, Hadith, Dua), you MUST provide the English Transliteration, followed by the English Translation, and then the Hinglish (Urdu/Hindi written in English script) Translation.
 - HINGLISH ANSWERS: Include a Hinglish translation for your 'direct_answer' and 'conclusion'. Use line breaks.
 - SCHOLARLY PRECISION: Separate the 'opinion', 'reasoning' (step-by-step logic), and 'evidence' (exact verse/hadith) clearly.
 - EVIDENCE FIRST: You MUST populate 'quran_evidence' and 'hadith_evidence' arrays if applicable, do not just skip to scholarly opinions.
@@ -158,7 +153,7 @@ BASE_SYSTEM_PROMPT = """You are an Islamic AI Assistant. Respond only with authe
 {
   "direct_answer": "English Text \n\n Hinglish: [Hinglish text]",
   "quran_evidence": [{"arabic": "", "translation": "Transliteration: ... \n\n English: ... \n\n Hinglish: ...", "reference": "", "explanation": ""}],
-  "hadith_evidence": [{"text": "English: ... \n\n Hinglish: ...", "arabic": "", "source": "", "authenticity": "Sahih", "note": ""}],
+  "hadith_evidence": [{"text": "Transliteration: ... \n\n English: ... \n\n Hinglish: ...", "arabic": "", "source": "", "authenticity": "Sahih", "note": ""}],
   "scholarly_opinions": [{"madhab": "", "opinion": "Clear statement of the view", "reasoning": "Step-by-step breakdown of why they hold this view", "evidence": "Exact text of the Quran/Hadith used", "source": ""}],
   "dua": {"title": "", "arabic": "", "transliteration": "", "meaning": "English: ... \n\n Hinglish: ...", "reference": "", "source_url": ""},
   "duas": [],
@@ -389,7 +384,8 @@ def parse_response(raw):
 @st.cache_data(ttl=3600)
 def fetch_quran_surah(surah_number):
     try:
-        res = requests.get(f"https://api.alquran.cloud/v1/surah/{surah_number}/editions/quran-uthmani,en.asad", timeout=15)
+        # Fetches Arabic, Transliteration, English, and Urdu!
+        res = requests.get(f"https://api.alquran.cloud/v1/surah/{surah_number}/editions/quran-uthmani,en.transliteration,en.asad,ur.jalandhari", timeout=15)
         return res.json()["data"] if res.status_code == 200 else None
     except Exception: return None
 
@@ -436,15 +432,20 @@ def render_response(result):
             evidence = opinion.get("evidence", "")
             
             # New Systematic Layout for Scholar Thoughts
-            reason_html = f'<div class="reasoning-box"><strong class="accent" style="font-size:14px; color:#60A5FA !important;">Logical Reasoning:</strong><br><span style="line-height:1.6; color:#E2E8F0; font-size:14px;">{safe_html(reasoning).replace(chr(10), "<br>")}</span></div>' if reasoning else ""
-            evid_html = f'<div class="evidence-box"><strong class="accent" style="font-size:14px; color:#10B981 !important;">Evidence Referenced:</strong><br><span style="line-height:1.6; color:#E2E8F0; font-size:14px;">{safe_html(evidence).replace(chr(10), "<br>")}</span></div>' if evidence else ""
-            
             st.markdown(
-                f'<div class="premium-card"><strong class="accent" style="font-size:18px;">{safe_html(opinion.get("madhab", ""))}:</strong> '
-                f'<br><span style="line-height:1.6; font-size:16px;">{safe_html(opinion.get("opinion", "")).replace(chr(10), "<br>")}</span>'
-                f'{reason_html}'
-                f'{evid_html}'
-                f'<div style="margin-top:16px; border-top:1px solid rgba(251, 191, 36, 0.2); padding-top:12px;"><span class="muted">Source: {safe_html(opinion.get("source", ""))}</span></div></div>',
+                f'<div class="premium-card" style="border-left: 4px solid #FBBF24;">'
+                f'<strong class="accent" style="font-size:18px;">{safe_html(opinion.get("madhab", ""))}</strong><br><br>'
+                f'<div style="background:rgba(255,255,255,0.05); padding:15px; border-radius:8px; margin-bottom:10px;">'
+                f'<strong style="color:#E2E8F0;">Ruling/Opinion:</strong><br><span style="color:#CBD5E1; line-height:1.6;">{safe_html(opinion.get("opinion", "")).replace(chr(10), "<br>")}</span>'
+                f'</div>'
+                f'<div style="background:rgba(96, 165, 250, 0.1); border-left:3px solid #60A5FA; padding:15px; border-radius:8px; margin-bottom:10px;">'
+                f'<strong style="color:#60A5FA;">Logical Reasoning:</strong><br><span style="color:#E2E8F0; line-height:1.6;">{safe_html(reasoning).replace(chr(10), "<br>")}</span>'
+                f'</div>'
+                f'<div style="background:rgba(16, 185, 129, 0.1); border-left:3px solid #10B981; padding:15px; border-radius:8px;">'
+                f'<strong style="color:#10B981;">Evidence Referenced:</strong><br><span style="color:#E2E8F0; line-height:1.6;">{safe_html(evidence).replace(chr(10), "<br>")}</span>'
+                f'</div>'
+                f'<div style="margin-top:16px; border-top:1px solid rgba(251, 191, 36, 0.2); padding-top:12px;"><span class="muted">Source: {safe_html(opinion.get("source", ""))}</span></div>'
+                f'</div>',
                 unsafe_allow_html=True,
             )
 
@@ -581,30 +582,43 @@ with tab2:
     col1, col2 = st.columns([1, 2])
     with col1:
         selected_surah = st.selectbox("Select Surah", [f"{i + 1}. {name}" for i, name in enumerate(SURAH_NAMES)])
-        audio_type = st.radio("Select Recitation Audio", ["Arabic Only (Mishary Alafasy)", "Arabic + Urdu Translation (Saad Al Ghamdi)"])
+        audio_type = st.radio("Select Recitation Audio", ["Arabic Only (Mishary Alafasy)", "Arabic + Urdu Translation (Shamshad Ali Khan)"])
         if st.button("Load Surah", type="primary", use_container_width=True): 
             st.session_state.loaded_surah_number = int(selected_surah.split(".")[0])
             
     with col2:
         if st.session_state.loaded_surah_number:
-            # Set Audio URL based on selection
+            # Set Audio URL based on selection (Using reliable Islamic Network CDN)
             if audio_type == "Arabic Only (Mishary Alafasy)":
-                audio_url = f"https://server8.mp3quran.net/afs/{st.session_state.loaded_surah_number:03d}.mp3"
+                audio_url = f"https://cdn.islamic.network/quran/audio-surah/128/ar.alafasy/{st.session_state.loaded_surah_number}.mp3"
             else:
-                # Saad Al Ghamdi with Urdu translation
-                audio_url = f"https://server7.mp3quran.net/s_gmd_urdu/{st.session_state.loaded_surah_number:03d}.mp3"
+                # Urdu translation
+                audio_url = f"https://cdn.islamic.network/quran/audio-surah/128/ur.khan/{st.session_state.loaded_surah_number}.mp3"
                 
             st.markdown('<div class="premium-card" style="text-align:center;"><strong class="accent" style="font-size:18px;">🔊 Listen to Full Surah Recitation:</strong><br><br>', unsafe_allow_html=True)
             st.audio(audio_url, format="audio/mp3")
             st.markdown('</div>', unsafe_allow_html=True)
             
             surah_data = fetch_quran_surah(st.session_state.loaded_surah_number)
-            if surah_data:
-                ar, en = surah_data[0], surah_data[1]
+            if surah_data and len(surah_data) >= 4:
+                ar, translit_ed, en, urdu_ed = surah_data[0], surah_data[1], surah_data[2], surah_data[3]
+                
                 st.markdown(f'<div class="arabic" style="font-size:48px; text-align:center; margin-bottom:40px; color:#FEF08A;">{safe_html(ar.get("name", ""))}</div>', unsafe_allow_html=True)
+                
                 for i, ayah in enumerate(ar.get("ayahs", [])):
+                    t_text = translit_ed.get("ayahs", [])[i].get("text", "") if i < len(translit_ed.get("ayahs", [])) else ""
                     eng_text = en.get("ayahs", [])[i].get("text", "") if i < len(en.get("ayahs", [])) else ""
-                    st.markdown(f'<div class="premium-card"><div class="muted" style="color:#FBBF24 !important; font-weight:600; letter-spacing:1px; margin-bottom:10px;">AYAH {ayah.get("numberInSurah")}</div><div class="arabic">{safe_html(ayah.get("text"))}</div><div style="font-size:18px; line-height:1.7; color:#E2E8F0;">{safe_html(eng_text)}</div></div>', unsafe_allow_html=True)
+                    ur_text = urdu_ed.get("ayahs", [])[i].get("text", "") if i < len(urdu_ed.get("ayahs", [])) else ""
+                    
+                    st.markdown(f'''
+                    <div class="premium-card">
+                        <div class="muted" style="color:#FBBF24 !important; font-weight:600; letter-spacing:1px; margin-bottom:10px;">AYAH {ayah.get("numberInSurah")}</div>
+                        <div class="arabic">{safe_html(ayah.get("text"))}</div>
+                        <div style="font-size:15px; color:#94A3B8; font-style:italic; margin-bottom:12px;">{safe_html(t_text)}</div>
+                        <div style="font-size:16px; line-height:1.6; color:#E2E8F0; margin-bottom:8px;"><strong>English:</strong> {safe_html(eng_text)}</div>
+                        <div style="font-size:22px; line-height:1.8; color:#FDE047; text-align:right; font-family:'Scheherazade New', serif;"><strong>اردو:</strong> {safe_html(ur_text)}</div>
+                    </div>
+                    ''', unsafe_allow_html=True)
 
 # ----------------- TAB 3: PRAYER, QIBLA & ZAKAT -----------------
 with tab3: 
@@ -672,7 +686,7 @@ with tab4:
             f'<div class="premium-card"><h3 style="margin-top:0;">{safe_html(dua["title"])}</h3>'
             f'<div class="arabic" style="margin: 20px 0;">{safe_html(dua.get("arabic", ""))}</div>'
             f'<strong class="accent" style="font-size:14px; text-transform:uppercase;">Transliteration</strong><br><span style="color:#CBD5E1; line-height:1.6; display:inline-block; margin-bottom:16px;">{safe_html(dua.get("transliteration", ""))}</span><br>'
-            f'<strong class="accent" style="font-size:14px; text-transform:uppercase;">Meaning</strong><br><span style="font-size:16px; line-height:1.6; color:#F8FAFC;">{safe_html(dua.get("meaning", ""))}</span>'
+            f'<strong class="accent" style="font-size:14px; text-transform:uppercase;">Meaning (English/Hinglish)</strong><br><span style="font-size:16px; line-height:1.6; color:#F8FAFC;">{safe_html(dua.get("meaning", ""))}</span>'
             f'<div style="margin-top:20px; border-top:1px solid rgba(251, 191, 36, 0.2); padding-top:12px;"><span class="muted">Reference: {source_link(dua.get("reference", ""), dua.get("source_url", ""))}</span></div></div>',
             unsafe_allow_html=True,
         )
