@@ -16,76 +16,111 @@ st.set_page_config(page_title="Muslim AI", layout="wide", initial_sidebar_state=
 st.markdown(
     """
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300 ;400;500;600&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400&family=Scheherazade+New:wght@400;700&display=swap');
+@import url('[https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400&family=Scheherazade+New:wght@400;700&display=swap](https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400&family=Scheherazade+New:wght@400;700&display=swap)');
 
-html, body, [class*="css"] { font-family: 'Inter', sans-serif; color: #F8FAFC !important; }
-.stApp { background: linear-gradient(135deg, #020617 0%, #064E3B 100%) !important; background-attachment: fixed; }
-h1, h2, h3, .serif-text { font-family: 'Playfair Display', serif; color: #FBBF24 !important; font-weight: 600; letter-spacing: 0.5px; }
+/* ===== GLOBAL TYPOGRAPHY & RICH BACKGROUND ===== */
+html, body, [class*="css"] { 
+    font-family: 'Inter', sans-serif; 
+    color: #F8FAFC !important; 
+}
+.stApp { 
+    background: linear-gradient(135deg, #020617 0%, #064E3B 100%) !important; 
+    background-attachment: fixed;
+}
+h1, h2, h3, .serif-text { 
+    font-family: 'Playfair Display', serif; 
+    color: #FBBF24 !important; 
+    font-weight: 600; 
+    letter-spacing: 0.5px; 
+}
 
-.premium-card {
-    background-color: rgba(15, 23, 42, 0.45);
-    backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(251, 191, 36, 0.25);
-    border-radius: 16px; padding: 28px; margin-bottom: 24px;
-    word-break: break-word; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-    transition: all 0.3s ease;
+/* ===== GLASSMORPHISM CARDS ===== */
+.premium-card { 
+    background-color: rgba(15, 23, 42, 0.45); 
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(251, 191, 36, 0.25); 
+    border-radius: 16px; 
+    padding: 28px; 
+    margin-bottom: 24px; 
+    word-break: break-word; 
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5); 
+    transition: all 0.3s ease; 
 }
-.premium-card:hover {
-    border-color: rgba(251, 191, 36, 0.8); background-color: rgba(15, 23, 42, 0.6);
-    transform: translateY(-4px); box-shadow: 0 15px 40px rgba(0,0,0,0.6), 0 0 15px rgba(251, 191, 36, 0.1);
+.premium-card:hover { 
+    border-color: rgba(251, 191, 36, 0.8); 
+    background-color: rgba(15, 23, 42, 0.6);
+    transform: translateY(-4px); 
+    box-shadow: 0 15px 40px rgba(0,0,0,0.6), 0 0 15px rgba(251, 191, 36, 0.1);
 }
-.name-card {
-    text-align: center; padding: 20px;
-    border: 1px solid rgba(251, 191, 36, 0.2); border-radius: 12px;
-    background: rgba(15, 23, 42, 0.4); backdrop-filter: blur(8px);
-    transition: all 0.2s ease; margin-bottom: 16px;
+.name-card { 
+    text-align: center; 
+    padding: 20px; 
+    border: 1px solid rgba(251, 191, 36, 0.2); 
+    border-radius: 12px; 
+    background: rgba(15, 23, 42, 0.4);
+    backdrop-filter: blur(8px);
+    transition: all 0.2s ease; 
 }
-.name-card:hover { border-color: #FBBF24; background: rgba(15, 23, 42, 0.7); }
+.name-card:hover { 
+    border-color: #FBBF24; 
+    background: rgba(15, 23, 42, 0.7);
+}
 
-.hero {
-    text-align: center; padding: 60px 20px 40px 20px; margin-bottom: 40px;
-    border-bottom: 1px solid rgba(255,255,255,0.05);
-    background: radial-gradient(circle at top, rgba(251, 191, 36, 0.15) 0%, transparent 70%);
+/* ===== HERO SECTION ===== */
+.hero { 
+    text-align: center; 
+    padding: 60px 20px 40px 20px; 
+    margin-bottom: 40px; 
+    border-bottom: 1px solid rgba(255,255,255,0.05); 
+    background: radial-gradient(circle at top, rgba(251, 191, 36, 0.15) 0%, transparent 70%); 
 }
-.bismillah { font-family: 'Scheherazade New', serif; font-size: 42px; color: #FBBF24; margin-bottom: 16px; text-shadow: 0 0 20px rgba(251, 191, 36, 0.4); }
-.title {
-    font-size: 48px; font-weight: 700; margin-bottom: 8px;
-    font-family: 'Playfair Display', serif;
+.bismillah { 
+    font-family: 'Scheherazade New', serif; 
+    font-size: 42px; 
+    color: #FBBF24; 
+    margin-bottom: 16px; 
+    text-shadow: 0 0 20px rgba(251, 191, 36, 0.4); 
+}
+.title { 
+    font-size: 48px; 
+    font-weight: 700; 
+    margin-bottom: 8px; 
+    font-family: 'Playfair Display', serif; 
     background: linear-gradient(to right, #FBBF24, #FEF08A);
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 2px 10px rgba(251, 191, 36, 0.2);
 }
 .subtitle { font-size: 18px; color: #CBD5E1; font-weight: 300; letter-spacing: 1px; }
 
-.arabic {
-    font-family: 'Scheherazade New', serif; font-size: 36px;
-    direction: rtl; text-align: right; margin-bottom: 16px;
-    line-height: 1.8; color: #FDE047; text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+/* ===== TEXT & UI ELEMENTS ===== */
+.arabic { 
+    font-family: 'Scheherazade New', serif; 
+    font-size: 36px; 
+    direction: rtl; 
+    text-align: right; 
+    margin-bottom: 16px; 
+    line-height: 1.8; 
+    color: #FDE047; 
+    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
 }
-.section-title {
-    font-family: 'Playfair Display', serif; font-size: 26px; color: #FBBF24;
-    margin: 40px 0 20px 0; padding-bottom: 10px;
-    border-bottom: 1px solid rgba(251, 191, 36, 0.2);
-}
-.info-box {
-    background-color: rgba(251, 191, 36, 0.08); border-left: 4px solid #FBBF24;
-    border-radius: 6px; padding: 16px 20px; font-size: 15px;
-    margin-bottom: 24px; color: #F8FAFC; backdrop-filter: blur(4px);
-}
+.section-title { font-family: 'Playfair Display', serif; font-size: 26px; color: #FBBF24; margin: 40px 0 20px 0; padding-bottom: 10px; border-bottom: 1px solid rgba(251, 191, 36, 0.2); }
+.info-box { background-color: rgba(251, 191, 36, 0.08); border-left: 4px solid #FBBF24; border-radius: 6px; padding: 16px 20px; font-size: 15px; margin-bottom: 24px; color: #F8FAFC; backdrop-filter: blur(4px); }
 .accent { color: #FBBF24 !important; font-weight: 600; }
 .muted { color: #94A3B8 !important; font-size: 0.9em; font-weight: 400; }
 .source-link { color: #60A5FA; text-decoration: none; border-bottom: 1px dotted #60A5FA; transition: opacity 0.2s; }
 .source-link:hover { opacity: 0.7; color: #93C5FD; }
 
+/* ===== SIDEBAR & INPUT ===== */
 [data-testid="stSidebar"] { background-color: rgba(2, 6, 23, 0.8) !important; backdrop-filter: blur(15px); border-right: 1px solid rgba(251, 191, 36, 0.15); }
 input, textarea { background-color: rgba(15, 23, 42, 0.6) !important; border: 1px solid rgba(251, 191, 36, 0.3) !important; color: #fff !important; border-radius: 8px !important; }
 input:focus, textarea:focus { border-color: #FBBF24 !important; box-shadow: 0 0 8px rgba(251, 191, 36, 0.4) !important; }
-.stButton > button {
-    background: linear-gradient(135deg, rgba(251, 191, 36, 0.1), rgba(251, 191, 36, 0.05));
-    color: #FBBF24; border: 1px solid #FBBF24; border-radius: 8px;
-    transition: all 0.3s ease; font-weight: 500;
-}
+.stButton > button { background: linear-gradient(135deg, rgba(251, 191, 36, 0.1), rgba(251, 191, 36, 0.05)); color: #FBBF24; border: 1px solid #FBBF24; border-radius: 8px; transition: all 0.3s ease; font-weight: 500; }
 .stButton > button:hover { background: #FBBF24; color: #020617; transform: scale(1.02); box-shadow: 0 4px 15px rgba(251, 191, 36, 0.3); }
 .creator-footer { text-align: center; padding: 30px 10px; margin-top: auto; font-family: 'Playfair Display', serif; color: #FBBF24; border-top: 1px solid rgba(251, 191, 36, 0.2); font-size: 18px; letter-spacing: 1px; }
+
+/* ===== TASBIH STYLES ===== */
 .tasbih-count { font-size: 56px; color: #FBBF24; text-align: center; font-family: 'Inter', sans-serif; font-weight: 700; text-shadow: 0 0 20px rgba(251, 191, 36, 0.3); }
 </style>
 """,
@@ -104,9 +139,7 @@ if not NVIDIA_API_KEY:
     st.error("❌ Missing NVIDIA_API_KEY. Please add it to your Streamlit Cloud Secrets (Settings → Secrets).")
     st.stop()
 
-# FIX: Removed trailing space in API_URL
-API_URL = "https://integrate.api.nvidia.com/v1/chat/completions"
-# FIX: Verified stable NVIDIA model slug
+API_URL = "[https://integrate.api.nvidia.com/v1/chat/completions](https://integrate.api.nvidia.com/v1/chat/completions)"
 MODEL = "meta/llama-3.3-70b-instruct"
 
 BASE_SYSTEM_PROMPT = """You are an Islamic AI Assistant. Respond only with authentic Quran, Sahih Hadith, and recognized classical scholarship.
@@ -186,7 +219,7 @@ DUA_CATEGORIES = {
     ],
     "Forgiveness": [
         {"title": "Seeking Forgiveness", "arabic": "رَبِّ اغْفِرْ لِي وَتُبْ عَلَيَّ إِنَّكَ أَنْتَ التَّوَّابُ الرَّحِيمُ", "transliteration": "Rabbighfir li wa tub alayya innaka anta at-Tawwabur-Rahim", "meaning": "My Lord, forgive me and accept my repentance. Truly, You are the Accepter of repentance, the Most Merciful.", "reference": "Abu Dawood"},
-    ],
+    ]
 }
 
 HADITH_40 = [
@@ -229,7 +262,7 @@ HADITH_40 = [
     {"number": 37, "arabic": "إِذَا سَأَلْتَ فَاسْأَلِ اللَّهَ", "text": "If you ask, ask of Allah; if you seek help, seek help from Allah.", "source": "Jami at-Tirmidhi 2516 (Hasan Sahih)"},
     {"number": 38, "arabic": "الْبِرُّ حُسْنُ الْخُلُقِ", "text": "Righteousness is good character.", "source": "Sahih Muslim 2553"},
     {"number": 39, "arabic": "الصَّلاَةُ نُورٌ وَالصَّدَقَةُ بُرْهَانٌ وَالصَّبْرُ ضِيَاءٌ", "text": "Prayer is light, charity is a proof, and patience is illumination.", "source": "Sahih Muslim 223"},
-    {"number": 40, "arabic": "مَنْ حَسُنَ إِسْلاَمُهُ تَرَكَ مَا لاَ يَعْنِيهِ", "text": "Part of the perfection of a person's Islam is his leaving that which is of no concern to him.", "source": "Jami at-Tirmidhi 2317 (Hasan)"},
+    {"number": 40, "arabic": "مَنْ حَسُنَ إِسْلاَمُهُ تَرَكَ مَا لاَ يَعْنِيهِ", "text": "Part of the perfection of a person's Islam is his leaving that which is of no concern to him.", "source": "Jami at-Tirmidhi 2317 (Hasan)"}
 ]
 
 NAMES_RAW = "الرَّحْمَن|Ar-Rahman|The Entirely Merciful,الرَّحِيم|Ar-Rahim|The Especially Merciful,الْمَلِك|Al-Malik|The Sovereign,الْقُدُّوس|Al-Quddus|The Most Holy,السَّلاَم|As-Salam|The Source of Peace,الْمُؤْمِن|Al-Mu'min|The Guarantor,الْمُهَيْمِن|Al-Muhaymin|The Guardian,الْعَزِيز|Al-Aziz|The Almighty,الْجَبَّار|Al-Jabbar|The Compeller,الْمُتَكَبِّر|Al-Mutakabbir|The Supreme,الْخَالِق|Al-Khaliq|The Creator,الْبَارِئ|Al-Bari'|The Evolver,الْمُصَوِّر|Al-Musawwir|The Fashioner,الْغَفَّار|Al-Ghaffar|The Repeatedly Forgiving,الْقَهَّار|Al-Qahhar|The Subduer,الْوَهَّاب|Al-Wahhab|The Bestower,الرَّزَّاق|Ar-Razzaq|The Provider,الْفَتَّاح|Al-Fattah|The Opener,الْعَلِيم|Al-Aleem|The Knowing,الْقَابِض|Al-Qabid|The Withholder,الْبَاسِط|Al-Basit|The Extender,الْخَافِض|Al-Khafid|The Abaser,الرَّافِع|Ar-Rafi'|The Exalter,الْمُعِزّ|Al-Mu'izz|The Honorer,الْمُذِلّ|Al-Mudhill|The Dishonorer,السَّمِيع|As-Sami'|The Hearing,الْبَصِير|Al-Basir|The Seeing,الْحَكَم|Al-Hakam|The Judge,الْعَدْل|Al-Adl|The Just,اللَّطِيف|Al-Latif|The Subtle One,الْخَبِير|Al-Khabir|The Acquainted,الْحَلِيم|Al-Haleem|The Forbearing,الْعَظِيم|Al-Azeem|The Magnificent,الْغَفُور|Al-Ghafur|The Much-Forgiving,الشَّكُور|Ash-Shakur|The Grateful,الْعَلِيّ|Al-Aliyy|The Most High,الْكَبِير|Al-Kabir|The Great,الْحَفِيظ|Al-Hafiz|The Preserver,الْمُقِيت|Al-Muqit|The Sustainer,الْحَسِيب|Al-Haseeb|The Reckoner,الْجَلِيل|Al-Jaleel|The Majestic,الْكَرِيم|Al-Kareem|The Generous,الرَّقِيب|Ar-Raqib|The Watchful,الْمُجِيب|Al-Mujeeb|The Responsive,الْوَاسِع|Al-Wasi'|The All-Encompassing,الْحَكِيم|Al-Hakeem|The Wise,الْوَدُود|Al-Wadud|The Loving,الْمَاجِد|Al-Majeed|The All-Glorious,الْبَاعِث|Al-Ba'ith|The Resurrector,الشَّهِيد|Ash-Shaheed|The Witness,الْحَقّ|Al-Haqq|The Truth,الْوَكِيل|Al-Wakeel|The Trustee,الْقَوِيّ|Al-Qawiyy|The Strong,الْمَتِين|Al-Mateen|The Firm,الْوَلِيّ|Al-Waliyy|The Protecting Friend,الْحَمِيد|Al-Hameed|The Praiseworthy,الْمُحْصِي|Al-Muhsi|The Accounter,الْمُبْدِئ|Al-Mubdi|The Originator,الْمُعِيد|Al-Mu'id|The Restorer,الْمُحْيِي|Al-Muhyi|The Giver of Life,الْمُمِيت|Al-Mumit|The Bringer of Death,الْحَيّ|Al-Hayy|The Ever-Living,الْقَيُّوم|Al-Qayyum|The Sustainer of Existence,الْوَاجِد|Al-Wajid|The Finder,الْمَاجِد|Al-Majid|The Noble,الْوَاحِد|Al-Wahid|The Unique,الأَحَد|Al-Ahad|The One,الصَّمَد|As-Samad|The Eternal Refuge,الْقَادِر|Al-Qadir|The Capable,الْمُقْتَدِر|Al-Muqtadir|The Powerful,الْمُقَدِّم|Al-Muqaddim|The Expediter,الْمُؤَخِّر|Al-Mu'akhkhir|The Delayer,الأَوَّل|Al-Awwal|The First,الآخِر|Al-Akhir|The Last,الظَّاهِر|Az-Zahir|The Manifest,الْبَاطِن|Al-Batin|The Hidden,الْوَالِي|Al-Wali|The Governor,الْمُتَعَالِي|Al-Muta'ali|The Most Exalted,الْبَرّ|Al-Barr|The Source of Goodness,التَّوَّاب|At-Tawwab|The Accepting of Repentance,الْمُنْتَقِم|Al-Muntaqim|The Avenger,الْعَفُوّ|Al-Afuww|The Pardoner,الرَّءُوف|Ar-Ra'uf|The Compassionate,مَالِكُ الْمُلْك|Malik-ul-Mulk|The Owner of Sovereignty,ذُو الْجَلاَلِ وَالإِكْرَام|Dhu-al-Jalal wa-al-Ikram|Lord of Majesty and Honor,الْمُقْسِط|Al-Muqsit|The Equitable,الْجَامِع|Al-Jami'|The Gatherer,الْغَنِيّ|Al-Ghaniyy|The Free of Need,الْمُغْنِي|Al-Mughni|The Enricher,الْمَانِع|Al-Mani'|The Preventer,الضَّارّ|Ad-Darr|The Harmer,النَّافِع|An-Nafi'|The Benefiter,النُّور|An-Nur|The Light,الْهَادِي|Al-Hadi|The Guide,الْبَدِيع|Al-Badi|The Incomparable,الْبَاقِي|Al-Baqi|The Everlasting,الْوَارِث|Al-Warith|The Inheritor,الرَّشِيد|Ar-Rasheed|The Guide to the Right Path,الصَّبُور|As-Sabur|The Patient"
@@ -285,7 +318,6 @@ def detect_curated_route(text):
     if contains_any(q, ["rabbana","quran dua"]): return "Quranic Rabbana Duas"
     return None
 
-# FIX: Guard against dua being non-dict
 def normalize_result(result):
     if not isinstance(result, dict): result = {}
     raw_dua = result.get("dua", {})
@@ -344,7 +376,8 @@ def call_api(user_message, history, persona="Balanced Assistant"):
         "Content-Type": "application/json",
     }
     payload = {"model": MODEL, "messages": messages, "max_tokens": 2000, "temperature": 0.2, "stream": False}
-    # FIX: Timeout increased to 120 seconds to prevent Read timed out errors
+    
+    # Timeout increased to 120s to ensure the model has time to answer
     response = requests.post(API_URL, headers=headers, json=payload, timeout=120)
     response.raise_for_status()
     return response.json()["choices"][0]["message"]["content"]
@@ -360,40 +393,38 @@ def parse_response(raw):
             try:
                 return normalize_result(json.loads(json_str, strict=False))
             except Exception:
-                safe_json_str = json_str.replace('\n', ' ').replace('\r', '')
+                safe_json_str = json_str.replace('\n', '\\n').replace('\r', '')
                 return normalize_result(json.loads(safe_json_str, strict=False))
     except Exception:
         pass
-    # FIX: Clean fallback that doesn't destroy the text
+    
+    # Robust fallback: strips all markdown and brackets so it displays clearly as text
     fallback_text = re.sub(r'```json|```', '', raw).strip()
+    fallback_text = fallback_text.replace('{', '').replace('}', '').replace('"', '').strip()
     return normalize_result({"direct_answer": fallback_text})
 
 @st.cache_data(ttl=3600)
 def fetch_quran_surah(surah_number):
     try:
-        # FIX: Removed space in URL
         res = requests.get(
-            f"https://api.alquran.cloud/v1/surah/{surah_number}/editions/quran-uthmani,en.transliteration,en.asad,ur.jalandhari",
+            f"[https://api.alquran.cloud/v1/surah/](https://api.alquran.cloud/v1/surah/){surah_number}/editions/quran-uthmani,en.transliteration,en.asad,ur.jalandhari",
             timeout=15,
         )
         return res.json()["data"] if res.status_code == 200 else None
     except Exception:
         return None
 
-# FIX: HTTPS instead of HTTP
 @st.cache_data(ttl=3600)
 def fetch_prayer_times(city, country):
     try:
-        # FIX: Removed space in URL
         res = requests.get(
-            f"https://api.aladhan.com/v1/timingsByCity?city={city}&country={country}&method=2",
+            f"[https://api.aladhan.com/v1/timingsByCity?city=](https://api.aladhan.com/v1/timingsByCity?city=){city}&country={country}&method=2",
             timeout=10,
         )
         return res.json()["data"] if res.status_code == 200 else None
     except Exception:
         return None
 
-# FIX: Chronological order (removed reversed())
 def format_chat_for_export():
     out = "Muslim AI - Chat Transcript\n" + "=" * 30 + "\n\n"
     for m in st.session_state.messages:
@@ -531,8 +562,7 @@ with st.sidebar:
         f'<div style="font-size:12px; color:#FBBF24; font-weight:600;">— {st.session_state.daily_inspo["source"]}</div>'
         '</div>',
         unsafe_allow_html=True,
-    )'⚠️ <strong>Disclaimer:</strong> This is an AI and can make mistakes. Always verify critical
-          ^
+    )
     st.markdown("---")
     if st.button("Clear Chat", use_container_width=True):
         st.session_state.chat_history = []
@@ -541,4 +571,413 @@ with st.sidebar:
     st.markdown("<br>", unsafe_allow_html=True)
     st.markdown(
         '<div style="background:rgba(239, 68, 68, 0.1); border-left:3px solid #ef4444; padding:12px; border-radius:6px; font-size:13px; color:#e2e8f0; margin-bottom:15px;">'
-        '⚠️ <strong>Disclaimer:</strong> This is an AI and can make mistakes. Always verify critical
+        '⚠️ <strong>Disclaimer:</strong> This is an AI and can make mistakes. Always verify critical rulings with a qualified scholar.</div>',
+        unsafe_allow_html=True,
+    )
+    st.markdown(
+        '<div style="text-align:center; font-size:14px; color:#CBD5E1; margin-bottom:20px;">'
+        'Got feedback or ideas?<br>📧 <a href="mailto:arather419@gmail.com" style="color:#FBBF24; text-decoration:none; font-weight:600;">arather419@gmail.com</a></div>',
+        unsafe_allow_html=True,
+    )
+    st.markdown('<div class="creator-footer">Created by Aadil Rather</div>', unsafe_allow_html=True)
+
+
+# ==========================================
+# MAIN TABS
+# ==========================================
+tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
+    "🤖 AI Chat", "📖 Quran Reader", "🕌 Prayer & Qibla", "📿 Tasbih & Dua", "📚 Hadith & Names", "📜 Deep Knowledge"
+])
+
+# ─────────────────────────────────────────
+# TAB 1: AI CHAT
+# ─────────────────────────────────────────
+with tab1:
+    st.markdown('<h3 class="accent" style="margin-top:0;">Ask Muslim AI</h3>', unsafe_allow_html=True)
+
+    with st.form("chat_form", clear_on_submit=True):
+        col1, col2 = st.columns([5, 1])
+        with col1:
+            user_input = st.text_input(
+                "Ask your Islamic question...",
+                label_visibility="collapsed",
+                placeholder="Type your Islamic question here...",
+                key="chat_input"
+            )
+        with col2:
+            submit_btn = st.form_submit_button("Ask AI 💬", use_container_width=True)
+
+    with st.expander("✨ Spiritual First Aid & AI Settings", expanded=True):
+        col_s1, col_s2 = st.columns(2)
+        with col_s1:
+            persona_options = ["Balanced Assistant", "Deep Scholar", "Spiritual Counselor", "Quick Answer"]
+            st.session_state.ai_persona = st.selectbox(
+                "🧠 AI Persona",
+                persona_options,
+                index=persona_options.index(st.session_state.ai_persona),
+            )
+        with col_s2:
+            st.markdown("<br>", unsafe_allow_html=True)
+            st.session_state.use_memory = st.toggle(
+                "🔄 Remember Context",
+                value=st.session_state.use_memory,
+                help="Turn off to ask without the AI remembering previous messages.",
+            )
+
+        st.markdown("---")
+        st.markdown("<span class='muted'>Select how you are feeling for instant Quranic comfort:</span>", unsafe_allow_html=True)
+        moods = ["Anxious 😟", "Sad 😢", "Angry 😠", "Grateful 🙏", "Lost 🧭", "Forgiveness 🤲"]
+        mood_cols = st.columns(6)
+        for i, mood in enumerate(moods):
+            if mood_cols[i].button(mood, use_container_width=True, key=f"mood_{i}"):
+                st.session_state["pending_prompt"] = f"I am feeling {mood}. Please provide a comforting Islamic perspective, a relevant Ayah, and a short Dua to help me."
+
+        st.markdown("<span class='muted'>Or try a suggested prompt:</span>", unsafe_allow_html=True)
+        suggestions = ["Explain Tawakkul", "Importance of Salah", "Tips for Sabr"]
+        sug_cols = st.columns(3)
+        for i, sug in enumerate(suggestions):
+            if sug_cols[i].button(sug, use_container_width=True, key=f"sug_{i}"):
+                st.session_state["pending_prompt"] = sug
+
+        st.markdown("---")
+        st.download_button(
+            "📥 Download Chat Transcript",
+            data=format_chat_for_export(),
+            file_name=f"Muslim_AI_Chat_{datetime.now().strftime('%Y%m%d')}.txt",
+            mime="text/plain",
+        )
+
+    trigger_prompt = None
+    display_prompt = None
+
+    if submit_btn and user_input:
+        trigger_prompt = user_input
+        display_prompt = user_input
+        st.session_state.pop("pending_prompt", None)
+    elif st.session_state.get("pending_prompt"):
+        trigger_prompt = st.session_state.pop("pending_prompt")
+        display_prompt = trigger_prompt
+
+    if trigger_prompt:
+        st.session_state.messages.append({"role": "user", "content": display_prompt})
+        with st.spinner("Consulting authentic sources..."):
+            try:
+                route = detect_curated_route(trigger_prompt)
+                if route:
+                    result = build_curated_response(route)
+                else:
+                    hist = st.session_state.chat_history if st.session_state.use_memory else []
+                    raw = call_api(trigger_prompt, hist, persona=st.session_state.ai_persona)
+                    result = parse_response(raw)
+                    if is_dua_query(trigger_prompt):
+                        result = hide_unverified_model_dua(result)
+
+                st.session_state.messages.append({"role": "assistant", "content": json.dumps(result, ensure_ascii=False)})
+                if st.session_state.use_memory:
+                    st.session_state.chat_history.append({
+                        "user": trigger_prompt,
+                        "assistant": result.get("direct_answer", ""),
+                    })
+            except Exception as e:
+                st.error(f"Error processing request: {e}")
+
+    paired_messages = []
+    i = 0
+    while i < len(st.session_state.messages):
+        msg = st.session_state.messages[i]
+        if msg["role"] == "user":
+            pair = [msg]
+            if i + 1 < len(st.session_state.messages) and st.session_state.messages[i + 1]["role"] == "assistant":
+                pair.append(st.session_state.messages[i + 1])
+                i += 2
+            else:
+                i += 1
+            paired_messages.append(pair)
+        else:
+            i += 1
+
+    for pair in reversed(paired_messages):
+        st.markdown("<hr style='border:1px solid rgba(251, 191, 36, 0.1);'>", unsafe_allow_html=True)
+        for msg in pair:
+            with st.chat_message(msg["role"]):
+                if msg["role"] == "assistant":
+                    try:
+                        render_response(json.loads(msg["content"]))
+                    except Exception:
+                        st.markdown(msg["content"])
+                else:
+                    st.markdown(f'<div style="font-size:16px;">{safe_html(msg["content"])}</div>', unsafe_allow_html=True)
+
+
+# ─────────────────────────────────────────
+# TAB 2: QURAN READER
+# ─────────────────────────────────────────
+with tab2:
+    st.markdown('<div class="section-title" style="margin-top:0;">The Holy Quran (Read & Listen)</div>', unsafe_allow_html=True)
+    col1, col2 = st.columns([1, 2])
+    with col1:
+        selected_surah = st.selectbox("Select Surah", [f"{i + 1}. {name}" for i, name in enumerate(SURAH_NAMES)])
+        audio_type = st.radio(
+            "Select Recitation Audio",
+            ["Arabic Only (Mishary Alafasy)", "Urdu Translation Only (Fateh Muhammad Jalandhari)"],
+        )
+        if st.button("Load Surah", type="primary", use_container_width=True):
+            st.session_state.loaded_surah_number = int(selected_surah.split(".")[0])
+
+    with col2:
+        if st.session_state.loaded_surah_number:
+            n = st.session_state.loaded_surah_number
+
+            if audio_type == "Arabic Only (Mishary Alafasy)":
+                audio_url = f"[https://server8.mp3quran.net/afs/](https://server8.mp3quran.net/afs/){n:03d}.mp3"
+                st.markdown(
+                    f'<div class="premium-card" style="text-align:center;">'
+                    f'<strong class="accent" style="font-size:18px;">🔊 Arabic Recitation (Mishary Alafasy)</strong><br><br>'
+                    f'<audio controls style="width:100%; border-radius:8px;">'
+                    f'<source src="{audio_url}" type="audio/mpeg">'
+                    f'Your browser does not support the audio element.</audio></div>',
+                    unsafe_allow_html=True,
+                )
+            else:
+                archive_id = "Quran-e-Kareem-With-Urdu-ONLY-Translation-Fateh-Muhammad-Jalandhari-------Audio-MP3-CD"
+                st.markdown(
+                    f'<div class="premium-card" style="text-align:center;">'
+                    f'<strong class="accent" style="font-size:18px;">🔊 Urdu Translation (Fateh Muhammad Jalandhari)</strong><br><br>'
+                    f'<iframe src="[https://archive.org/embed/](https://archive.org/embed/){archive_id}&playlist=1&list_height=200&start_track={n - 1}" '
+                    f'width="100%" height="300" frameborder="0" webkitallowfullscreen="true" mozallowfullscreen="true" allowfullscreen '
+                    f'style="border-radius:8px;"></iframe>'
+                    f'<div style="margin-top:10px; font-size:13px; color:#94A3B8;">Surah {n} selected — use the playlist to navigate</div>'
+                    f'</div>',
+                    unsafe_allow_html=True,
+                )
+
+            surah_data = fetch_quran_surah(n)
+            if surah_data and len(surah_data) >= 4:
+                ar, translit_ed, en, urdu_ed = surah_data[0], surah_data[1], surah_data[2], surah_data[3]
+                st.markdown(
+                    f'<div class="arabic" style="font-size:48px; text-align:center; margin-bottom:40px; color:#FEF08A;">'
+                    f'{safe_html(ar.get("name", ""))}</div>',
+                    unsafe_allow_html=True,
+                )
+                for idx, ayah in enumerate(ar.get("ayahs", [])):
+                    t_text = translit_ed["ayahs"][idx].get("text", "") if idx < len(translit_ed.get("ayahs", [])) else ""
+                    eng_text = en["ayahs"][idx].get("text", "") if idx < len(en.get("ayahs", [])) else ""
+                    ur_text = urdu_ed["ayahs"][idx].get("text", "") if idx < len(urdu_ed.get("ayahs", [])) else ""
+                    st.markdown(
+                        f'<div class="premium-card">'
+                        f'<div class="muted" style="color:#FBBF24 !important; font-weight:600; letter-spacing:1px; margin-bottom:10px;">AYAH {ayah.get("numberInSurah")}</div>'
+                        f'<div class="arabic">{safe_html(ayah.get("text", ""))}</div>'
+                        f'<div style="font-size:15px; color:#94A3B8; font-style:italic; margin-bottom:12px;"><strong>Transliteration:</strong> {safe_html(t_text)}</div>'
+                        f'<div style="font-size:16px; line-height:1.6; color:#E2E8F0; margin-bottom:8px;"><strong>English:</strong> {safe_html(eng_text)}</div>'
+                        f'<div style="font-size:24px; line-height:1.8; color:#FDE047; text-align:right; direction:rtl;"><strong>اردو:</strong> {safe_html(ur_text)}</div>'
+                        f'</div>',
+                        unsafe_allow_html=True,
+                    )
+            elif surah_data is None:
+                st.warning("Could not load Quran data. Please check your internet connection.")
+
+
+# ─────────────────────────────────────────
+# TAB 3: PRAYER, QIBLA & ZAKAT
+# ─────────────────────────────────────────
+with tab3:
+    st.markdown('<div class="section-title" style="margin-top:0;">Live Prayer Times & Qibla Direction</div>', unsafe_allow_html=True)
+    pc1, pc2 = st.columns(2)
+    with pc1:
+        city = st.text_input("City", value="Mecca")
+    with pc2:
+        country = st.text_input("Country", value="Saudi Arabia")
+
+    if st.button("Get Timings & Qibla", type="primary"):
+        times_data = fetch_prayer_times(city, country)
+        if times_data:
+            timings = times_data["timings"]
+            date_hijri = times_data["date"]["hijri"]
+            qibla_deg = times_data.get("meta", {}).get("qibla")
+            qibla_text = f"{qibla_deg}° {get_compass_dir(qibla_deg)}" if qibla_deg is not None else "Unavailable"
+            st.markdown(
+                f'<div class="info-box" style="text-align:center; font-size:20px;">'
+                f'<strong class="accent">{date_hijri["day"]} {date_hijri["month"]["en"]} {date_hijri["year"]} AH</strong><br><br>'
+                f'🧭 <strong style="color:#60A5FA;">Qibla Direction:</strong> {qibla_text} <span class="muted">(from True North)</span></div>',
+                unsafe_allow_html=True,
+            )
+            cols = st.columns(6)
+            prayers = ["Fajr", "Sunrise", "Dhuhr", "Asr", "Maghrib", "Isha"]
+            for i, p in enumerate(prayers):
+                cols[i].markdown(
+                    f'<div class="name-card"><strong class="accent">{p}</strong><br><br>'
+                    f'<span style="font-size:22px; color:#fff;">{timings[p]}</span></div>',
+                    unsafe_allow_html=True,
+                )
+        else:
+            st.error("Could not fetch prayer times. Check city/country spelling and try again.")
+
+    st.markdown('<div class="section-title">Zakat Calculator (2.5%)</div>', unsafe_allow_html=True)
+    st.markdown(
+        f'<div class="info-box">Enter your assets below. Zakat is only due if your net wealth exceeds the Nisab threshold '
+        f'(approx. <strong>${NISAB_USD:,.0f} USD</strong> based on gold value — verify current rate with a scholar).</div>',
+        unsafe_allow_html=True,
+    )
+    zc1, zc2, zc3 = st.columns(3)
+    with zc1:
+        cash = st.number_input("Cash & Savings ($)", min_value=0.0, step=100.0)
+    with zc2:
+        gold = st.number_input("Value of Gold/Silver ($)", min_value=0.0, step=100.0)
+    with zc3:
+        debt = st.number_input("Short-term Debts ($)", min_value=0.0, step=100.0)
+
+    net_wealth = (cash + gold) - debt
+    if net_wealth <= 0:
+        zakat = 0.0
+        zakat_msg = "Your net wealth is zero or negative. No Zakat is due."
+        zakat_color = "#94A3B8"
+    elif net_wealth < NISAB_USD:
+        zakat = 0.0
+        zakat_msg = f"Your net wealth (${net_wealth:,.2f}) is below the Nisab threshold (~${NISAB_USD:,.0f}). No Zakat is due."
+        zakat_color = "#94A3B8"
+    else:
+        zakat = net_wealth * 0.025
+        zakat_msg = f"Your net wealth (${net_wealth:,.2f}) exceeds Nisab. Zakat is due at 2.5%."
+        zakat_color = "#FBBF24"
+
+    st.markdown(
+        f'<div class="premium-card" style="text-align:center;">'
+        f'<h2 style="color:{zakat_color};">Estimated Zakat Due:<br><br>'
+        f'<span style="font-size:48px;">${zakat:,.2f}</span></h2>'
+        f'<p style="color:#CBD5E1; font-size:15px;">{zakat_msg}</p></div>',
+        unsafe_allow_html=True,
+    )
+
+
+# ─────────────────────────────────────────
+# TAB 4: TASBIH & DUA
+# ─────────────────────────────────────────
+with tab4:
+    st.markdown('<div class="section-title" style="margin-top:0;">Smart Tasbih (Digital Dhikr)</div>', unsafe_allow_html=True)
+    st.markdown('<div class="info-box">Keep track of your daily Dhikr. Traditional Goal: 33 repetitions each of SubhanAllah, Alhamdulillah, Allahu Akbar.</div>', unsafe_allow_html=True)
+
+    t_col1, t_col2 = st.columns([1, 1])
+    with t_col1:
+        if st.button("➕ Tap to Count", use_container_width=True):
+            st.session_state.tasbih_count += 1
+            if st.session_state.tasbih_count == 33:
+                st.toast("Goal of 33 reached! Alhamdulillah.", icon="✨")
+        if st.button("🔄 Reset Counter", use_container_width=True):
+            st.session_state.tasbih_count = 0
+    with t_col2:
+        st.markdown(
+            f'<div class="premium-card" style="padding:15px;">'
+            f'<div class="tasbih-count">{st.session_state.tasbih_count} <span style="font-size:24px; color:#aaa;">/ 33</span></div>'
+            f'</div>',
+            unsafe_allow_html=True,
+        )
+        progress = min(st.session_state.tasbih_count / 33.0, 1.0)
+        st.progress(progress)
+
+    st.markdown('<div class="section-title">Fortress of the Muslim (Hisnul Muslim)</div>', unsafe_allow_html=True)
+    selected_category = st.selectbox("Select Dua Collection", list(DUA_CATEGORIES.keys()))
+    for dua in DUA_CATEGORIES.get(selected_category, []):
+        meaning_text = safe_html(dua.get("meaning", "")).replace('&lt;br&gt;', '<br>')
+        st.markdown(
+            f'<div class="premium-card"><h3 style="margin-top:0;">{safe_html(dua["title"])}</h3>'
+            f'<div class="arabic" style="margin: 20px 0;">{safe_html(dua.get("arabic", ""))}</div>'
+            f'<strong class="accent" style="font-size:14px; text-transform:uppercase;">Transliteration</strong><br>'
+            f'<span style="color:#CBD5E1; line-height:1.6; display:inline-block; margin-bottom:16px;">{safe_html(dua.get("transliteration", ""))}</span><br>'
+            f'<strong class="accent" style="font-size:14px; text-transform:uppercase;">Meaning</strong><br>'
+            f'<span style="font-size:16px; line-height:1.6; color:#F8FAFC;">{meaning_text}</span>'
+            f'<div style="margin-top:20px; border-top:1px solid rgba(251, 191, 36, 0.2); padding-top:12px;">'
+            f'<span class="muted">Reference: {source_link(dua.get("reference", ""), dua.get("source_url", ""))}</span></div></div>',
+            unsafe_allow_html=True,
+        )
+
+
+# ─────────────────────────────────────────
+# TAB 5: HADITH & 99 NAMES
+# ─────────────────────────────────────────
+with tab5:
+    st.markdown("<div class=\"section-title\" style=\"margin-top:0;\">An-Nawawi's 40 Hadith</div>", unsafe_allow_html=True)
+    for h in HADITH_40:
+        st.markdown(
+            f'<div class="premium-card">'
+            f'<div class="muted" style="margin-bottom:16px; font-weight:600; color:#FBBF24 !important; letter-spacing:1.5px;">HADITH {h["number"]}</div>'
+            f'<div class="arabic">{safe_html(h["arabic"])}</div>'
+            f'<div style="font-size:20px; line-height:1.7; margin:20px 0; color:#F8FAFC;">"{safe_html(h["text"])}"</div>'
+            f'<div style="border-top:1px solid rgba(251, 191, 36, 0.2); padding-top:12px;">'
+            f'<span class="muted">Source: <span style="color:#FBBF24;">{safe_html(h["source"])}</span></span></div></div>',
+            unsafe_allow_html=True,
+        )
+
+    st.markdown('<div class="section-title">The 99 Names of Allah (Asma-ul-Husna)</div>', unsafe_allow_html=True)
+    st.markdown('<div class="info-box">The full 99 beautiful names of Allah ﷻ.</div>', unsafe_allow_html=True)
+    cols = st.columns(3)
+    for i, name_data in enumerate(NAMES_99):
+        cols[i % 3].markdown(
+            f'<div class="name-card">'
+            f'<div class="arabic" style="font-size:32px; text-align:center; margin-bottom:10px; color:#FEF08A;">{name_data[0]}</div>'
+            f'<strong style="color:#FBBF24; font-size:18px;">{name_data[1]}</strong><br><br>'
+            f'<span style="color:#CBD5E1; font-size:15px;">{name_data[2]}</span></div>',
+            unsafe_allow_html=True,
+        )
+
+
+# ─────────────────────────────────────────
+# TAB 6: DEEP KNOWLEDGE
+# ─────────────────────────────────────────
+with tab6:
+    st.markdown('<div class="section-title" style="margin-top:0;">Dynamic Islamic Sciences & AI Trivia</div>', unsafe_allow_html=True)
+
+    st.markdown(
+        '<div class="premium-card" style="border-color:#FBBF24; background:rgba(251, 191, 36, 0.05);">'
+        '<h3>🧠 AI Trivia Master</h3>'
+        '<p style="color:#CBD5E1;">Test your knowledge! Select a topic and the AI will generate a custom 5-question multiple choice quiz.</p>'
+        '</div>',
+        unsafe_allow_html=True,
+    )
+    t_col1, t_col2 = st.columns([2, 1])
+    with t_col1:
+        selected_trivia = st.selectbox("Select Trivia Topic", TRIVIA_TOPICS)
+    with t_col2:
+        st.markdown("<br>", unsafe_allow_html=True)
+        if st.button("Generate Custom Quiz", use_container_width=True):
+            with st.spinner("Generating Quiz..."):
+                try:
+                    prompt = f"Create a 5-question multiple choice trivia quiz about '{selected_trivia}'. Format clearly with Question 1, 2, etc. Put the Answer Key at the very bottom."
+                    raw = call_api(prompt, [])
+                    render_response(parse_response(raw))
+                except Exception as e:
+                    st.error(f"Failed to generate quiz: {e}")
+
+    st.markdown("---")
+    col_a, col_b = st.columns(2)
+
+    with col_a:
+        st.markdown('<h3 class="accent">Prophetic History (Stories)</h3>', unsafe_allow_html=True)
+        selected_story = st.selectbox("Select a Prophet or Event", DYNAMIC_PROPHETS + DYNAMIC_STORIES)
+        if st.button("Generate History Profile", use_container_width=True):
+            with st.spinner(f"Extracting authentic history for {selected_story}..."):
+                try:
+                    prompt = (
+                        f"Provide a complete, multi-paragraph, highly detailed profile of '{selected_story}'. "
+                        f"Base it strictly on Quran and authentic Ahadith/Tafseer. "
+                        f"Detail the motives, major events, and moral legacy."
+                    )
+                    raw = call_api(prompt, [])
+                    render_response(parse_response(raw))
+                except Exception as e:
+                    st.error(f"Failed to generate history: {e}")
+
+    with col_b:
+        st.markdown('<h3 class="accent">Prophetic Medicine (Tibb an-Nabawi)</h3>', unsafe_allow_html=True)
+        selected_tibb = st.selectbox("Select a Remedy", TIBB_TOPICS)
+        if st.button("Generate Medicine Profile", use_container_width=True):
+            with st.spinner(f"Extracting authentic knowledge on {selected_tibb}..."):
+                try:
+                    prompt = (
+                        f"Provide a comprehensive overview of '{selected_tibb}' in Islam. "
+                        f"Cite authentic Hadith mentioning it, and explain its spiritual and physical benefits "
+                        f"according to Prophetic Medicine (Tibb an-Nabawi)."
+                    )
+                    raw = call_api(prompt, [])
+                    render_response(parse_response(raw))
+                except Exception as e:
+                    st.error(f"Failed to generate medicine profile: {e}")
