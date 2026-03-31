@@ -531,7 +531,8 @@ with st.sidebar:
         f'<div style="font-size:12px; color:#FBBF24; font-weight:600;">— {st.session_state.daily_inspo["source"]}</div>'
         '</div>',
         unsafe_allow_html=True,
-    )
+    )'⚠️ <strong>Disclaimer:</strong> This is an AI and can make mistakes. Always verify critical
+          ^
     st.markdown("---")
     if st.button("Clear Chat", use_container_width=True):
         st.session_state.chat_history = []
