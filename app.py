@@ -439,10 +439,19 @@ with st.sidebar:
 # ==========================================
 tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(["🤖 AI Chat", "📖 Quran Reader", "🕌 Prayer & Qibla", "📿 Tasbih & Dua", "📚 Hadith & Names", "📜 Deep Knowledge"])
 
-# ----------------- TAB 1: AI CHAT -----------------
+# ----------------- TAB 1: AI CHAT (REPOSITIONED SEARCH) -----------------
 with tab1: 
-    # AI Chat Features & Settings
-    with st.expander("⚙️ AI Chat Settings & Tools", expanded=False):
+    # 1. PRIMARY SEARCH AT TOP
+    st.markdown('<h3 class="accent" style="margin-top:0;">Ask Muslim AI</h3>', unsafe_allow_html=True)
+    with st.form("chat_form", clear_on_submit=True):
+        col1, col2 = st.columns([5, 1])
+        with col1:
+            user_input = st.text_input("Ask your Islamic question...", label_visibility="collapsed", placeholder="Type your Islamic question here...")
+        with col2:
+            submit_btn = st.form_submit_button("Ask AI 💬", use_container_width=True)
+
+    # 2. SETTINGS & QUICK ACTIONS (Compact Expander)
+    with st.expander("✨ Spiritual First Aid & AI Settings", expanded=False):
         col_s1, col_s2 = st.columns(2)
         with col_s1:
             st.session_state.ai_persona = st.selectbox("🧠 AI Persona (How should it answer?)", ["Balanced Assistant", "Deep Scholar", "Spiritual Counselor", "Quick Answer"], index=["Balanced Assistant", "Deep Scholar", "Spiritual Counselor", "Quick Answer"].index(st.session_state.ai_persona))
@@ -451,72 +460,65 @@ with tab1:
             st.session_state.use_memory = st.toggle("🔄 Remember Conversation Context", value=st.session_state.use_memory, help="Turn off if you want to ask a new question without the AI remembering previous messages.")
         
         st.markdown("---")
+        st.markdown("<span class='muted'>Select how you are feeling to receive instant Quranic comfort:</span>", unsafe_allow_html=True)
+        mood_cols = st.columns(6)
+        moods = ["Anxious 😟", "Sad 😢", "Angry 😠", "Grateful 🙏", "Lost 🧭", "Forgiveness 🤲"]
+        
+        selected_mood = None
+        for i, mood in enumerate(moods):
+            if mood_cols[i].button(mood, use_container_width=True): selected_mood = mood
+                
+        st.markdown("<span class='muted'>Or try a suggested prompt:</span>", unsafe_allow_html=True)
+        suggested_cols = st.columns(3)
+        suggestions = ["Explain Tawakkul", "Importance of Salah", "Tips for Sabr"]
+        selected_suggestion = None
+        for i, sug in enumerate(suggestions):
+            if suggested_cols[i].button(sug, use_container_width=True): selected_suggestion = sug
+
+        st.markdown("---")
         st.download_button("📥 Download Chat Transcript", data=format_chat_for_export(), file_name=f"Muslim_AI_Chat_{datetime.now().strftime('%Y%m%d')}.txt", mime="text/plain")
 
-    st.markdown("### Spiritual First Aid")
-    st.markdown("<span class='muted'>Select how you are feeling to receive instant Quranic comfort and guidance.</span>", unsafe_allow_html=True)
-    mood_cols = st.columns(4)
-    moods = ["Anxious 😟", "Sad 😢", "Angry 😠", "Grateful 🙏", "Lost 🧭", "Seeking Forgiveness 🤲"]
-    
-    selected_mood = None
-    for i, mood in enumerate(moods):
-        if mood_cols[i % 4].button(mood, use_container_width=True): selected_mood = mood
-            
-    # Suggested Prompts
-    st.markdown("<span class='muted'>Or try a suggested prompt:</span>", unsafe_allow_html=True)
-    suggested_cols = st.columns(3)
-    suggestions = ["Explain Tawakkul", "Importance of Salah", "Tips for Sabr"]
-    selected_suggestion = None
-    for i, sug in enumerate(suggestions):
-        if suggested_cols[i].button(sug, use_container_width=True): selected_suggestion = sug
+    # 3. HANDLE ALL INPUTS (Form Submit or Button Clicks)
+    trigger_prompt = None
+    display_prompt = None
 
-    # Trigger action if button pressed
-    trigger_prompt = selected_mood if selected_mood else selected_suggestion
+    if submit_btn and user_input:
+        trigger_prompt = user_input
+        display_prompt = user_input
+    elif selected_mood:
+        trigger_prompt = f"I am feeling {selected_mood}. Please provide a comforting Islamic perspective, a relevant Ayah, and a short Dua to help me."
+        display_prompt = trigger_prompt
+    elif selected_suggestion:
+        trigger_prompt = selected_suggestion
+        display_prompt = selected_suggestion
+
     if trigger_prompt:
-        prompt_text = f"I am feeling {trigger_prompt}. Provide comfort." if selected_mood else trigger_prompt
-        with st.spinner("Processing..."):
+        st.session_state.messages.append({"role": "user", "content": display_prompt})
+        with st.spinner("Consulting authentic sources..."):
             try:
-                hist = st.session_state.chat_history if st.session_state.use_memory else []
-                raw = call_api(prompt_text, hist, persona=st.session_state.ai_persona)
-                result = parse_response(raw)
-                st.session_state.messages.append({"role": "user", "content": prompt_text})
+                route = detect_curated_route(trigger_prompt)
+                if route:
+                    result = build_curated_response(route)
+                else:
+                    hist = st.session_state.chat_history if st.session_state.use_memory else []
+                    raw = call_api(trigger_prompt, hist, persona=st.session_state.ai_persona)
+                    result = parse_response(raw)
+                    if is_dua_query(trigger_prompt):
+                        result = hide_unverified_model_dua(result)
+                
                 st.session_state.messages.append({"role": "assistant", "content": json.dumps(result, ensure_ascii=False)})
                 if st.session_state.use_memory:
-                    st.session_state.chat_history.append({"user": prompt_text, "assistant": result.get("direct_answer", "")})
-            except Exception: st.error("Error retrieving response.")
-            
-    st.markdown("---")
-    
-    # Display Chat History
+                    st.session_state.chat_history.append({"user": trigger_prompt, "assistant": result.get("direct_answer", "")})
+            except Exception as e: 
+                st.error("Error processing request.")
+
+    # 4. RENDER CHAT HISTORY (Below the Search Bar)
     for msg in st.session_state.messages:
         with st.chat_message(msg["role"]):
             if msg["role"] == "assistant":
                 try: render_response(json.loads(msg["content"]))
                 except Exception: st.markdown(msg["content"])
             else: st.markdown(f'<div style="font-size:16px;">{msg["content"]}</div>', unsafe_allow_html=True)
-
-    # Chat Input
-    user_input = st.chat_input("Ask your Islamic question...")
-    if user_input:
-        st.session_state.messages.append({"role": "user", "content": user_input})
-        with st.chat_message("user"): st.markdown(user_input)
-        with st.chat_message("assistant"):
-            with st.spinner("Consulting authentic sources..."):
-                try:
-                    route = detect_curated_route(user_input)
-                    if route:
-                        result = build_curated_response(route)
-                    else:
-                        hist = st.session_state.chat_history if st.session_state.use_memory else []
-                        raw = call_api(user_input, hist, persona=st.session_state.ai_persona)
-                        result = parse_response(raw)
-                        if is_dua_query(user_input):
-                            result = hide_unverified_model_dua(result)
-                    render_response(result)
-                    st.session_state.messages.append({"role": "assistant", "content": json.dumps(result, ensure_ascii=False)})
-                    if st.session_state.use_memory:
-                        st.session_state.chat_history.append({"user": user_input, "assistant": result.get("direct_answer", "")})
-                except Exception as e: st.error("Error processing request.")
 
 # ----------------- TAB 2: QURAN & AUDIO -----------------
 with tab2: 
