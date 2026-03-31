@@ -122,6 +122,26 @@ input:focus, textarea:focus { border-color: #FBBF24 !important; box-shadow: 0 0 
 
 /* ===== TASBIH STYLES ===== */
 .tasbih-count { font-size: 56px; color: #FBBF24; text-align: center; font-family: 'Inter', sans-serif; font-weight: 700; text-shadow: 0 0 20px rgba(251, 191, 36, 0.3); }
+
+/* ========================================== */
+/* 📱 MOBILE RESPONSIVENESS (MEDIA QUERIES) */
+/* ========================================== */
+@media (max-width: 768px) {
+    .title { font-size: 32px; }
+    .bismillah { font-size: 28px; }
+    .subtitle { font-size: 14px; }
+    .hero { padding: 30px 10px 20px 10px; margin-bottom: 20px; }
+    
+    .premium-card { padding: 16px; margin-bottom: 16px; }
+    .arabic { font-size: 28px; }
+    .section-title { font-size: 22px; margin: 25px 0 15px 0; }
+    
+    .tasbih-count { font-size: 40px; }
+    .name-card .arabic { font-size: 24px; }
+    
+    /* Ensure chat input forms stack nicely if needed */
+    [data-testid="stForm"] { padding: 10px; }
+}
 </style>
 """,
     unsafe_allow_html=True,
@@ -267,7 +287,6 @@ HADITH_40 = [
     {"number": 40, "arabic": "مَنْ حَسُنَ إِسْلاَمُهُ تَرَكَ مَا لاَ يَعْنِيهِ", "text": "Part of the perfection of a person's Islam is his leaving that which is of no concern to him.", "source": "Jami` at-Tirmidhi 2317 (Hasan)"}
 ]
 
-# Full 99 Names of Allah
 NAMES_RAW = "الرَّحْمَن|Ar-Rahman|The Entirely Merciful,الرَّحِيم|Ar-Rahim|The Especially Merciful,الْمَلِك|Al-Malik|The Sovereign,الْقُدُّوس|Al-Quddus|The Most Holy,السَّلاَم|As-Salam|The Source of Peace,الْمُؤْمِن|Al-Mu'min|The Guarantor,الْمُهَيْمِن|Al-Muhaymin|The Guardian,الْعَزِيز|Al-Aziz|The Almighty,الْجَبَّار|Al-Jabbar|The Compeller,الْمُتَكَبِّر|Al-Mutakabbir|The Supreme,الْخَالِق|Al-Khaliq|The Creator,الْبَارِئ|Al-Bari'|The Evolver,الْمُصَوِّر|Al-Musawwir|The Fashioner,الْغَفَّار|Al-Ghaffar|The Repeatedly Forgiving,الْقَهَّار|Al-Qahhar|The Subduer,الْوَهَّاب|Al-Wahhab|The Bestower,الرَّزَّاق|Ar-Razzaq|The Provider,الْفَتَّاح|Al-Fattah|The Opener,الْعَلِيم|Al-Aleem|The Knowing,الْقَابِض|Al-Qabid|The Withholder,الْبَاسِط|Al-Basit|The Extender,الْخَافِض|Al-Khafid|The Abaser,الرَّافِع|Ar-Rafi'|The Exalter,الْمُعِزّ|Al-Mu'izz|The Honorer,الْمُذِلّ|Al-Mudhill|The Dishonorer,السَّمِيع|As-Sami'|The Hearing,الْبَصِير|Al-Basir|The Seeing,الْحَكَم|Al-Hakam|The Judge,الْعَدْل|Al-Adl|The Just,اللَّطِيف|Al-Latif|The Subtle One,الْخَبِير|Al-Khabir|The Acquainted,الْحَلِيم|Al-Haleem|The Forbearing,الْعَظِيم|Al-Azeem|The Magnificent,الْغَفُور|Al-Ghafur|The Much-Forgiving,الشَّكُور|Ash-Shakur|The Grateful,الْعَلِيّ|Al-Aliyy|The Most High,الْكَبِير|Al-Kabir|The Great,الْحَفِيظ|Al-Hafiz|The Preserver,الْمُقِيت|Al-Muqit|The Sustainer,الْحَسِيب|Al-Haseeb|The Reckoner,الْجَلِيل|Al-Jaleel|The Majestic,الْكَرِيم|Al-Kareem|The Generous,الرَّقِيب|Ar-Raqib|The Watchful,الْمُجِيب|Al-Mujeeb|The Responsive,الْوَاسِع|Al-Wasi'|The All-Encompassing,الْحَكِيم|Al-Hakeem|The Wise,الْوَدُود|Al-Wadud|The Loving,الْمَاجِد|Al-Majeed|The All-Glorious,الْبَاعِث|Al-Ba'ith|The Resurrector,الشَّهِيد|Ash-Shaheed|The Witness,الْحَقّ|Al-Haqq|The Truth,الْوَكِيل|Al-Wakeel|The Trustee,الْقَوِيّ|Al-Qawiyy|The Strong,الْمَتِين|Al-Mateen|The Firm,الْوَلِيّ|Al-Waliyy|The Protecting Friend,الْحَمِيد|Al-Hameed|The Praiseworthy,الْمُحْصِي|Al-Muhsi|The Accounter,الْمُبْدِئ|Al-Mubdi|The Originator,الْمُعِيد|Al-Mu'id|The Restorer,الْمُحْيِي|Al-Muhyi|The Giver of Life,الْمُمِيت|Al-Mumit|The Bringer of Death,الْحَيّ|Al-Hayy|The Ever-Living,الْقَيُّوم|Al-Qayyum|The Sustainer of Existence,الْوَاجِد|Al-Wajid|The Finder,الْمَاجِد|Al-Majid|The Noble,الْوَاحِد|Al-Wahid|The Unique,الأَحَد|Al-Ahad|The One,الصَّمَد|As-Samad|The Eternal Refuge,الْقَادِر|Al-Qadir|The Capable,الْمُقْتَدِر|Al-Muqtadir|The Powerful,الْمُقَدِّم|Al-Muqaddim|The Expediter,الْمُؤَخِّر|Al-Mu'akhkhir|The Delayer,الأَوَّل|Al-Awwal|The First,الآخِر|Al-Akhir|The Last,الظَّاهِر|Az-Zahir|The Manifest,الْبَاطِن|Al-Batin|The Hidden,الْوَالِي|Al-Wali|The Governor,الْمُتَعَالِي|Al-Muta'ali|The Most Exalted,الْبَرّ|Al-Barr|The Source of Goodness,التَّوَّاب|At-Tawwab|The Accepting of Repentance,الْمُنْتَقِم|Al-Muntaqim|The Avenger,الْعَفُوّ|Al-Afuww|The Pardoner,الرَّءُوف|Ar-Ra'uf|The Compassionate,مَالِكُ الْمُلْك|Malik-ul-Mulk|The Owner of Sovereignty,ذُو الْجَلاَلِ وَالإِكْرَام|Dhu-al-Jalal wa-al-Ikram|Lord of Majesty and Honor,الْمُقْسِط|Al-Muqsit|The Equitable,الْجَامِع|Al-Jami'|The Gatherer,الْغَنِيّ|Al-Ghaniyy|The Free of Need,الْمُغْنِي|Al-Mughni|The Enricher,الْمَانِع|Al-Mani'|The Preventer,الضَّارّ|Ad-Darr|The Harmer,النَّافِع|An-Nafi'|The Benefiter,النُّور|An-Nur|The Light,الْهَادِي|Al-Hadi|The Guide,الْبَدِيع|Al-Badi|The Incomparable,الْبَاقِي|Al-Baqi|The Everlasting,الْوَارِث|Al-Warith|The Inheritor,الرَّشِيد|Ar-Rasheed|The Guide to the Right Path,الصَّبُور|As-Sabur|The Patient"
 NAMES_99 = [name.split('|') for name in NAMES_RAW.split(',')]
 
@@ -349,7 +368,6 @@ def hide_unverified_model_dua(result):
     return result
 
 def call_api(user_message, history, persona="Balanced Assistant"):
-    # Adjust prompt based on Persona
     dynamic_prompt = BASE_SYSTEM_PROMPT
     if persona == "Deep Scholar":
         dynamic_prompt += "\n- ACT AS A SCHOLAR: Provide deep academic references, mention specific Madhab opinions if applicable, and be thorough."
