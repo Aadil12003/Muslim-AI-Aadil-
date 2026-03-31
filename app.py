@@ -142,23 +142,23 @@ if not NVIDIA_API_KEY:
 API_URL = "https://integrate.api.nvidia.com/v1/chat/completions"
 MODEL = "meta/llama-4-maverick-17b-128e-instruct"
 
-# Updated Base Prompt to enforce Hinglish, Transliteration, and Strict Systematic Markdown formatting
+# Updated Base Prompt to enforce Hinglish, Transliteration, and strict JSON safely
 BASE_SYSTEM_PROMPT = """You are an Islamic AI Assistant. Respond only with authentic Quran, Sahih Hadith, and recognized classical scholarship.
 - Do NOT fabricate references.
-- STRICT JSON FORMAT: You MUST return ONLY valid JSON. Do NOT use markdown tags like ```json outside the JSON.
-- NO RAW NEWLINES: Do NOT use raw line breaks (pressing Enter) in your text strings. Use the literal text "\\n" for line breaks. Do not use <br> tags.
-- TRANSLITERATION & HINGLISH: For ANY Arabic text provided, you MUST provide English Transliteration, English Translation, and Hinglish Translation.
+- STRICT JSON FORMAT: You MUST return ONLY valid JSON. Use `<br><br>` for line breaks, NEVER use literal newlines.
+- TRANSLITERATION & HINGLISH: For ANY Arabic text provided (Quran, Hadith, Dua), you MUST provide the English Transliteration, followed by the English Translation, and then the Hinglish (Urdu/Hindi written in English script) Translation.
+- HINGLISH ANSWERS: Include a Hinglish translation for your 'direct_answer' and 'conclusion'.
 - SCHOLARLY PRECISION: Separate the 'opinion', 'reasoning', and 'evidence' clearly.
-- Return ONLY valid JSON matching this structure exactly:
+- Return ONLY valid JSON matching this exact structure:
 {
-  "direct_answer": "English Text \\n\\n Hinglish: [Hinglish text]",
-  "quran_evidence": [{"arabic": "", "translation": "Transliteration: ... \\n\\n English: ... \\n\\n Hinglish: ...", "reference": "", "explanation": ""}],
-  "hadith_evidence": [{"text": "Transliteration: ... \\n\\n English: ... \\n\\n Hinglish: ...", "arabic": "", "source": "", "authenticity": "Sahih", "note": ""}],
+  "direct_answer": "English Text <br><br> Hinglish: [Hinglish text]",
+  "quran_evidence": [{"arabic": "", "translation": "Transliteration: ... <br><br> English: ... <br><br> Hinglish: ...", "reference": "", "explanation": ""}],
+  "hadith_evidence": [{"text": "Transliteration: ... <br><br> English: ... <br><br> Hinglish: ...", "arabic": "", "source": "", "authenticity": "Sahih", "note": ""}],
   "scholarly_opinions": [{"madhab": "", "opinion": "Statement of the view", "reasoning": "Step-by-step breakdown", "evidence": "Exact text used", "source": ""}],
-  "dua": {"title": "", "arabic": "", "transliteration": "", "meaning": "English: ... \\n\\n Hinglish: ...", "reference": "", "source_url": ""},
+  "dua": {"title": "", "arabic": "", "transliteration": "", "meaning": "English: ... <br><br> Hinglish: ...", "reference": "", "source_url": ""},
   "duas": [],
   "ikhtilaf": "Yes or No",
-  "conclusion": "English summary \\n\\n Hinglish: [Hinglish summary]",
+  "conclusion": "English summary <br><br> Hinglish: [Hinglish summary]",
   "consult_scholar": "Yes or No",
   "source_notice": "",
   "language_detected": "English"
@@ -275,10 +275,10 @@ HADITH_40 = [
 NAMES_RAW = "الرَّحْمَن|Ar-Rahman|The Entirely Merciful,الرَّحِيم|Ar-Rahim|The Especially Merciful,الْمَلِك|Al-Malik|The Sovereign,الْقُدُّوس|Al-Quddus|The Most Holy,السَّلاَم|As-Salam|The Source of Peace,الْمُؤْمِن|Al-Mu'min|The Guarantor,الْمُهَيْمِن|Al-Muhaymin|The Guardian,الْعَزِيز|Al-Aziz|The Almighty,الْجَبَّار|Al-Jabbar|The Compeller,الْمُتَكَبِّر|Al-Mutakabbir|The Supreme,الْخَالِق|Al-Khaliq|The Creator,الْبَارِئ|Al-Bari'|The Evolver,الْمُصَوِّر|Al-Musawwir|The Fashioner,الْغَفَّار|Al-Ghaffar|The Repeatedly Forgiving,الْقَهَّار|Al-Qahhar|The Subduer,الْوَهَّاب|Al-Wahhab|The Bestower,الرَّزَّاق|Ar-Razzaq|The Provider,الْفَتَّاح|Al-Fattah|The Opener,الْعَلِيم|Al-Aleem|The Knowing,الْقَابِض|Al-Qabid|The Withholder,الْبَاسِط|Al-Basit|The Extender,الْخَافِض|Al-Khafid|The Abaser,الرَّافِع|Ar-Rafi'|The Exalter,الْمُعِزّ|Al-Mu'izz|The Honorer,الْمُذِلّ|Al-Mudhill|The Dishonorer,السَّمِيع|As-Sami'|The Hearing,الْبَصِير|Al-Basir|The Seeing,الْحَكَم|Al-Hakam|The Judge,الْعَدْل|Al-Adl|The Just,اللَّطِيف|Al-Latif|The Subtle One,الْخَبِير|Al-Khabir|The Acquainted,الْحَلِيم|Al-Haleem|The Forbearing,الْعَظِيم|Al-Azeem|The Magnificent,الْغَفُور|Al-Ghafur|The Much-Forgiving,الشَّكُور|Ash-Shakur|The Grateful,الْعَلِيّ|Al-Aliyy|The Most High,الْكَبِير|Al-Kabir|The Great,الْحَفِيظ|Al-Hafiz|The Preserver,الْمُقِيت|Al-Muqit|The Sustainer,الْحَسِيب|Al-Haseeb|The Reckoner,الْجَلِيل|Al-Jaleel|The Majestic,الْكَرِيم|Al-Kareem|The Generous,الرَّقِيب|Ar-Raqib|The Watchful,الْمُجِيب|Al-Mujeeb|The Responsive,الْوَاسِع|Al-Wasi'|The All-Encompassing,الْحَكِيم|Al-Hakeem|The Wise,الْوَدُود|Al-Wadud|The Loving,الْمَاجِد|Al-Majeed|The All-Glorious,الْبَاعِث|Al-Ba'ith|The Resurrector,الشَّهِيد|Ash-Shaheed|The Witness,الْحَقّ|Al-Haqq|The Truth,الْوَكِيل|Al-Wakeel|The Trustee,الْقَوِيّ|Al-Qawiyy|The Strong,الْمَتِين|Al-Mateen|The Firm,الْوَلِيّ|Al-Waliyy|The Protecting Friend,الْحَمِيد|Al-Hameed|The Praiseworthy,الْمُحْصِي|Al-Muhsi|The Accounter,الْمُبْدِئ|Al-Mubdi|The Originator,الْمُعِيد|Al-Mu'id|The Restorer,الْمُحْيِي|Al-Muhyi|The Giver of Life,الْمُمِيت|Al-Mumit|The Bringer of Death,الْحَيّ|Al-Hayy|The Ever-Living,الْقَيُّوم|Al-Qayyum|The Sustainer of Existence,الْوَاجِد|Al-Wajid|The Finder,الْمَاجِد|Al-Majid|The Noble,الْوَاحِد|Al-Wahid|The Unique,الأَحَد|Al-Ahad|The One,الصَّمَد|As-Samad|The Eternal Refuge,الْقَادِر|Al-Qadir|The Capable,الْمُقْتَدِر|Al-Muqtadir|The Powerful,الْمُقَدِّم|Al-Muqaddim|The Expediter,الْمُؤَخِّر|Al-Mu'akhkhir|The Delayer,الأَوَّل|Al-Awwal|The First,الآخِر|Al-Akhir|The Last,الظَّاهِر|Az-Zahir|The Manifest,الْبَاطِن|Al-Batin|The Hidden,الْوَالِي|Al-Wali|The Governor,الْمُتَعَالِي|Al-Muta'ali|The Most Exalted,الْبَرّ|Al-Barr|The Source of Goodness,التَّوَّاب|At-Tawwab|The Accepting of Repentance,الْمُنْتَقِم|Al-Muntaqim|The Avenger,الْعَفُوّ|Al-Afuww|The Pardoner,الرَّءُوف|Ar-Ra'uf|The Compassionate,مَالِكُ الْمُلْك|Malik-ul-Mulk|The Owner of Sovereignty,ذُو الْجَلاَلِ وَالإِكْرَام|Dhu-al-Jalal wa-al-Ikram|Lord of Majesty and Honor,الْمُقْسِط|Al-Muqsit|The Equitable,الْجَامِع|Al-Jami'|The Gatherer,الْغَنِيّ|Al-Ghaniyy|The Free of Need,الْمُغْنِي|Al-Mughni|The Enricher,الْمَانِع|Al-Mani'|The Preventer,الضَّارّ|Ad-Darr|The Harmer,النَّافِع|An-Nafi'|The Benefiter,النُّور|An-Nur|The Light,الْهَادِي|Al-Hadi|The Guide,الْبَدِيع|Al-Badi|The Incomparable,الْبَاقِي|Al-Baqi|The Everlasting,الْوَارِث|Al-Warith|The Inheritor,الرَّشِيد|Ar-Rasheed|The Guide to the Right Path,الصَّبُور|As-Sabur|The Patient"
 NAMES_99 = [name.split('|') for name in NAMES_RAW.split(',')]
 
-DYNAMIC_PROPHETS = ["Prophet Adam (as)", "Prophet Nuh (as)", "Prophet Ibrahim (as)", "Prophet Yusuf (as)", "Prophet Musa (as)", "Prophet Muhammad (ﷺ)"]
-DYNAMIC_STORIES = ["People of the Cave (Ashab al-Kahf)", "Musa and Al-Khidr", "The Men of the Elephant"]
-TIBB_TOPICS = ["Black Seed (Habbatul Barakah)", "Honey", "Cupping (Hijama)", "Dates (Ajwa)"]
-TRIVIA_TOPICS = ["Life of Prophet Muhammad (ﷺ)", "Quranic Facts", "The 5 Pillars of Islam"]
+DYNAMIC_PROPHETS = ["Prophet Adam (as)", "Prophet Nuh (as)", "Prophet Ibrahim (as)", "Prophet Yusuf (as)", "Prophet Musa (as)", "Prophet Isa (as)", "Prophet Muhammad (ﷺ)"]
+DYNAMIC_STORIES = ["People of the Cave (Ashab al-Kahf)", "Musa and Al-Khidr", "The Men of the Elephant", "Qarun (Korah)"]
+TIBB_TOPICS = ["Black Seed (Habbatul Barakah)", "Honey", "Cupping (Hijama)", "Dates (Ajwa)", "Olive Oil", "Siwak (Miswak)"]
+TRIVIA_TOPICS = ["Life of Prophet Muhammad (ﷺ)", "Quranic Facts", "The 5 Pillars of Islam", "Stories of the Prophets", "Women in Islam"]
 
 # ==========================================
 # STATE MANAGEMENT
@@ -376,36 +376,43 @@ def call_api(user_message, history, persona="Balanced Assistant"):
     return response.json()["choices"][0]["message"]["content"]
 
 def parse_response(raw):
+    # Strip any markdown wrapping the AI might have erroneously included
+    cleaned = re.sub(r"^```json\s*", "", raw, flags=re.MULTILINE)
+    cleaned = re.sub(r"^```\s*", "", cleaned, flags=re.MULTILINE).strip()
+    
     try:
-        # Strip markdown tags if AI added them
-        cleaned = re.sub(r"^```json", "", raw, flags=re.MULTILINE)
-        cleaned = re.sub(r"^```", "", cleaned, flags=re.MULTILINE).strip()
-        
         start = cleaned.find("{")
         end = cleaned.rfind("}") + 1
         if start != -1 and end > start:
-            cleaned = cleaned[start:end]
-            # Replace unescaped raw newlines with proper JSON newlines so it doesn't crash
-            cleaned = cleaned.replace('\n', '\\n').replace('\r', '')
-            # If there was already an escaped newline, prevent double escaping
-            cleaned = cleaned.replace('\\\\n', '\\n')
-            return normalize_result(json.loads(cleaned, strict=False))
+            json_str = cleaned[start:end]
+            try:
+                return normalize_result(json.loads(json_str, strict=False))
+            except Exception:
+                # If JSON fails, it's usually unescaped newlines inside strings. Strip them out.
+                safe_json_str = json_str.replace('\n', ' ').replace('\r', '')
+                return normalize_result(json.loads(safe_json_str, strict=False))
     except Exception:
         pass
-    # If all parsing fails, return raw text gracefully to avoid UI breakage
-    return normalize_result({"direct_answer": str(raw)})
+        
+    # ULTIMATE FALLBACK: If JSON completely breaks, auto-format the text so it never looks like code.
+    fallback_text = raw.replace('```json', '').replace('```', '').replace('{', '').replace('}', '').replace('"', '')
+    fallback_text = re.sub(r'direct_answer\s*:', '', fallback_text, flags=re.IGNORECASE)
+    fallback_text = re.sub(r'quran_evidence\s*:', '<br><br><b>Quranic Evidence:</b><br>', fallback_text, flags=re.IGNORECASE)
+    fallback_text = re.sub(r'hadith_evidence\s*:', '<br><br><b>Hadith Evidence:</b><br>', fallback_text, flags=re.IGNORECASE)
+    fallback_text = re.sub(r'scholarly_opinions\s*:', '<br><br><b>Scholarly Opinions:</b><br>', fallback_text, flags=re.IGNORECASE)
+    return normalize_result({"direct_answer": fallback_text.strip()})
 
 @st.cache_data(ttl=3600)
 def fetch_quran_surah(surah_number):
     try:
-        res = requests.get(f"[https://api.alquran.cloud/v1/surah/](https://api.alquran.cloud/v1/surah/){surah_number}/editions/quran-uthmani,en.transliteration,en.asad,ur.jalandhari", timeout=15)
+        res = requests.get(f"https://api.alquran.cloud/v1/surah/{surah_number}/editions/quran-uthmani,en.transliteration,en.asad,ur.jalandhari", timeout=15)
         return res.json()["data"] if res.status_code == 200 else None
     except Exception: return None
 
 @st.cache_data(ttl=3600)
 def fetch_prayer_times(city, country):
     try:
-        res = requests.get(f"[http://api.aladhan.com/v1/timingsByCity?city=](http://api.aladhan.com/v1/timingsByCity?city=){city}&country={country}&method=2", timeout=10)
+        res = requests.get(f"http://api.aladhan.com/v1/timingsByCity?city={city}&country={country}&method=2", timeout=10)
         return res.json()["data"] if res.status_code == 200 else None
     except Exception: return None
 
@@ -419,24 +426,22 @@ def format_chat_for_export():
 def render_response(result):
     result = normalize_result(result)
     
-    # Process line breaks cleanly for Direct Answers (stops raw <br> tags showing as text)
     if result["direct_answer"]:
-        formatted_answer = safe_html(result["direct_answer"]).replace('\\n', '<br>').replace('\n', '<br>').replace('&lt;br&gt;', '<br>')
+        formatted_answer = safe_html(result["direct_answer"]).replace('&lt;br&gt;', '<br>').replace('\\n', '<br>')
         st.markdown(f'<div class="premium-card"><strong class="accent" style="font-size:20px;">Response</strong><br><br><span style="line-height:1.7; font-size:16px;">{formatted_answer}</span></div>', unsafe_allow_html=True)
 
     if result["quran_evidence"]:
         st.markdown('<div class="section-title">Quranic Evidence</div>', unsafe_allow_html=True)
         for verse in result["quran_evidence"]:
-            q_translation = safe_html(verse.get("translation", "")).replace('\\n', '<br>').replace('\n', '<br>').replace('&lt;br&gt;', '<br>')
+            q_translation = safe_html(verse.get("translation", "")).replace('&lt;br&gt;', '<br>').replace('\\n', '<br>')
             st.markdown(f'<div class="premium-card"><div class="arabic">{safe_html(verse.get("arabic", ""))}</div><div style="font-size:16px; margin-bottom:12px; line-height:1.6;">{q_translation}</div><strong class="accent">{safe_html(verse.get("reference", ""))}</strong></div>', unsafe_allow_html=True)
 
     if result["hadith_evidence"]:
         st.markdown('<div class="section-title">Hadith Evidence</div>', unsafe_allow_html=True)
         for h in result["hadith_evidence"]:
-            h_text = safe_html(h.get("text", "")).replace('\\n', '<br>').replace('\n', '<br>').replace('&lt;br&gt;', '<br>')
+            h_text = safe_html(h.get("text", "")).replace('&lt;br&gt;', '<br>').replace('\\n', '<br>')
             st.markdown(f'<div class="premium-card"><div class="arabic">{safe_html(h.get("arabic", ""))}</div><div style="font-size:16px; line-height:1.6; margin-bottom:12px;">{h_text}</div><span class="muted">Source: {safe_html(h.get("source", ""))}</span></div>', unsafe_allow_html=True)
 
-    # Render Scholarly Opinions (Systematic Design)
     if result["scholarly_opinions"]:
         st.markdown('<div class="section-title">Scholarly Viewpoints & Reasoning</div>', unsafe_allow_html=True)
         if result["ikhtilaf"] == "Yes":
@@ -450,20 +455,19 @@ def render_response(result):
                 f'<div class="premium-card" style="border-left: 4px solid #FBBF24;">'
                 f'<strong class="accent" style="font-size:18px;">{safe_html(opinion.get("madhab", ""))}</strong><br><br>'
                 f'<div style="background:rgba(255,255,255,0.05); padding:15px; border-radius:8px; margin-bottom:10px;">'
-                f'<strong style="color:#E2E8F0;">Ruling/Opinion:</strong><br><span style="color:#CBD5E1; line-height:1.6;">{safe_html(opinion.get("opinion", "")).replace(chr(10), "<br>").replace("\\n", "<br>")}</span>'
+                f'<strong style="color:#E2E8F0;">Ruling/Opinion:</strong><br><span style="color:#CBD5E1; line-height:1.6;">{safe_html(opinion.get("opinion", "")).replace("&lt;br&gt;", "<br>").replace("\\n", "<br>")}</span>'
                 f'</div>'
                 f'<div style="background:rgba(96, 165, 250, 0.1); border-left:3px solid #60A5FA; padding:15px; border-radius:8px; margin-bottom:10px;">'
-                f'<strong style="color:#60A5FA;">Logical Reasoning:</strong><br><span style="color:#E2E8F0; line-height:1.6;">{safe_html(reasoning).replace(chr(10), "<br>").replace("\\n", "<br>")}</span>'
+                f'<strong style="color:#60A5FA;">Logical Reasoning:</strong><br><span style="color:#E2E8F0; line-height:1.6;">{safe_html(reasoning).replace("&lt;br&gt;", "<br>").replace("\\n", "<br>")}</span>'
                 f'</div>'
                 f'<div style="background:rgba(16, 185, 129, 0.1); border-left:3px solid #10B981; padding:15px; border-radius:8px;">'
-                f'<strong style="color:#10B981;">Evidence Referenced:</strong><br><span style="color:#E2E8F0; line-height:1.6;">{safe_html(evidence).replace(chr(10), "<br>").replace("\\n", "<br>")}</span>'
+                f'<strong style="color:#10B981;">Evidence Referenced:</strong><br><span style="color:#E2E8F0; line-height:1.6;">{safe_html(evidence).replace("&lt;br&gt;", "<br>").replace("\\n", "<br>")}</span>'
                 f'</div>'
                 f'<div style="margin-top:16px; border-top:1px solid rgba(251, 191, 36, 0.2); padding-top:12px;"><span class="muted">Source: {safe_html(opinion.get("source", ""))}</span></div>'
                 f'</div>',
                 unsafe_allow_html=True,
             )
 
-    # Render Missing Duas in Chat
     if result.get("duas"):
         st.markdown('<div class="section-title">Verified Duas</div>', unsafe_allow_html=True)
         for dua in result["duas"]:
@@ -471,7 +475,7 @@ def render_response(result):
                 f'<div class="premium-card"><h3 style="margin-top:0; color:#FBBF24;">{safe_html(dua.get("title", ""))}</h3>'
                 f'<div class="arabic" style="margin: 20px 0;">{safe_html(dua.get("arabic", ""))}</div>'
                 f'<strong class="accent" style="font-size:14px; text-transform:uppercase;">Transliteration</strong><br><span style="color:#CBD5E1; line-height:1.6; display:inline-block; margin-bottom:16px;">{safe_html(dua.get("transliteration", ""))}</span><br>'
-                f'<strong class="accent" style="font-size:14px; text-transform:uppercase;">Meaning (English/Hinglish)</strong><br><span style="font-size:16px; line-height:1.6; color:#F8FAFC;">{safe_html(dua.get("meaning", "")).replace("\\n", "<br>").replace("&lt;br&gt;", "<br>")}</span>'
+                f'<strong class="accent" style="font-size:14px; text-transform:uppercase;">Meaning (English/Hinglish)</strong><br><span style="font-size:16px; line-height:1.6; color:#F8FAFC;">{safe_html(dua.get("meaning", "")).replace("&lt;br&gt;", "<br>").replace("\\n", "<br>")}</span>'
                 f'<div style="margin-top:20px; border-top:1px solid rgba(251, 191, 36, 0.2); padding-top:12px;"><span class="muted">Reference: {source_link(dua.get("reference", ""), dua.get("source_url", ""))}</span></div></div>',
                 unsafe_allow_html=True,
             )
@@ -483,14 +487,13 @@ def render_response(result):
             f'<div class="premium-card"><h3 style="margin-top:0; color:#FBBF24;">{safe_html(dua.get("title", ""))}</h3>'
             f'<div class="arabic" style="margin: 20px 0;">{safe_html(dua.get("arabic", ""))}</div>'
             f'<strong class="accent" style="font-size:14px; text-transform:uppercase;">Transliteration</strong><br><span style="color:#CBD5E1; line-height:1.6; display:inline-block; margin-bottom:16px;">{safe_html(dua.get("transliteration", ""))}</span><br>'
-            f'<strong class="accent" style="font-size:14px; text-transform:uppercase;">Meaning (English/Hinglish)</strong><br><span style="font-size:16px; line-height:1.6; color:#F8FAFC;">{safe_html(dua.get("meaning", "")).replace("\\n", "<br>").replace("&lt;br&gt;", "<br>")}</span>'
+            f'<strong class="accent" style="font-size:14px; text-transform:uppercase;">Meaning (English/Hinglish)</strong><br><span style="font-size:16px; line-height:1.6; color:#F8FAFC;">{safe_html(dua.get("meaning", "")).replace("&lt;br&gt;", "<br>").replace("\\n", "<br>")}</span>'
             f'<div style="margin-top:20px; border-top:1px solid rgba(251, 191, 36, 0.2); padding-top:12px;"><span class="muted">Reference: {source_link(dua.get("reference", ""), dua.get("source_url", ""))}</span></div></div>',
             unsafe_allow_html=True,
         )
 
-    # Render Conclusion
     if result["conclusion"]:
-        c_text = safe_html(result["conclusion"]).replace('\\n', '<br>').replace('\n', '<br>').replace('&lt;br&gt;', '<br>')
+        c_text = safe_html(result["conclusion"]).replace('&lt;br&gt;', '<br>').replace('\\n', '<br>')
         st.markdown('<div class="section-title">Conclusion</div>', unsafe_allow_html=True)
         st.markdown(f'<div class="premium-card" style="line-height:1.6;">{c_text}</div>', unsafe_allow_html=True)
 
@@ -625,13 +628,21 @@ with tab2:
     with col2:
         if st.session_state.loaded_surah_number:
             if audio_type == "Arabic Only (Mishary Alafasy)":
-                audio_url = f"[https://server8.mp3quran.net/afs/](https://server8.mp3quran.net/afs/){st.session_state.loaded_surah_number:03d}.mp3"
+                audio_url = f"https://server8.mp3quran.net/afs/{st.session_state.loaded_surah_number:03d}.mp3"
             else:
                 # Official Archive.org URL for Urdu translation audio matching QuranCentral
-                audio_url = f"[https://archive.org/download/UrduTranslationOfQuranAudio/](https://archive.org/download/UrduTranslationOfQuranAudio/){st.session_state.loaded_surah_number:03d}.mp3"
+                audio_url = f"https://archive.org/download/UrduTranslationOfQuranAudio/{st.session_state.loaded_surah_number:03d}.mp3"
                 
             st.markdown('<div class="premium-card" style="text-align:center;"><strong class="accent" style="font-size:18px;">🔊 Listen to Full Surah Recitation:</strong><br><br>', unsafe_allow_html=True)
-            st.audio(audio_url, format="audio/mp3")
+            
+            # Using HTML audio element completely bypasses Streamlit's MediaFileStorageError!
+            st.markdown(f'''
+                <audio controls style="width: 100%; outline: none; border-radius: 8px;">
+                  <source src="{audio_url}" type="audio/mpeg">
+                  Your browser does not support the audio element.
+                </audio>
+            ''', unsafe_allow_html=True)
+            
             st.markdown('</div>', unsafe_allow_html=True)
             
             surah_data = fetch_quran_surah(st.session_state.loaded_surah_number)
@@ -651,7 +662,7 @@ with tab2:
                         <div class="arabic">{safe_html(ayah.get("text"))}</div>
                         <div style="font-size:15px; color:#94A3B8; font-style:italic; margin-bottom:12px;"><strong>Transliteration:</strong> {safe_html(t_text)}</div>
                         <div style="font-size:16px; line-height:1.6; color:#E2E8F0; margin-bottom:8px;"><strong>English:</strong> {safe_html(eng_text)}</div>
-                        <div style="font-size:24px; line-height:1.8; color:#FDE047; text-align:right; font-family:'Jameel Noori Nastaleeq', 'Noto Nastaliq Urdu', Arial, sans-serif; direction:rtl;"><strong>اردو:</strong> {safe_html(ur_text)}</div>
+                        <div style="font-size:24px; line-height:1.8; color:#FDE047; text-align:right; font-family:Arial, sans-serif; direction:rtl;"><strong>اردو:</strong> {safe_html(ur_text)}</div>
                     </div>
                     ''', unsafe_allow_html=True)
 
@@ -717,7 +728,7 @@ with tab4:
     selected_category = st.selectbox("Select Collection", list(DUA_CATEGORIES.keys()))
     for dua in DUA_CATEGORIES.get(selected_category, []):
         st.markdown(
-            f'<div class="premium-card"><h3 style="margin-top:0; color:#FBBF24;">{safe_html(dua["title"])}</h3>'
+            f'<div class="premium-card"><h3 style="margin-top:0;">{safe_html(dua["title"])}</h3>'
             f'<div class="arabic" style="margin: 20px 0;">{safe_html(dua.get("arabic", ""))}</div>'
             f'<strong class="accent" style="font-size:14px; text-transform:uppercase;">Transliteration</strong><br><span style="color:#CBD5E1; line-height:1.6; display:inline-block; margin-bottom:16px;">{safe_html(dua.get("transliteration", ""))}</span><br>'
             f'<strong class="accent" style="font-size:14px; text-transform:uppercase;">Meaning</strong><br><span style="font-size:16px; line-height:1.6; color:#F8FAFC;">{safe_html(dua.get("meaning", ""))}</span>'
