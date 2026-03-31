@@ -142,7 +142,6 @@ if not NVIDIA_API_KEY:
 API_URL = "https://integrate.api.nvidia.com/v1/chat/completions"
 MODEL = "meta/llama-4-maverick-17b-128e-instruct"
 
-# Base prompt (will be modified dynamically by personas)
 BASE_SYSTEM_PROMPT = """You are an Islamic AI Assistant. Respond only with authentic Quran, Sahih Hadith, and recognized classical scholarship (like Ibn Kathir).
 - Do NOT fabricate references.
 - Return ONLY valid JSON.
@@ -301,6 +300,11 @@ def source_link(label, url):
         return f'<a class="source-link" href="{escape(url, quote=True)}" target="_blank">{safe_label}</a>'
     return safe_label
 
+def get_compass_dir(deg):
+    val = int((deg / 22.5) + .5)
+    arr = ["N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW"]
+    return arr[(val % 16)]
+
 def contains_any(text, terms): 
     return any(term in text.lower() for term in terms)
 
@@ -415,7 +419,7 @@ def render_response(result):
 st.markdown(
     '<div class="hero"><div class="bismillah">بِسْمِ اللَّهِ الرَّحْمٰنِ الرَّحِيمِ</div>'
     '<div class="title">Muslim AI</div>'
-    '<div class="subtitle">Created by Aadil Rather</div></div>',
+    '<div class="subtitle">Complete Islamic Toolkit • Grounded in Authentic Scholarship</div></div>',
     unsafe_allow_html=True,
 )
 
@@ -431,6 +435,10 @@ with st.sidebar:
     st.markdown("---")
     if st.button("Clear Chat", use_container_width=True):
         st.session_state.chat_history = []; st.session_state.messages = []; st.rerun()
+
+    st.markdown("<br>", unsafe_allow_html=True)
+    st.markdown('<div style="background:rgba(239, 68, 68, 0.1); border-left:3px solid #ef4444; padding:12px; border-radius:6px; font-size:13px; color:#e2e8f0; margin-bottom:15px;">⚠️ <strong>Disclaimer:</strong> This is an AI and can make mistakes. Always verify critical rulings with a qualified scholar.</div>', unsafe_allow_html=True)
+    st.markdown('<div style="text-align:center; font-size:14px; color:#CBD5E1; margin-bottom:20px;">Got feedback or ideas?<br>📧 <a href="mailto:arather419@gmail.com" style="color:#FBBF24; text-decoration:none; font-weight:600;">arather419@gmail.com</a></div>', unsafe_allow_html=True)
         
     st.markdown('<div class="creator-footer">Created by Aadil Rather</div>', unsafe_allow_html=True)
 
@@ -556,9 +564,16 @@ with tab3:
         if times_data:
             timings = times_data["timings"]
             date_hijri = times_data["date"]["hijri"]
-            qibla_deg = times_data.get("meta", {}).get("qibla", "Unknown")
             
-            st.markdown(f'<div class="info-box" style="text-align:center; font-size:20px;"><strong class="accent">{date_hijri["day"]} {date_hijri["month"]["en"]} {date_hijri["year"]} AH</strong><br><br>🧭 <strong style="color:#60A5FA;">Qibla Direction:</strong> {qibla_deg}° <span class="muted">(Degrees from North)</span></div>', unsafe_allow_html=True)
+            # Qibla Logic
+            qibla_deg = times_data.get("meta", {}).get("qibla")
+            if qibla_deg is not None:
+                compass_dir = get_compass_dir(float(qibla_deg))
+                qibla_text = f"{qibla_deg}° {compass_dir}"
+            else:
+                qibla_text = "Unknown"
+            
+            st.markdown(f'<div class="info-box" style="text-align:center; font-size:20px;"><strong class="accent">{date_hijri["day"]} {date_hijri["month"]["en"]} {date_hijri["year"]} AH</strong><br><br>🧭 <strong style="color:#60A5FA;">Qibla Direction:</strong> {qibla_text} <span class="muted">(from True North)</span></div>', unsafe_allow_html=True)
             
             cols = st.columns(6)
             prayers = ["Fajr", "Sunrise", "Dhuhr", "Asr", "Maghrib", "Isha"]
